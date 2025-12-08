@@ -1,0 +1,1 @@
+from mriigproject.wsgi import application

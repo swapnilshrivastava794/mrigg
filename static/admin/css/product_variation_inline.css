@@ -1,0 +1,86 @@
+/* Product Variation Inline Width Fix */
+.inline-group .tabular tr.has_original td {
+    padding: 8px 5px !important;
+}
+
+.inline-group .tabular thead th {
+    padding: 8px 5px !important;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.inline-group .tabular tbody td {
+    padding: 8px 5px !important;
+    font-size: 12px;
+}
+
+/* Make variation fields more compact */
+.inline-group .tabular input[type="text"],
+.inline-group .tabular input[type="number"] {
+    width: 100% !important;
+    max-width: 120px !important;
+    padding: 4px 6px !important;
+    font-size: 12px !important;
+}
+
+/* Specific field widths */
+.inline-group .tabular td.field-name input {
+    max-width: 180px !important;
+    min-width: 150px !important;
+}
+
+.inline-group .tabular td.field-quantity input {
+    max-width: 100px !important;
+}
+
+.inline-group .tabular td.field-unit input {
+    max-width: 60px !important;
+}
+
+.inline-group .tabular td.field-price_modifier input {
+    max-width: 80px !important;
+}
+
+.inline-group .tabular td.field-stock input {
+    max-width: 70px !important;
+}
+
+/* Table container width */
+.inline-group .tabular {
+    width: 100% !important;
+    table-layout: auto !important;
+}
+
+.inline-group .tabular tbody tr {
+    width: 100% !important;
+}
+
+/* Make the entire inline group more compact */
+.field-productvariation_set {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.field-productvariation_set .inline-related {
+    width: 100% !important;
+}
+
+/* Responsive table */
+@media (max-width: 1200px) {
+    .inline-group .tabular {
+        font-size: 11px;
+    }
+    
+    .inline-group .tabular input[type="text"],
+    .inline-group .tabular input[type="number"] {
+        max-width: 90px !important;
+        font-size: 11px !important;
+    }
+    
+    /* Keep name field wider even on smaller screens */
+    .inline-group .tabular td.field-name input {
+        max-width: 150px !important;
+        min-width: 120px !important;
+    }
+}
+
