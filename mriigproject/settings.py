@@ -13,10 +13,11 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 import mimetypes
+from datetime import timedelta
 
 
 
-# AUTH_USER_MODEL = 'main.CustomUser'
+AUTH_USER_MODEL = 'main.CustomUser'
 
 
 
@@ -49,6 +50,8 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     'main',
     'rest_framework',
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
      'api',
 ]
 
@@ -190,3 +193,15 @@ STATICFILES_STORAGE ="whitenoise.storage.CompressedManifestStaticFilesStorage"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
