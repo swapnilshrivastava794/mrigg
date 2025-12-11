@@ -3,8 +3,12 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.generics import ListAPIView
+from main.models import Category, Banner
 
-from .serializers import RegisterSerializer, CustomTokenObtainPairSerializer,UpdateProfileSerializer,RequestOTPSerializer, VerifyOTPChangePasswordSerializer
+
+
+from .serializers import RegisterSerializer, CustomTokenObtainPairSerializer,UpdateProfileSerializer,RequestOTPSerializer, VerifyOTPChangePasswordSerializer,CategorySerializer,BannerSerializer
 import random
 from django.core.mail import send_mail
 from rest_framework import status
@@ -145,3 +149,16 @@ class LogoutView(generics.GenericAPIView):
 
         return Response({"message": "Logged out successfully"}, status=200)
 
+
+class CategoryListView(ListAPIView):
+    serializer_class = CategorySerializer
+
+    def get_queryset(self):
+        return Category.objects.filter(parent__isnull=True, is_active=True).order_by("order", "name")
+
+
+class BannerListView(ListAPIView):
+    serializer_class = BannerSerializer
+
+    def get_queryset(self):
+        return Banner.objects.filter(is_active=True).order_by("order")

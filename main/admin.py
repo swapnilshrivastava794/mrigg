@@ -1,8 +1,9 @@
 from django.contrib import admin
-from .models import Brand, Category, ContactMessage, CustomUser, Product, Order, OrderItem, ProductDetailSection ,ProductImage, ProductVariation
+from .models import Brand, Category, ContactMessage, CustomUser, Product, Order, OrderItem, ProductDetailSection ,ProductImage, ProductVariation,Banner
 from django.utils.translation import gettext_lazy as _
 from ckeditor.widgets import CKEditorWidget
 from django import forms
+
 
 
 @admin.register(Category)
@@ -186,3 +187,14 @@ class ContactMessageAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'mobile', 'submitted_at')
     search_fields = ('name', 'email', 'mobile')
     ordering = ('-submitted_at',)
+
+
+
+
+class BannerAdmin(admin.ModelAdmin):
+    list_display = ("id", "title", "is_active", "order")
+    list_editable = ("is_active", "order")
+    search_fields = ("title",)
+
+admin.site.register(Banner, BannerAdmin)
+

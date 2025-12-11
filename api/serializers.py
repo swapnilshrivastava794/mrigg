@@ -4,6 +4,8 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import EmailOTP
 from django.utils import timezone
 from datetime import timedelta
+from main.models import Category, Banner
+
 
 User = get_user_model()
 
@@ -136,3 +138,41 @@ class VerifyOTPChangePasswordSerializer(serializers.Serializer):
             raise serializers.ValidationError("OTP expired")
 
         return data
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+    subcategories = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Category
+        fields = [
+            "id",
+            "name",
+            "slug",
+            "image",
+            "parent",
+            "subcategories",
+        ]
+
+    def get_image(self, obj):
+        request = self.context.get("request")
+        if obj.image:
+            return request.build_absolute_uri(obj.image.url)
+        return None
+
+    def get_subcategories(self, obj):
+        children = obj.subcategories.all().order_by("order", "name")
+        return CategorySerializer(children, many=True, context=self.context).data
+
+
+class BannerSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Banner
+        fields = ["id", "title", "image", "order"]
+
+    def get_image(self, obj):
+        request = self.context.get("request")
+        return request.build_absolute_uri(obj.image.url)

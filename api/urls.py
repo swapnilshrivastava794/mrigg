@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
-from .views import RegisterView, CustomTokenObtainPairView, ProfileView,UpdateProfileView,RequestOTPView,VerifyOTPChangePasswordView,LogoutView,ResendOTPView
+from .views import RegisterView, CustomTokenObtainPairView, ProfileView,UpdateProfileView,RequestOTPView,VerifyOTPChangePasswordView,LogoutView,ResendOTPView,CategoryListView,BannerListView
 
 urlpatterns = [
     path('auth/register/', RegisterView.as_view(), name='api_register'),
@@ -12,4 +12,11 @@ urlpatterns = [
     path('auth/verify-otp-change-password/', VerifyOTPChangePasswordView.as_view()),
     path('auth/resend-otp/', ResendOTPView.as_view()),
     path('auth/logout/', LogoutView.as_view()),
+
+
+    #product part 
+    path("categories/", CategoryListView.as_view(), name="category_list"),
+    path("banners/", BannerListView.as_view(), name="banner_list"),
+
+
 ]
