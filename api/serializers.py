@@ -4,7 +4,14 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import EmailOTP
 from django.utils import timezone
 from datetime import timedelta
-from main.models import Category, Banner
+from main.models import (
+    Category,
+    Banner,
+    Product,
+    ProductImage,
+    ProductVariation,
+    ProductDetailSection,
+)
 
 
 User = get_user_model()
@@ -111,9 +118,8 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
 
-
-            instance.save()
-            return instance
+        instance.save()
+        return instance
 
 
 class RequestOTPSerializer(serializers.Serializer):
@@ -176,3 +182,88 @@ class BannerSerializer(serializers.ModelSerializer):
     def get_image(self, obj):
         request = self.context.get("request")
         return request.build_absolute_uri(obj.image.url)
+
+
+
+class ProductImageSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ProductImage
+        fields = ["id", "image", "alt_text"]
+
+    def get_image(self, obj):
+        request = self.context.get("request")
+        if obj.image:
+            return request.build_absolute_uri(obj.image.url)
+        return None
+
+
+class ProductImageSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ProductImage
+        fields = ["id", "image", "alt_text"]
+
+    def get_image(self, obj):
+        request = self.context.get("request")
+        if obj.image:
+            return request.build_absolute_uri(obj.image.url)
+        return None
+
+
+class ProductVariationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductVariation
+        fields = [
+            "id",
+            "name",
+            "quantity",
+            "unit",
+            "price_modifier",
+            "stock",
+        ]
+
+
+
+class ProductDetailSectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductDetailSection
+        fields = [
+            "id",
+            "title",
+            "content",
+        ]
+
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    images = ProductImageSerializer(many=True, read_only=True)
+    variations = ProductVariationSerializer(many=True, read_only=True)
+    sections = ProductDetailSectionSerializer(many=True, read_only=True)
+
+    final_price = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Product
+        fields = [
+            "id",                 # ✅ ANDROID ID
+            "name",
+            "slug",
+            "short_description",
+            "description",
+            "price",
+            "offerprice",
+            "final_price",
+            "stock",
+            "popular",
+            "latest",
+            "featured",
+            "images",
+            "variations",
+            "sections",
+        ]
+
+    def get_final_price(self, obj):
+        return obj.offerprice if obj.offerprice > 0 else obj.price

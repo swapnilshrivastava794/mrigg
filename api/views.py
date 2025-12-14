@@ -4,11 +4,17 @@ from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.generics import ListAPIView
-from main.models import Category, Banner
+from main.models import Category, Banner,Product
+from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404
+from django.core.paginator import Paginator, EmptyPage
 
 
 
-from .serializers import RegisterSerializer, CustomTokenObtainPairSerializer,UpdateProfileSerializer,RequestOTPSerializer, VerifyOTPChangePasswordSerializer,CategorySerializer,BannerSerializer
+
+
+
+from .serializers import RegisterSerializer, CustomTokenObtainPairSerializer,UpdateProfileSerializer,RequestOTPSerializer, VerifyOTPChangePasswordSerializer,CategorySerializer,BannerSerializer,ProductSerializer
 import random
 from django.core.mail import send_mail
 from rest_framework import status
@@ -162,3 +168,169 @@ class BannerListView(ListAPIView):
 
     def get_queryset(self):
         return Banner.objects.filter(is_active=True).order_by("order")
+
+
+class ProductsByCategoryAPI(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, category_id):
+
+        # 🔹 pagination params
+        page = int(request.GET.get("page", 1))
+        limit = int(request.GET.get("limit", 10))
+
+        # 1️⃣ Parent ki saari sub-categories
+        subcategory_ids = Category.objects.filter(
+            parent_id=category_id,
+            is_active=True
+        ).values_list("id", flat=True)
+
+        # 2️⃣ Parent + subcategories (ALL)
+        all_category_ids = list(subcategory_ids) + [category_id]
+
+        # 3️⃣ Sab categories ke products (DESC ORDER)
+        queryset = Product.objects.filter(
+            category_id__in=all_category_ids,
+            is_active=True,
+            available=True
+        ).order_by("-id")   # 👈 DESCENDING
+
+        # 4️⃣ Pagination
+        paginator = Paginator(queryset, limit)
+
+        try:
+            products_page = paginator.page(page)
+        except EmptyPage:
+            return Response({
+                "count": paginator.count,
+                "total_pages": paginator.num_pages,
+                "current_page": page,
+                "results": []
+            })
+
+        serializer = ProductSerializer(
+            products_page,
+            many=True,
+            context={"request": request}
+        )
+
+        return Response({
+            "count": paginator.count,
+            "total_pages": paginator.num_pages,
+            "current_page": page,
+            "results": serializer.data
+        })
+
+
+
+class ProductDetailByIdAPI(APIView):
+    def get(self, request, id):
+        product = get_object_or_404(
+            Product,
+            id=id,
+            is_active=True,
+            available=True
+        )
+
+        serializer = ProductSerializer(
+            product,
+            context={"request": request}
+        )
+        return Response(serializer.data)
+
+
+class HomeProductsAPI(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+
+        popular_products = Product.objects.filter(
+            popular=True,
+            is_active=True,
+            available=True
+        ).order_by("-id")[:10]
+
+        latest_products = Product.objects.filter(
+            latest=True,
+            is_active=True,
+            available=True
+        ).order_by("-id")[:10]
+
+        featured_products = Product.objects.filter(
+            featured=True,
+            is_active=True,
+            available=True
+        ).order_by("-id")[:10]
+
+        return Response({
+            "popular": ProductSerializer(
+                popular_products,
+                many=True,
+                context={"request": request}
+            ).data,
+
+            "latest": ProductSerializer(
+                latest_products,
+                many=True,
+                context={"request": request}
+            ).data,
+
+            "featured": ProductSerializer(
+                featured_products,
+                many=True,
+                context={"request": request}
+            ).data,
+        })
+
+
+
+class FilterProductsAPI(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, type):
+
+        # ✅ validate type
+        if type not in ["latest", "featured", "popular"]:
+            return Response(
+                {"error": "type must be one of latest, featured, popular"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # ✅ pagination params
+        page = int(request.GET.get("page", 1))
+        limit = int(request.GET.get("limit", 10))
+
+        # ✅ base queryset (DESCENDING ORDER)
+        queryset = Product.objects.filter(
+            **{
+                type: True,
+                "is_active": True,
+                "available": True
+            }
+        ).order_by("-id")   # 👈 DESC ORDER (latest first)
+
+        # ✅ paginator
+        paginator = Paginator(queryset, limit)
+
+        try:
+            products_page = paginator.page(page)
+        except EmptyPage:
+            return Response({
+                "count": paginator.count,
+                "total_pages": paginator.num_pages,
+                "current_page": page,
+                "results": []
+            })
+
+        serializer = ProductSerializer(
+            products_page,
+            many=True,
+            context={"request": request}
+        )
+
+        return Response({
+            "count": paginator.count,
+            "total_pages": paginator.num_pages,
+            "current_page": page,
+            "results": serializer.data
+        })
