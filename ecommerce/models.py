@@ -314,7 +314,7 @@ class Product(models.Model):
     name = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
     short_description = models.CharField(max_length=300, blank=True)  # ✅ added short description
-    description = models.TextField()
+    description = models.TextField(verbose_name="Key Points")
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='MRP (INR)')
     offerprice = models.DecimalField(max_digits=10, decimal_places=2, default='00.00', verbose_name='Offer Price (INR)')
     stock = models.PositiveIntegerField()
