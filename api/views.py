@@ -163,7 +163,7 @@ class CategoryListView(ListAPIView):
     serializer_class = CategorySerializer
 
     def get_queryset(self):
-        return Category.objects.filter(parent__isnull=True, is_active=True).order_by("order", "name")
+        return Category.objects.filter(is_active=True).order_by("order", "name")
 
 
 class BannerListView(ListAPIView):
@@ -187,18 +187,16 @@ class ProductsByCategoryAPI(APIView):
         page = int(request.GET.get("page", 1))
         limit = int(request.GET.get("limit", 10))
 
-        # 1️⃣ Parent ki saari sub-categories
-        subcategory_ids = Category.objects.filter(
-            parent_id=category_id,
+        # 1️⃣ Category ki saari sub-categories
+        from ecommerce.models import SubCategory
+        subcategory_ids = SubCategory.objects.filter(
+            category_id=category_id,
             is_active=True
         ).values_list("id", flat=True)
 
-        # 2️⃣ Parent + subcategories (ALL)
-        all_category_ids = list(subcategory_ids) + [category_id]
-
-        # 3️⃣ Sab categories ke products (DESC ORDER)
+        # 2️⃣ Subcategories ke products (DESC ORDER)
         queryset = Product.objects.filter(
-            category_id__in=all_category_ids,
+            subcategory_id__in=subcategory_ids,
             is_active=True,
             available=True
         ).order_by("-id")   # 👈 DESCENDING

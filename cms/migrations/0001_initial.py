@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('ecommerce', '__latest__'),
+        ('ecommerce', '0021_update_app_label'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 

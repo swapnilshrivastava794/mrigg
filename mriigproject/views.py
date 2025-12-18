@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.db.models import Q, Count
 from datetime import date
 
-from ecommerce.models import Category, ContactMessage, CustomUser, Order, OrderItem, Product
+from ecommerce.models import Category, SubCategory, ContactMessage, CustomUser, Order, OrderItem, Product
 from cms.models import slider
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -32,16 +32,15 @@ from ecommerce.decorators import custom_login_required
 #     })
 
 def home(request):
-    # Get all active parent categories with their subcategories
-    all_categories = Category.objects.filter(parent__isnull=True, is_active=True).prefetch_related('subcategories').order_by('order')
+    # Get all active categories with their subcategories
+    all_categories = Category.objects.filter(is_active=True).prefetch_related('subcategories').order_by('order')
     
     # Get limited categories for other sections (if needed)
-    categories = Category.objects.filter(parent__isnull=True, is_active=True).order_by('order')[:6]
+    categories = Category.objects.filter(is_active=True).order_by('order')[:6]
     
     # Get categories with images for New Collection section (limit to 4-6 categories)
-    # Count products from all subcategories of each parent category
+    # Count products from all subcategories of each category
     collection_categories = Category.objects.filter(
-        parent__isnull=True, 
         is_active=True,
         image__isnull=False
     ).prefetch_related('subcategories').order_by('order')[:6]
@@ -51,7 +50,7 @@ def home(request):
         subcategory_ids = list(cat.subcategories.filter(is_active=True).values_list('id', flat=True))
         if subcategory_ids:
             cat.product_count = Product.objects.filter(
-                category_id__in=subcategory_ids,
+                subcategory_id__in=subcategory_ids,
                 is_active=True
             ).count()
         else:
@@ -88,7 +87,7 @@ def home(request):
     })
     
 def aboutus(request):
-    categories = Category.objects.prefetch_related('subcategories').filter(parent__isnull=True)
+    categories = Category.objects.prefetch_related('subcategories').filter(is_active=True)
     products = Product.objects.prefetch_related('images').all()
     return render(request, 'main/about-us.html', {
         'categories': categories,
@@ -101,23 +100,23 @@ def ourproduct(request):
     subcategory_slug = request.GET.get('subcategory', None)
     
     # Get all categories for sidebar
-    categories = Category.objects.filter(parent__isnull=True, is_active=True).prefetch_related('subcategories').order_by('order')
+    categories = Category.objects.filter(is_active=True).prefetch_related('subcategories').order_by('order')
     
     # Get all active products
-    products = Product.objects.filter(is_active=True).select_related('category', 'category__parent', 'brand').prefetch_related('images').order_by('-id')
+    products = Product.objects.filter(is_active=True).select_related('subcategory', 'subcategory__category', 'brand').prefetch_related('images').order_by('-id')
     
     # Filter by category if provided
     if subcategory_slug:
-        subcategory = get_object_or_404(Category, slug=subcategory_slug, is_active=True, parent__isnull=False)
-        products = products.filter(category=subcategory)
-        selected_category = subcategory.parent
+        subcategory = get_object_or_404(SubCategory, slug=subcategory_slug, is_active=True)
+        products = products.filter(subcategory=subcategory)
+        selected_category = subcategory.category
         selected_subcategory = subcategory
     elif category_slug:
-        category = get_object_or_404(Category, slug=category_slug, is_active=True, parent__isnull=True)
+        category = get_object_or_404(Category, slug=category_slug, is_active=True)
         # Get all subcategories of this category
-        subcategories = Category.objects.filter(parent=category, is_active=True)
+        subcategories = SubCategory.objects.filter(category=category, is_active=True)
         # Get products from all subcategories
-        products = products.filter(category__in=subcategories)
+        products = products.filter(subcategory__in=subcategories)
         selected_category = category
         selected_subcategory = None
     else:
@@ -133,22 +132,22 @@ def ourproduct(request):
     
 def productCategory(request, category_slug, subcategory_slug):
     # Top-level categories for menu
-    categories = Category.objects.filter(parent__isnull=True, is_active=True).order_by('order')[:6]
+    categories = Category.objects.filter(is_active=True).order_by('order')[:6]
 
-    # Fetch parent and subcategory by slugs
-    parent_category = get_object_or_404(Category, slug=category_slug, is_active=True, parent__isnull=True)
-    subcategory = get_object_or_404(Category, slug=subcategory_slug, is_active=True, parent=parent_category)
+    # Fetch category and subcategory by slugs
+    category = get_object_or_404(Category, slug=category_slug, is_active=True)
+    subcategory = get_object_or_404(SubCategory, slug=subcategory_slug, is_active=True, category=category)
 
     # Fetch products under the subcategory
-    products = Product.objects.filter(is_active=True, category=subcategory).order_by('-id')
+    products = Product.objects.filter(is_active=True, subcategory=subcategory).order_by('-id')
 
-    featured = Product.objects.filter(is_active=True, featured=True, category=subcategory).order_by('-id')[:12]
-    popular = Product.objects.filter(is_active=True, popular=True, category=subcategory).order_by('id')[:12]
-    latest = Product.objects.filter(is_active=True, latest=True, category=subcategory).order_by('-id')[:12]
+    featured = Product.objects.filter(is_active=True, featured=True, subcategory=subcategory).order_by('-id')[:12]
+    popular = Product.objects.filter(is_active=True, popular=True, subcategory=subcategory).order_by('id')[:12]
+    latest = Product.objects.filter(is_active=True, latest=True, subcategory=subcategory).order_by('-id')[:12]
 
     return render(request, 'main/product-category.html', {
         'categories': categories,
-        'parent_category': parent_category,
+        'parent_category': category,
         'subcategory': subcategory,
         'products': products,
         'fl': featured,
@@ -158,16 +157,16 @@ def productCategory(request, category_slug, subcategory_slug):
     
     
 def contactus(request):
-    categories = Category.objects.prefetch_related('subcategories').filter(parent__isnull=True)
+    categories = Category.objects.prefetch_related('subcategories').filter(is_active=True)
     products = Product.objects.prefetch_related('images').all()
     return render(request, 'main/contact-us.html', {
         'categories': categories,
         'products': products
     })
 def product_detail(request, slug):
-    categories = Category.objects.filter(parent__isnull=True,is_active=True).order_by('order')[:6]
+    categories = Category.objects.filter(is_active=True).order_by('order')[:6]
     product = get_object_or_404(Product.objects.prefetch_related('images', 'sections'), slug=slug)
-    related_products = Product.objects.filter(category=product.category).exclude(id=product.id)[:5]  # limit to 5
+    related_products = Product.objects.filter(subcategory=product.subcategory).exclude(id=product.id)[:5]  # limit to 5
     sections = product.sections.all()
 
     return render(request, 'jb/main/product-detail.html', {
@@ -281,7 +280,7 @@ def add_to_cart(request, slug):
 
 
 def view_cart(request):
-    categories = Category.objects.filter(parent__isnull=True,is_active=True).order_by('order')[:6]
+    categories = Category.objects.filter(is_active=True).order_by('order')[:6]
     cart = request.session.get('cart', {})
     products = Product.objects.filter(id__in=cart.keys())
 
@@ -310,7 +309,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 @custom_login_required
 def checkout(request):
-    categories = Category.objects.filter(parent__isnull=True,is_active=True).order_by('order')[:6]
+    categories = Category.objects.filter(is_active=True).order_by('order')[:6]
     cart = request.session.get('cart', {})
     products = Product.objects.filter(id__in=cart.keys())
 

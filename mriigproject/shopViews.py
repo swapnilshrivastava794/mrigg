@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from ecommerce.models import Category, Product
+from ecommerce.models import Category, SubCategory, Product
 
 def account(request):     
       data = {
@@ -83,23 +83,23 @@ def shop(request, category_slug=None, subcategory_slug=None):
           subcategory_slug = request.GET.get('subcategory', None)
       
       # Get all categories for sidebar
-      categories = Category.objects.filter(parent__isnull=True, is_active=True).prefetch_related('subcategories').order_by('order')
+      categories = Category.objects.filter(is_active=True).prefetch_related('subcategories').order_by('order')
       
       # Get all products
-      products = Product.objects.filter(is_active=True).select_related('category', 'category__parent', 'brand').prefetch_related('images').order_by('-id')
+      products = Product.objects.filter(is_active=True).select_related('subcategory', 'subcategory__category', 'brand').prefetch_related('images').order_by('-id')
       
       # Filter by category if provided
       if subcategory_slug:
-          subcategory = get_object_or_404(Category, slug=subcategory_slug, is_active=True, parent__isnull=False)
-          products = products.filter(category=subcategory)
-          selected_category = subcategory.parent
+          subcategory = get_object_or_404(SubCategory, slug=subcategory_slug, is_active=True)
+          products = products.filter(subcategory=subcategory)
+          selected_category = subcategory.category
           selected_subcategory = subcategory
       elif category_slug:
-          category = get_object_or_404(Category, slug=category_slug, is_active=True, parent__isnull=True)
+          category = get_object_or_404(Category, slug=category_slug, is_active=True)
           # Get all subcategories of this category
-          subcategories = Category.objects.filter(parent=category, is_active=True)
+          subcategories = SubCategory.objects.filter(category=category, is_active=True)
           # Get products from all subcategories
-          products = products.filter(category__in=subcategories)
+          products = products.filter(subcategory__in=subcategories)
           selected_category = category
           selected_subcategory = None
       else:
@@ -127,23 +127,23 @@ def sidebarLeft(request):
       subcategory_slug = request.GET.get('subcategory', None)
       
       # Get all categories for sidebar
-      categories = Category.objects.filter(parent__isnull=True, is_active=True).prefetch_related('subcategories').order_by('order')
+      categories = Category.objects.filter(is_active=True).prefetch_related('subcategories').order_by('order')
       
       # Get all products
-      products = Product.objects.filter(is_active=True).select_related('category', 'category__parent', 'brand').prefetch_related('images').order_by('-id')
+      products = Product.objects.filter(is_active=True).select_related('subcategory', 'subcategory__category', 'brand').prefetch_related('images').order_by('-id')
       
       # Filter by category if provided
       if subcategory_slug:
-          subcategory = get_object_or_404(Category, slug=subcategory_slug, is_active=True, parent__isnull=False)
-          products = products.filter(category=subcategory)
-          selected_category = subcategory.parent
+          subcategory = get_object_or_404(SubCategory, slug=subcategory_slug, is_active=True)
+          products = products.filter(subcategory=subcategory)
+          selected_category = subcategory.category
           selected_subcategory = subcategory
       elif category_slug:
-          category = get_object_or_404(Category, slug=category_slug, is_active=True, parent__isnull=True)
+          category = get_object_or_404(Category, slug=category_slug, is_active=True)
           # Get all subcategories of this category
-          subcategories = Category.objects.filter(parent=category, is_active=True)
+          subcategories = SubCategory.objects.filter(category=category, is_active=True)
           # Get products from all subcategories
-          products = products.filter(category__in=subcategories)
+          products = products.filter(subcategory__in=subcategories)
           selected_category = category
           selected_subcategory = None
       else:

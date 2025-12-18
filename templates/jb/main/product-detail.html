@@ -7,7 +7,7 @@
 <meta name="description" content="{% if product.short_description %}{{ product.short_description|truncatewords:25 }}{% else %}Buy {{ product.name }} online at Mriig. Best prices and quality beauty products.{% endif %}" />
 {% endblock %}
 {% block meta_keywords %}
-<meta name="keywords" content="{{ product.name }}, {{ product.category.name }}{% if product.category.parent %}, {{ product.category.parent.name }}{% endif %}, beauty products, cosmetics, online shopping" />
+<meta name="keywords" content="{{ product.name }}, {{ product.subcategory.name }}{% if product.subcategory.category %}, {{ product.subcategory.category.name }}{% endif %}, beauty products, cosmetics, online shopping" />
 {% endblock %}
 {% block og_tags %}
 <meta property="og:title" content="{{ product.name }} - Mriig Beauty & Cosmetics" />
@@ -26,16 +26,16 @@
             <div class="col-12">
                 <ol class="breadcrumb d-flex align-items-center">
                     <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-                    {% if product.category.parent %}
+                    {% if product.subcategory.category %}
                         <li class="breadcrumb-item">
-                            <a href="{% url 'category-only' product.category.parent.slug %}">{{ product.category.parent.name }}</a>
+                            <a href="{% url 'category-only' product.subcategory.category.slug %}">{{ product.subcategory.category.name }}</a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a href="{% url 'category-subcategory' product.category.parent.slug product.category.slug %}">{{ product.category.name }}</a>
+                            <a href="{% url 'category-subcategory' product.subcategory.category.slug product.subcategory.slug %}">{{ product.subcategory.name }}</a>
                         </li>
                     {% else %}
                         <li class="breadcrumb-item">
-                            <a href="{% url 'category-only' product.category.slug %}">{{ product.category.name }}</a>
+                            <a href="{% url 'category-only' product.subcategory.slug %}">{{ product.subcategory.name }}</a>
                         </li>
                     {% endif %}
                     <li class="breadcrumb-item active">{{ product.name }}</li>
@@ -296,7 +296,7 @@
                                     {% endif %}
                                 </div>
                                 <div class="related-product-info">
-                                    <div class="related-product-category">{{ related.category.name }}</div>
+                                    <div class="related-product-category">{{ related.subcategory.name }}</div>
                                     <h4 class="related-product-name">{{ related.name }}</h4>
                                     <div class="related-product-price">
                                         {% if related.offerprice and related.offerprice < related.price %}

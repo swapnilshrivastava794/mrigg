@@ -16,7 +16,7 @@
     <div class="row latest-products-grid">
       {% for latest in lts %}
       <div
-        class="col-12 col-sm-6 col-md-4 col-lg-3 latest-product-item {{ latest.category.slug }} wow fadeInUp"
+        class="col-12 col-sm-6 col-md-4 col-lg-3 latest-product-item {{ latest.subcategory.slug }} wow fadeInUp"
         data-wow-delay="0.{{ forloop.counter }}s"
       >
         <div class="latest-product-card">
@@ -47,7 +47,7 @@
           <!-- Product Info -->
           <div class="latest-product-info">
             <div class="latest-product-category">
-              <span>{{ latest.category.name }}</span>
+              <span>{{ latest.subcategory.name }}</span>
             </div>
             <h4 class="latest-product-name">{{ latest.name }}</h4>
             <div class="latest-product-price">
@@ -104,7 +104,7 @@
             </div>
             <div class="col-12 col-lg-6">
               <div class="latest-quickview-details">
-                <div class="latest-quickview-category">{{ latest.category.name }}</div>
+                <div class="latest-quickview-category">{{ latest.subcategory.name }}</div>
                 <h4 class="latest-quickview-title">{{ latest.name }}</h4>
                 
                 <div class="latest-quickview-price">

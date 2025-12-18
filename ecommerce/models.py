@@ -78,16 +78,10 @@ class CustomUser(AbstractUser):
         return self.email
 
 class Category(models.Model):
+    """Main Category (Parent Category) - No parent field"""
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
     image = models.ImageField(upload_to='categories/%Y/%m/%d', blank=True, null=True, verbose_name='Category Image')
-    parent = models.ForeignKey(
-        'self',
-        on_delete=models.CASCADE,
-        related_name='subcategories',
-        blank=True,
-        null=True
-    )
     is_active = models.BooleanField(default=True, verbose_name="Status")
     order = models.IntegerField(null=True, default=None, verbose_name="Order", blank=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -183,12 +177,107 @@ class Category(models.Model):
                 pass
 
     def __str__(self):
-        full_path = [self.name]
-        k = self.parent
-        while k is not None:
-            full_path.append(k.name)
-            k = k.parent
-        return ' / '.join(reversed(full_path))
+        return self.name
+
+
+class SubCategory(models.Model):
+    """SubCategory (Child Category) - Linked to Category via ForeignKey"""
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        related_name='subcategories',
+        verbose_name='Main Category'
+    )
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True)
+    image = models.ImageField(upload_to='subcategories/%Y/%m/%d', blank=True, null=True, verbose_name='SubCategory Image')
+    is_active = models.BooleanField(default=True, verbose_name="Status")
+    order = models.IntegerField(null=True, default=None, verbose_name="Order", blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'main_subcategory'  # New table name
+        ordering = ['category__order', 'category__name', 'order', 'name']
+        verbose_name_plural = 'SubCategories'
+        unique_together = ('category', 'slug')  # Slug should be unique per category
+
+    def save(self, *args, **kwargs):
+        # Check if this is a new image or if image has changed
+        if self.pk:
+            try:
+                old_instance = SubCategory.objects.get(pk=self.pk)
+                old_image = old_instance.image
+            except SubCategory.DoesNotExist:
+                old_image = None
+        else:
+            old_image = None
+        
+        # Save the model first to get the image path
+        super(SubCategory, self).save(*args, **kwargs)
+        
+        # Process image if it exists and is new or changed
+        if self.image and (not old_image or self.image != old_image):
+            try:
+                # Open the image
+                img = Image.open(self.image.path)
+                
+                # Convert RGBA to RGB if necessary
+                if img.mode in ('RGBA', 'LA', 'P'):
+                    background = Image.new('RGB', img.size, (255, 255, 255))
+                    if img.mode == 'P':
+                        img = img.convert('RGBA')
+                    background.paste(img, mask=img.split()[-1] if img.mode == 'RGBA' else None)
+                    img = background
+                elif img.mode != 'RGB':
+                    img = img.convert('RGB')
+                
+                # Crop and resize to 250x250px (square)
+                desired_size = (250, 250)
+                width, height = img.size
+                if width > height:
+                    left = (width - height) // 2
+                    right = left + height
+                    top = 0
+                    bottom = height
+                else:
+                    top = (height - width) // 2
+                    bottom = top + width
+                    left = 0
+                    right = width
+                
+                img = img.crop((left, top, right, bottom))
+                img = img.resize(desired_size, Image.Resampling.LANCZOS)
+                
+                # Get the file path and change extension to .webp
+                file_path = self.image.path
+                base_path = os.path.splitext(file_path)[0]
+                webp_path = base_path + '.webp'
+                
+                # Save as WebP
+                img.save(webp_path, 'WEBP', quality=85, optimize=True)
+                
+                # Update the image field
+                media_root = str(settings.MEDIA_ROOT)
+                relative_path = os.path.relpath(webp_path, media_root)
+                self.image.name = relative_path.replace('\\', '/')
+                
+                # Delete the original file if it's not WebP
+                if not file_path.lower().endswith('.webp') and os.path.exists(file_path):
+                    try:
+                        os.remove(file_path)
+                    except Exception:
+                        pass
+                
+                # Save again to update the image field
+                super(SubCategory, self).save(update_fields=['image'])
+                
+            except Exception as e:
+                print(f"Error processing subcategory image: {e}")
+                pass
+
+    def __str__(self):
+        return f"{self.category.name} / {self.name}"
 
 
 class Brand(models.Model):
@@ -309,7 +398,7 @@ class Product(models.Model):
         ('lb', 'lb'),
     ]
     
-    category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE)
+    subcategory = models.ForeignKey('SubCategory', related_name='products', on_delete=models.CASCADE, verbose_name='SubCategory')
     brand = models.ForeignKey('Brand', related_name='products', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Brand')
     name = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)

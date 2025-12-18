@@ -30,6 +30,11 @@ class SliderAdmin(admin.ModelAdmin):
     )
     readonly_fields = ('post_date', 'updated_at')
     
+    def get_queryset(self, request):
+        """Optimize queryset to avoid N+1 queries"""
+        qs = super().get_queryset(request)
+        return qs.select_related('slidercat', 'product', 'author')
+    
     def get_readonly_fields(self, request, obj=None):
         if obj:  # editing an existing object
             return self.readonly_fields + ('slug',)
@@ -63,6 +68,11 @@ class CMSAdmin(admin.ModelAdmin):
         }),
     )
     readonly_fields = ('post_date', 'updated_at', 'viewcounter')
+    
+    def get_queryset(self, request):
+        """Optimize queryset to avoid N+1 queries"""
+        qs = super().get_queryset(request)
+        return qs.select_related('author')
 
 
 @admin.register(BlogCategory)
@@ -128,6 +138,11 @@ class BlogAdmin(admin.ModelAdmin):
         }),
     )
     readonly_fields = ('post_date', 'updated_at', 'view_counter')
+    
+    def get_queryset(self, request):
+        """Optimize queryset to avoid N+1 queries"""
+        qs = super().get_queryset(request)
+        return qs.select_related('category', 'subcategory', 'author')
     
     def get_category(self, obj):
         """Display parent category name"""

@@ -25,7 +25,7 @@
                                                             {% for subcategory in category.subcategories.all %}
                                                                 {% if subcategory.is_active %}
                                                                     <li class="dropdown-li">
-                                                                        <a class="dropdown-link2" href="{% url 'category-subcategory' subcategory.parent.slug subcategory.slug %}">
+                                                                        <a class="dropdown-link2" href="{% url 'category-subcategory' subcategory.category.slug subcategory.slug %}">
                                                                             {{ subcategory.name }}
                                                                         </a>
                                                                     </li>

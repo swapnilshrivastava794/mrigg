@@ -6,6 +6,7 @@ from django.utils import timezone
 from datetime import timedelta
 from ecommerce.models import (
     Category,
+    SubCategory,
     Product,
     ProductImage,
     ProductVariation,
@@ -146,6 +147,27 @@ class VerifyOTPChangePasswordSerializer(serializers.Serializer):
         return data
 
 
+class SubCategorySerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SubCategory
+        fields = [
+            "id",
+            "name",
+            "slug",
+            "image",
+            "order",
+            "is_active",
+        ]
+
+    def get_image(self, obj):
+        request = self.context.get("request")
+        if obj.image:
+            return request.build_absolute_uri(obj.image.url)
+        return None
+
+
 class CategorySerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
     subcategories = serializers.SerializerMethodField()
@@ -157,7 +179,6 @@ class CategorySerializer(serializers.ModelSerializer):
             "name",
             "slug",
             "image",
-            "parent",
             "subcategories",
         ]
 
@@ -168,8 +189,8 @@ class CategorySerializer(serializers.ModelSerializer):
         return None
 
     def get_subcategories(self, obj):
-        children = obj.subcategories.all().order_by("order", "name")
-        return CategorySerializer(children, many=True, context=self.context).data
+        children = SubCategory.objects.filter(category=obj, is_active=True).order_by("order", "name")
+        return SubCategorySerializer(children, many=True, context=self.context).data
 
 
 class SliderSerializer(serializers.ModelSerializer):

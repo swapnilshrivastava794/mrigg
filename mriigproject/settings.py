@@ -31,6 +31,7 @@ SECRET_KEY = 'django-insecure-=z9lp(k@r2!-j)=0oa9t(v$ycks3i&((l$aa*2j=omw))#ksuj
 DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.1.7']
+#ALLOWED_HOSTS = ['mriigg.com', 'www.mriigg.com']
 
 # Application definition
 
@@ -102,40 +103,46 @@ DATABASES = {
         'PASSWORD': '',       # default में password खाली होता है
         'HOST': '127.0.0.1',  # localhost भी लिख सकते हो
         'PORT': '3306',       # default MySQL port
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            'charset': 'utf8mb4',
+        },
+        'CONN_MAX_AGE': 600,  # Connection pooling - keep connections alive for 10 minutes
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'tqjsimyv_mriiggdb',       # phpMyAdmin में बनाया हुआ database नाम
+#         'USER': 'tqjsimyv_mriigguser',       # XAMPP default user
+#         'PASSWORD': 'f!_u-NOW[RF)RyZs',       # default में password खाली होता है
+#         'HOST': '127.0.0.1',  # localhost भी लिख सकते हो
+#         'PORT': '3306',       # default MySQL port
+#         'OPTIONS': {
+#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+#             'charset': 'utf8mb4',
+#         },
+#         'CONN_MAX_AGE': 600,  # Connection pooling - keep connections alive for 10 minutes
+        
+
+#     }
+# }
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # CKEditor Settings
-CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_BASEPATH='/static/ckeditor/ckeditor/'
+CKEDITOR_UPLOAD_PATH='upload/'
 CKEDITOR_CONFIGS = {
     'default': {
-        'toolbar': 'full',
-        'height': 300,
-        'width': '100%',
-        'toolbar_Custom': [
-            ['Bold', 'Italic', 'Underline'],
-            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
-            ['Link', 'Unlink'],
-            ['RemoveFormat', 'Source'],
-            ['Image', 'Table', 'HorizontalRule'],
-            ['Styles', 'Format', 'Font', 'FontSize'],
-            ['TextColor', 'BGColor'],
-        ],
-    },
-    'description': {
-        'toolbar': 'Custom',
-        'toolbar_Custom': [
-            ['Bold', 'Italic', 'Underline'],
-            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent'],
-            ['Link', 'Unlink'],
-            ['RemoveFormat', 'Source'],
-            ['Image'],
-        ],
-        'height': 250,
-        'width': '100%',
+        'toolbar':'full',
+        'removePlugins':'exportpdf',
+        'extraPlugins': ','.join(
+            [
+                'codesnippet','widget','html5video','youtube',
+            ]),
     },
 }
 
@@ -177,12 +184,73 @@ LOGIN_URL = '/login/'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
-STATICFILES_STORAGE ="whitenoise.storage.CompressedManifestStaticFilesStorage"
+# For production - where collected static files will be stored
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+# Ensure staticfiles directory exists
+os.makedirs(STATIC_ROOT, exist_ok=True)
+
+# Use WhiteNoise for production, but allow staticfiles to work in development too
+if not DEBUG:
+    
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+else:
+  
+    STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Logging Configuration for Debugging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'logs' / 'admin_debug.log',
+            'formatter': 'verbose',
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'loggers': {
+        'django.db.backends': {
+            'handlers': ['file', 'console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'ecommerce.admin': {
+            'handlers': ['file', 'console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'django': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}
+
+# Create logs directory if it doesn't exist
+LOGS_DIR = BASE_DIR / 'logs'
+LOGS_DIR.mkdir(exist_ok=True)

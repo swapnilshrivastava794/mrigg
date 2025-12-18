@@ -1,5 +1,5 @@
 from django.db.models import Prefetch
-from ecommerce.models import CustomUser, Category
+from ecommerce.models import CustomUser, Category, SubCategory
 
 
 def cart_item_count(request):
@@ -20,15 +20,15 @@ def custom_user_context(request):
 
 
 def categories_context(request):
-    categories = Category.objects.filter(parent__isnull=True, is_active=True).order_by('order')[:6]
+    # Get main categories (no parent field now)
+    categories = Category.objects.filter(is_active=True).order_by('order')[:6]
     # All categories with active subcategories for sidebar/menu
     all_categories = Category.objects.filter(
-        parent__isnull=True, 
         is_active=True
     ).prefetch_related(
         Prefetch(
             'subcategories',
-            queryset=Category.objects.filter(is_active=True).order_by('order')
+            queryset=SubCategory.objects.filter(is_active=True).order_by('order')
         )
     ).order_by('order')
     return {
