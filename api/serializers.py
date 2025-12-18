@@ -4,15 +4,15 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import EmailOTP
 from django.utils import timezone
 from datetime import timedelta
-from main.models import (
+from ecommerce.models import (
     Category,
-    Banner,
     Product,
     ProductImage,
     ProductVariation,
     ProductDetailSection,
 )
 
+from cms.models import slider
 
 User = get_user_model()
 
@@ -172,16 +172,27 @@ class CategorySerializer(serializers.ModelSerializer):
         return CategorySerializer(children, many=True, context=self.context).data
 
 
-class BannerSerializer(serializers.ModelSerializer):
+class SliderSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
 
     class Meta:
-        model = Banner
-        fields = ["id", "title", "image", "order"]
+        model = slider
+        fields = [
+            "id",
+            "ad_title",
+            "ad_description",
+            "image",          # frontend-friendly key
+            "deal_type",
+            "slug",
+            "order",
+            "status",
+        ]
 
     def get_image(self, obj):
         request = self.context.get("request")
-        return request.build_absolute_uri(obj.image.url)
+        if obj.sliderimage and request:
+            return request.build_absolute_uri(obj.sliderimage.url)
+        return None
 
 
 
@@ -221,7 +232,11 @@ class ProductVariationSerializer(serializers.ModelSerializer):
             "name",
             "quantity",
             "unit",
+            "is_sku_code",
+            "color_code",
+            "slug",
             "price_modifier",
+            "offerprice",
             "stock",
         ]
 
@@ -257,6 +272,10 @@ class ProductSerializer(serializers.ModelSerializer):
             "offerprice",
             "final_price",
             "stock",
+            "quantity",
+            "unit",
+            "is_sku_code",
+            "color_code",
             "popular",
             "latest",
             "featured",

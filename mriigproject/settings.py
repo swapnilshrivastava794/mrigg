@@ -13,13 +13,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 import mimetypes
-from datetime import timedelta
 
-
-
-AUTH_USER_MODEL = 'main.CustomUser'
-
-
+# AUTH_USER_MODEL = 'main.CustomUser'
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -35,7 +30,7 @@ SECRET_KEY = 'django-insecure-=z9lp(k@r2!-j)=0oa9t(v$ycks3i&((l$aa*2j=omw))#ksuj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*", "192.168.29.97", "127.0.0.1", "localhost"]
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.1.7']
 
 # Application definition
 
@@ -48,11 +43,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'ckeditor',
     'ckeditor_uploader',
-    'main',
-    'rest_framework',
-    'rest_framework_simplejwt',
-    'rest_framework_simplejwt.token_blacklist',
-     'api',
+    'autoslug',
+    'ecommerce.apps.EcommerceConfig',
+    'cms',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -79,9 +73,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'main.context_processors.cart_item_count',
-                'main.context_processors.custom_user_context',  # ✅ add this line
-                'main.context_processors.categories_context',  # ✅ add categories context
+                'ecommerce.context_processors.cart_item_count',
+                'ecommerce.context_processors.custom_user_context',  # ✅ add this line
+                'ecommerce.context_processors.categories_context',  # ✅ add categories context
 
             ],
         },
@@ -105,7 +99,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'mriig',       # phpMyAdmin में बनाया हुआ database नाम
         'USER': 'root',       # XAMPP default user
-        'PASSWORD': '1234',       # default में password खाली होता है
+        'PASSWORD': '',       # default में password खाली होता है
         'HOST': '127.0.0.1',  # localhost भी लिख सकते हो
         'PORT': '3306',       # default MySQL port
     }
@@ -180,7 +174,6 @@ LOGIN_URL = '/login/'
 # LOGOUT_REDIRECT_URL = '/login/'
 
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
@@ -193,15 +186,3 @@ STATICFILES_STORAGE ="whitenoise.storage.CompressedManifestStaticFilesStorage"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-}
-
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-}

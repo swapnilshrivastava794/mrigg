@@ -1,6 +1,10 @@
 from django.shortcuts import get_object_or_404, render
+from django.utils import timezone
+from django.db.models import Q, Count
+from datetime import date
 
-from main.models import Category, ContactMessage, CustomUser, Order, OrderItem, Product
+from ecommerce.models import Category, ContactMessage, CustomUser, Order, OrderItem, Product
+from cms.models import slider
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import login
@@ -10,7 +14,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import check_password
-from main.decorators import custom_login_required
+from ecommerce.decorators import custom_login_required
 
 
 
@@ -28,18 +32,59 @@ from main.decorators import custom_login_required
 #     })
 
 def home(request):
-    categories = Category.objects.filter(parent__isnull=True,is_active=True).order_by('order')[:6]
+    # Get all active parent categories with their subcategories
+    all_categories = Category.objects.filter(parent__isnull=True, is_active=True).prefetch_related('subcategories').order_by('order')
+    
+    # Get limited categories for other sections (if needed)
+    categories = Category.objects.filter(parent__isnull=True, is_active=True).order_by('order')[:6]
+    
+    # Get categories with images for New Collection section (limit to 4-6 categories)
+    # Count products from all subcategories of each parent category
+    collection_categories = Category.objects.filter(
+        parent__isnull=True, 
+        is_active=True,
+        image__isnull=False
+    ).prefetch_related('subcategories').order_by('order')[:6]
+    
+    # Calculate product count for each category (including subcategories)
+    for cat in collection_categories:
+        subcategory_ids = list(cat.subcategories.filter(is_active=True).values_list('id', flat=True))
+        if subcategory_ids:
+            cat.product_count = Product.objects.filter(
+                category_id__in=subcategory_ids,
+                is_active=True
+            ).count()
+        else:
+            cat.product_count = 0
     
     #products = Product.objects.filter(is_active=True).order_by('-id')[:12]
-    featured = Product.objects.filter(is_active=True, featured=True).order_by('-id')[:12]
-    popular = Product.objects.filter(is_active=True, popular=True).order_by('id')[:12]
-    latest = Product.objects.filter(is_active=True, latest=True).order_by('-id')[:12]
+    featured = Product.objects.filter(is_active=True, featured=True).prefetch_related('images').order_by('-id')[:12]
+    popular = Product.objects.filter(is_active=True, popular=True).prefetch_related('images').order_by('id')[:12]
+    latest = Product.objects.filter(is_active=True, latest=True).prefetch_related('images').order_by('-id')[:12]
+    
+    # Get active sliders with date filtering - Show only Hot Deals
+    today = date.today()
+    sliders = slider.objects.filter(
+        status='active',
+        deal_type='hot_deals'  # Show only Hot Deal sliders
+    ).filter(
+        # Filter by date range if dates are set
+        # Show slider if:
+        # 1. No start date set OR start date <= today
+        # 2. AND (No end date set OR end date >= today)
+        Q(ad_start_date__isnull=True) | Q(ad_start_date__lte=today),
+        Q(ad_end_date__isnull=True) | Q(ad_end_date__gte=today)
+    ).select_related('product', 'slidercat').order_by('order', '-post_date')
     
     return render(request, 'home/index.html', {
         'categories': categories,
+        'all_categories': all_categories,  # All categories with subcategories for sidebar
+        'collection_categories': collection_categories,  # Categories for New Collection section
         'fl': featured,
         'pl': popular,
         'lts': latest,
+        'sliders': sliders,  # Add sliders to context
+        'footer': True,  # Show footer
     })
     
 def aboutus(request):
@@ -125,11 +170,12 @@ def product_detail(request, slug):
     related_products = Product.objects.filter(category=product.category).exclude(id=product.id)[:5]  # limit to 5
     sections = product.sections.all()
 
-    return render(request, 'main/product-detail.html', {
+    return render(request, 'jb/main/product-detail.html', {
         'product': product,
         'related_products': related_products,
         'sections': sections,
-        'categories': categories,# pass sections to template
+        'categories': categories,  # pass sections to template
+        'footer': True,  # Show footer
     })
 
 # def register(request):

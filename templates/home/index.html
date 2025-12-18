@@ -25,46 +25,35 @@
         </div>
         <div class="swiper rts-cmmnSlider-over" data-swiper="pagination">
             <div class="swiper-wrapper">
-                <div class="swiper-slide">
-                    <div class="collection-item">
-                        <a href="{% url 'category' %}"><img src="/static/images/catagory/item-1.png" alt="collection-image">
-                        </a>
-                        <p class="item-quantity">20 <span>items</span></p>
-                        <a href="{% url 'category' %}" class="item-catagory-box">
-                            <h3 class="title">FOR WOMEN'S</h3>
-                        </a>
+                {% for category in collection_categories %}
+                    <div class="swiper-slide">
+                        <div class="collection-item">
+                            <a href="{% url 'category-only' category.slug %}">
+                                {% if category.image %}
+                                    <img src="{{ category.image.url }}" alt="{{ category.name }}" class="collection-category-image">
+                                {% else %}
+                                    <img src="/static/images/catagory/item-1.png" alt="{{ category.name }}" class="collection-category-image">
+                                {% endif %}
+                            </a>
+                            <p class="item-quantity">{{ category.product_count }} <span>items</span></p>
+                            <a href="{% url 'category-only' category.slug %}" class="item-catagory-box">
+                                <h3 class="title">{{ category.name|upper }}</h3>
+                            </a>
+                        </div>
                     </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="collection-item">
-                        <a href="{% url 'category' %}"><img src="/static/images/catagory/item-2.png" alt="collection-image">
-                        </a>
-                        <p class="item-quantity">33 <span>items</span></p>
-                        <a href="{% url 'category' %}" class="item-catagory-box">
-                            <h3 class="title">FOR MAN'S</h3>
-                        </a>
+                {% empty %}
+                    {# Fallback if no categories with images #}
+                    <div class="swiper-slide">
+                        <div class="collection-item">
+                            <a href="{% url 'shop' %}"><img src="/static/images/catagory/item-1.png" alt="collection-image" class="collection-category-image">
+                            </a>
+                            <p class="item-quantity">0 <span>items</span></p>
+                            <a href="{% url 'shop' %}" class="item-catagory-box">
+                                <h3 class="title">NEW COLLECTION</h3>
+                            </a>
+                        </div>
                     </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="collection-item">
-                        <a href="{% url 'category' %}"><img src="/static/images/catagory/item-3.png" alt="collection-image">
-                        </a>
-                        <p class="item-quantity">25 <span>items</span></p>
-                        <a href="{% url 'category' %}" class="item-catagory-box">
-                            <h3 class="title">FOR KIDS</h3>
-                        </a>
-                    </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="collection-item">
-                        <a href="{% url 'category' %}"><img src="/static/images/catagory/item-4.png" alt="collection-image">
-                        </a>
-                        <p class="item-quantity">33 <span>items</span></p>
-                        <a href="{% url 'category' %}" class="item-catagory-box">
-                            <h3 class="title">ACCESORIES</h3>
-                        </a>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </div>
@@ -87,190 +76,83 @@
         <div class="slider-div">
             <div class="swiper rts-sixSlide-over">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide">
-                        <div class="product-item element-item1">
-                            <a href="{% url 'productDetails' %}" class="product-image image-hover-variations">
-                                <div class="image-vari1 image-vari"><img src="/static/images/hand-picked/slider-img8.webp" alt="product-image">
+                    {% for product in fl %}
+                        <div class="swiper-slide">
+                            <div class="product-item element-item1">
+                                <a href="{% url 'product_detail' product.slug %}" class="product-image image-hover-variations">
+                                    {% if product.images.all %}
+                                        {% with images=product.images.all %}
+                                            <div class="image-vari1 image-vari">
+                                                <img src="{{ images.0.image.url }}" alt="{{ product.name }}">
+                                            </div>
+                                            {% if images|length > 1 %}
+                                                <div class="image-vari2 image-vari">
+                                                    <img src="{{ images.1.image.url }}" alt="{{ product.name }}">
+                                                </div>
+                                            {% else %}
+                                                <div class="image-vari2 image-vari">
+                                                    <img src="{{ images.0.image.url }}" alt="{{ product.name }}">
+                                                </div>
+                                            {% endif %}
+                                        {% endwith %}
+                                    {% else %}
+                                        <div class="image-vari1 image-vari">
+                                            <img src="/static/images/hand-picked/slider-img8.webp" alt="{{ product.name }}">
+                                        </div>
+                                        <div class="image-vari2 image-vari">
+                                            <img src="/static/images/hand-picked/slider-img8.webp" alt="{{ product.name }}">
+                                        </div>
+                                    {% endif %}
+                                </a>
+                                <div class="bottom-content">
+                                    <a href="{% url 'product_detail' product.slug %}" class="product-name">{{ product.name }}</a>
+                                    <div class="action-wrap">
+                                        {% if product.offerprice and product.offerprice < product.price %}
+                                            <span class="price">₹{{ product.offerprice }}</span>
+                                            <span class="old-price" style="text-decoration: line-through; color: #777; margin-left: 10px; font-size: 14px;">₹{{ product.price }}</span>
+                                        {% else %}
+                                            <span class="price">₹{{ product.price }}</span>
+                                        {% endif %}
+                                    </div>
                                 </div>
-                                <div class="image-vari2 image-vari"><img src="/static/images/hand-picked/slider-img8_1.webp" alt="product-image">
+                                <div class="quick-action-button">
+                                    <div class="cta-single cta-plus">
+                                        <a href="#"><i class="rt-plus"></i></a>
+                                    </div>
+                                    <div class="cta-single cta-quickview">
+                                        <button class="product-details-popup-btn"><i class="far fa-eye"></i></button>
+                                    </div>
+                                    <div class="cta-single cta-wishlist">
+                                        <a href="{% url 'wishlist' %}"><i class="far fa-heart"></i></a>
+                                    </div>
+                                    <div class="cta-single cta-addtocart">
+                                        <a href="{% url 'cart' %}"><i class="rt-basket-shopping"></i></a>
+                                    </div>
                                 </div>
-                            </a>
-                            <div class="bottom-content">
-                                <a href="{% url 'productDetails' %}" class="product-name">Underarm Smoothing Bra</a>
-                                <div class="action-wrap">
-                                    <span class="price">$31.00</span>
-                                </div>
+                                {% if product.offerprice and product.offerprice < product.price %}
+                                    <div class="product-features">
+                                        <div class="discount-tag product-tag">SALE</div>
+                                    </div>
+                                {% endif %}
                             </div>
-                            <div class="quick-action-button">
-                                <div class="cta-single cta-plus">
-                                    <a href="#"><i class="rt-plus"></i></a>
-                                </div>
-                                <div class="cta-single cta-quickview">
-                                    <button class="product-details-popup-btn"><i class="far fa-eye"></i></button>
-                                </div>
-                                <div class="cta-single cta-wishlist">
-                                    <a href="{% url 'wishlist' %}"><i class="far fa-heart"></i></a>
-                                </div>
-                                <div class="cta-single cta-addtocart">
-                                    <a href="{% url 'cart' %}"><i class="rt-basket-shopping"></i></a>
+                        </div>
+                    {% empty %}
+                        {# Fallback if no featured products #}
+                        <div class="swiper-slide">
+                            <div class="product-item element-item1">
+                                <a href="{% url 'shop' %}" class="product-image image-hover-variations">
+                                    <div class="image-vari1 image-vari"><img src="/static/images/hand-picked/slider-img8.webp" alt="product-image"></div>
+                                    <div class="image-vari2 image-vari"><img src="/static/images/hand-picked/slider-img8.webp" alt="product-image"></div>
+                                </a>
+                                <div class="bottom-content">
+                                    <a href="{% url 'shop' %}" class="product-name">No Featured Products</a>
+                                    <div class="action-wrap">
+                                        <span class="price">Coming Soon</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="product-item element-item1">
-                            <a href="{% url 'productDetails' %}" class="product-image image-hover-variations">
-                                <div class="image-vari1 image-vari"><img src="/static/images/hand-picked/slider-img11.webp" alt="product-image">
-                                </div>
-                                <div class="image-vari2 image-vari"><img src="/static/images/hand-picked/slider-img11_1.webp" alt="product-image">
-                                </div>
-                            </a>
-                            <div class="bottom-content">
-                                <a href="{% url 'productDetails' %}" class="product-name">Bali Underwire Bra</a>
-                                <div class="action-wrap">
-                                    <span class="price">$31.00</span>
-                                </div>
-                            </div>
-                            <div class="quick-action-button">
-                                <div class="cta-single cta-plus">
-                                    <a href="#"><i class="rt-plus"></i></a>
-                                </div>
-                                <div class="cta-single cta-quickview">
-                                    <button class="product-details-popup-btn"><i class="far fa-eye"></i></button>
-                                </div>
-                                <div class="cta-single cta-wishlist">
-                                    <a href="{% url 'wishlist' %}"><i class="far fa-heart"></i></a>
-                                </div>
-                                <div class="cta-single cta-addtocart">
-                                    <a href="{% url 'cart' %}"><i class="rt-basket-shopping"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="product-item element-item1">
-                            <a href="{% url 'productDetails' %}" class="product-image image-hover-variations">
-                                <div class="image-vari1 image-vari"><img src="/static/images/hand-picked/slider-img1.jpg" alt="product-image">
-                                </div>
-                                <div class="image-vari2 image-vari"><img src="/static/images/hand-picked/slider-img1-1.jpg" alt="product-image">
-                                </div>
-                            </a>
-                            <div class="bottom-content">
-                                <a href="{% url 'productDetails' %}" class="product-name">Bali Underwire Bra</a>
-                                <div class="action-wrap">
-                                    <span class="price">$31.00</span>
-                                </div>
-                            </div>
-                            <div class="quick-action-button">
-                                <div class="cta-single cta-plus">
-                                    <a href="#"><i class="rt-plus"></i></a>
-                                </div>
-                                <div class="cta-single cta-quickview">
-                                    <button class="product-details-popup-btn"><i class="far fa-eye"></i></button>
-                                </div>
-                                <div class="cta-single cta-wishlist">
-                                    <a href="{% url 'wishlist' %}"><i class="far fa-heart"></i></a>
-                                </div>
-                                <div class="cta-single cta-addtocart">
-                                    <a href="{% url 'cart' %}"><i class="rt-basket-shopping"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="product-item element-item1">
-                            <a href="{% url 'productDetails' %}" class="product-image image-hover-variations">
-                                <div class="image-vari1 image-vari"><img src="/static/images/hand-picked/slider-img13.webp" alt="product-image">
-                                </div>
-                                <div class="image-vari2 image-vari"><img src="/static/images/hand-picked/slider-img13-1.webp" alt="product-image">
-                                </div>
-                            </a>
-                            <div class="bottom-content">
-                                <a href="{% url 'productDetails' %}" class="product-name">Bali Underwire Bra</a>
-                                <div class="action-wrap">
-                                    <span class="price">$31.00</span>
-                                </div>
-                            </div>
-                            <div class="quick-action-button">
-                                <div class="cta-single cta-plus">
-                                    <a href="#"><i class="rt-plus"></i></a>
-                                </div>
-                                <div class="cta-single cta-quickview">
-                                    <button class="product-details-popup-btn"><i class="far fa-eye"></i></button>
-                                </div>
-                                <div class="cta-single cta-wishlist">
-                                    <a href="{% url 'wishlist' %}"><i class="far fa-heart"></i></a>
-                                </div>
-                                <div class="cta-single cta-addtocart">
-                                    <a href="{% url 'cart' %}"><i class="rt-basket-shopping"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="product-item element-item1">
-                            <a href="{% url 'productDetails' %}" class="product-image image-hover-variations">
-                                <div class="image-vari1 image-vari"><img src="/static/images/hand-picked/slider-img7.webp" alt="product-image">
-                                </div>
-                                <div class="image-vari2 image-vari"><img src="/static/images/hand-picked/slider-img7_1.webp" alt="product-image">
-                                </div>
-                            </a>
-                            <div class="bottom-content">
-                                <a href="{% url 'productDetails' %}" class="product-name">Maidenform Bra</a>
-                                <div class="action-wrap">
-                                    <span class="price">$31.00</span>
-                                </div>
-                            </div>
-                            <div class="quick-action-button">
-                                <div class="cta-single cta-plus">
-                                    <a href="#"><i class="rt-plus"></i></a>
-                                </div>
-                                <div class="cta-single cta-quickview">
-                                    <button class="product-details-popup-btn"><i class="far fa-eye"></i></button>
-                                </div>
-                                <div class="cta-single cta-wishlist">
-                                    <a href="{% url 'wishlist' %}"><i class="far fa-heart"></i></a>
-                                </div>
-                                <div class="cta-single cta-addtocart">
-                                    <a href="{% url 'cart' %}"><i class="rt-basket-shopping"></i></a>
-                                </div>
-                            </div>
-                            <div class="product-features">
-                                <div class="discount-tag product-tag">-38%</div>
-                                <div class="new-tag product-tag">HOT</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="product-item element-item1">
-                            <a href="{% url 'productDetails' %}" class="product-image image-hover-variations">
-                                <div class="image-vari1 image-vari"><img src="/static/images/hand-picked/slider-img9.webp" alt="product-image">
-                                </div>
-                                <div class="image-vari2 image-vari"><img src="/static/images/hand-picked/slider-img9_1.webp" alt="product-image">
-                                </div>
-                            </a>
-                            <div class="bottom-content">
-                                <a href="{% url 'productDetails' %}" class="product-name">Champion Bra</a>
-                                <div class="action-wrap">
-                                    <span class="price">$31.00</span>
-                                </div>
-                            </div>
-                            <div class="quick-action-button">
-                                <div class="cta-single cta-plus">
-                                    <a href="#"><i class="rt-plus"></i></a>
-                                </div>
-                                <div class="cta-single cta-quickview">
-                                    <button class="product-details-popup-btn"><i class="far fa-eye"></i></button>
-                                </div>
-                                <div class="cta-single cta-wishlist">
-                                    <a href="{% url 'wishlist' %}"><i class="far fa-heart"></i></a>
-                                </div>
-                                <div class="cta-single cta-addtocart">
-                                    <a href="{% url 'cart' %}"><i class="rt-basket-shopping"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>

@@ -1,17 +1,27 @@
 /* Product Variation Inline Width Fix */
 .inline-group .tabular tr.has_original td {
     padding: 8px 5px !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .inline-group .tabular thead th {
     padding: 8px 5px !important;
     font-size: 11px;
     white-space: nowrap;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .inline-group .tabular tbody td {
     padding: 8px 5px !important;
     font-size: 12px;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
 }
 
 /* Make variation fields more compact */
@@ -45,10 +55,71 @@
     max-width: 70px !important;
 }
 
+/* New fields styling */
+.inline-group .tabular td.field-is_sku_code input {
+    max-width: 120px !important;
+    min-width: 100px !important;
+}
+
+.inline-group .tabular td.field-color_code input[type="color"] {
+    max-width: 80px !important;
+    min-width: 60px !important;
+    height: 35px !important;
+    padding: 2px !important;
+}
+
+/* Hide the original column completely to prevent overlap - HIGH SPECIFICITY */
+.inline-group .tabular tr.has_original td.original,
+.inline-group .tabular tbody tr td.original,
+.inline-group .tabular tr td.original {
+    display: none !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    overflow: hidden !important;
+}
+
+.inline-group .tabular thead th.original,
+.inline-group .tabular thead tr th.original {
+    display: none !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    overflow: hidden !important;
+}
+
+/* Hide all content inside original column */
+.inline-group .tabular td.original p,
+.inline-group .tabular td.original * {
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+}
+
+/* Keep hidden inputs functional but completely invisible - they don't need to be in the cell */
+.inline-group .tabular td.original input[type="hidden"] {
+    display: none !important;
+}
+
 /* Table container width */
 .inline-group .tabular {
     width: 100% !important;
-    table-layout: auto !important;
+    table-layout: fixed !important;
+    word-wrap: break-word;
+}
+
+/* Prevent text overflow in cells */
+.inline-group .tabular td {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .inline-group .tabular tbody tr {

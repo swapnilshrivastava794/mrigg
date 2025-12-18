@@ -8,16 +8,37 @@
                         <div class="widget-bg">
                             <h2 class="widget-title">All Categories <i class="rt-angle-down"></i></h2>
                             <nav>
-                                <ul>
-                                    <li><a href="{% url 'shop' %}">Activewear <i class="rt rt-arrow-right-long"></i></a></li>
-                                    <li><a href="{% url 'shop' %}">Bikinis <i class="rt rt-arrow-right-long"></i></a></li>
-                                    <li><a href="{% url 'shop' %}">Dresses <i class="rt rt-arrow-right-long"></i></a></li>
-                                    <li><a href="{% url 'shop' %}">Jumpsuits <i class="rt rt-arrow-right-long"></i></a></li>
-                                    <li><a href="{% url 'shop' %}">Smart Dress <i class="rt rt-arrow-right-long"></i></a></li>
-                                    <li><a href="{% url 'shop' %}">Sneakers <i class="rt rt-arrow-right-long"></i></a></li>
-                                    <li><a href="{% url 'shop' %}">Sweetshirts <i class="rt rt-arrow-right-long"></i></a></li>
-                                    <li><a href="{% url 'shop' %}">Trousers <i class="rt rt-arrow-right-long"></i></a></li>
-                                    <li><a href="{% url 'shop' %}">Furniture <i class="rt rt-arrow-right-long"></i></a></li>
+                                <ul class="category-menu">
+                                    {% for category in all_categories %}
+                                        <li class="{% if category.subcategories.all %}has-mega-menu{% endif %}">
+                                            <a href="{% url 'category-only' category.slug %}" class="category-link">
+                                                {% if category.image %}
+                                                    <img src="{{ category.image.url }}" alt="{{ category.name }}" style="width: 20px; height: 20px; display: inline-block; margin-right: 5px; vertical-align: middle; object-fit: cover; border-radius: 3px;">
+                                                {% endif %}
+                                                {{ category.name }} 
+                                                <i class="rt rt-arrow-right-long"></i>
+                                            </a>
+                                            {% if category.subcategories.all %}
+                                                <ul class="dropdown-ul mega-dropdown category-mega-menu">
+                                                    <li class="mega-dropdown-li">
+                                                        <ul class="mega-dropdown-ul">
+                                                            {% for subcategory in category.subcategories.all %}
+                                                                {% if subcategory.is_active %}
+                                                                    <li class="dropdown-li">
+                                                                        <a class="dropdown-link2" href="{% url 'category-subcategory' subcategory.parent.slug subcategory.slug %}">
+                                                                            {{ subcategory.name }}
+                                                                        </a>
+                                                                    </li>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            {% endif %}
+                                        </li>
+                                    {% empty %}
+                                        <li><a href="{% url 'shop' %}">No Categories Available <i class="rt rt-arrow-right-long"></i></a></li>
+                                    {% endfor %}
                                 </ul>
                             </nav>
                         </div>
@@ -26,66 +47,92 @@
                 <div class="col-xl-10 col-md-8 col-sm-12 gutter-2">
                     <div class="swiper bannerSlide2">
                         <div class="swiper-wrapper">
-                            <div class="swiper-slide">
-                                <div class="banner-single bg-image bg-image-3-1">
-                                    <div class="container">
-                                        <div class="single-inner">
-                                            <div class="content-box">
-                                                <p class="slider-subtitle"><img src="/static/images/banner/wvbo-icon.png" alt=""> Spring
-                                                    summer 22 women’s collection </p>
-                                                <h2 class="slider-title"> HOT COLLECTION <br> FOR WOMEN</h2>
-                                                <div class="slider-description">
-                                                    <p>Easy & safe payment with PayPal. sequines & embroidered
-                                                        for all</p>
+                            {% for slider_item in sliders %}
+                                <div class="swiper-slide">
+                                    <div class="banner-single {% if slider_item.sliderimage %}bg-image{% endif %}" 
+                                         {% if slider_item.sliderimage %}style="background-image: url('{{ slider_item.sliderimage.url }}'); background-size: cover; background-position: center center; background-repeat: no-repeat; height: 575px; border-radius: 10px;"{% else %}style="height: 575px;"{% endif %}>
+                                        <div class="container">
+                                            <div class="single-inner">
+                                                <div class="content-box">
+                                                    {% if slider_item.deal_type %}
+                                                        <p class="slider-subtitle">
+                                                            {% if slider_item.deal_type == 'summer_deal' %}
+                                                                <img src="/static/images/banner/wvbo-icon.png" alt=""> Summer Deal
+                                                            {% elif slider_item.deal_type == 'best_sale_product' %}
+                                                                <img src="/static/images/banner/wvbo-icon.png" alt=""> Best Sale Product
+                                                            {% elif slider_item.deal_type == 'high_demand_product' %}
+                                                                <img src="/static/images/banner/wvbo-icon.png" alt=""> High Demand Product
+                                                            {% else %}
+                                                                <img src="/static/images/banner/wvbo-icon.png" alt=""> Special Offer
+                                                            {% endif %}
+                                                            {% if slider_item.slidercat %}
+                                                                - {{ slider_item.slidercat.name }}
+                                                            {% endif %}
+                                                        </p>
+                                                    {% elif slider_item.slidercat %}
+                                                        <p class="slider-subtitle">
+                                                            <img src="/static/images/banner/wvbo-icon.png" alt=""> {{ slider_item.slidercat.name }}
+                                                        </p>
+                                                    {% endif %}
+                                                    
+                                                    <h2 class="slider-title">
+                                                        {% if slider_item.ad_title %}
+                                                            {{ slider_item.ad_title|upper }}
+                                                        {% else %}
+                                                            SPECIAL COLLECTION
+                                                        {% endif %}
+                                                    </h2>
+                                                    
+                                                    {% if slider_item.ad_description %}
+                                                        <div class="slider-description">
+                                                            <p>{{ slider_item.ad_description|truncatewords:20 }}</p>
+                                                        </div>
+                                                    {% endif %}
+                                                    
+                                                    {% if slider_item.product %}
+                                                        <a href="{% url 'product_detail' slider_item.product.slug %}" class="slider-btn2">
+                                                            View Product
+                                                        </a>
+                                                    {% elif slider_item.slidercat %}
+                                                        <a href="{% url 'category-only' slider_item.slidercat.slug %}" class="slider-btn2">
+                                                            View Collection
+                                                        </a>
+                                                    {% else %}
+                                                        <a href="{% url 'shop' %}" class="slider-btn2">View Collections</a>
+                                                    {% endif %}
                                                 </div>
-                                                <a href="{% url 'shop' %}" class="slider-btn2">View Collections</a>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="banner-single bg-image bg-image-3-3">
-                                    <div class="container">
-                                        <div class="single-inner">
-                                            <div class="content-box">
-                                                <p class="slider-subtitle"><img src="/static/images/banner/wvbo-icon.png" alt=""> Spring
-                                                    summer 22 women’s collection </p>
-                                                <h2 class="slider-title"> NEW COLLECTION <br> FOR WOMEN</h2>
-                                                <div class="slider-description">
-                                                    <p>Easy & safe payment with PayPal. sequines & embroidered
-                                                        for all</p>
+                            {% empty %}
+                                {# Fallback: Show default slider if no sliders in database #}
+                                <div class="swiper-slide">
+                                    <div class="banner-single bg-image bg-image-3-1" style="height: 575px;">
+                                        <div class="container">
+                                            <div class="single-inner">
+                                                <div class="content-box">
+                                                    <p class="slider-subtitle">
+                                                        <img src="/static/images/banner/wvbo-icon.png" alt=""> Spring Summer Collection
+                                                    </p>
+                                                    <h2 class="slider-title">HOT COLLECTION <br> FOR WOMEN</h2>
+                                                    <div class="slider-description">
+                                                        <p>Easy & safe payment with PayPal. sequines & embroidered for all</p>
+                                                    </div>
+                                                    <a href="{% url 'shop' %}" class="slider-btn2">View Collections</a>
                                                 </div>
-                                                <a href="{% url 'shop' %}" class="slider-btn2">View Collections</a>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="banner-single bg-image bg-image-3-4">
-                                    <div class="container">
-                                        <div class="single-inner">
-                                            <div class="content-box">
-                                                <p class="slider-subtitle"><img src="/static/images/banner/wvbo-icon.png" alt=""> Spring
-                                                    summer 22 women’s collection </p>
-                                                <h2 class="slider-title"> WINTER DRESS <br> FOR WOMEN</h2>
-                                                <div class="slider-description">
-                                                    <p>Easy & safe payment with PayPal. sequines & embroidered
-                                                        for all</p>
-                                                </div>
-                                                <a href="{% url 'shop' %}" class="slider-btn2">View Collections</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            {% endfor %}
                         </div>
-                        <div class="slider-navigation">
-                            <div class="swiper-button-prev slider-btn prev"><i class="rt rt-arrow-left-long"></i></div>
-                            <div class="swiper-button-next slider-btn next"><i class="rt rt-arrow-right-long"></i>
+                        {% if sliders|length > 1 %}
+                            <div class="slider-navigation">
+                                <div class="swiper-button-prev slider-btn prev"><i class="rt rt-arrow-left-long"></i></div>
+                                <div class="swiper-button-next slider-btn next"><i class="rt rt-arrow-right-long"></i></div>
                             </div>
-                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

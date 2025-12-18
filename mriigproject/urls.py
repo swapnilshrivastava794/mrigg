@@ -16,14 +16,16 @@ from mriigproject import pagesViews
 from mriigproject import shopViews
 
 urlpatterns = [
-    # Add this line for API section
+        
+        # Add this line for API section
     path('api/', include('api.urls')),
 
-    
+
+
     path('admin/', admin.site.urls),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('', views.home, name='home'),
-    path('product_detail/<slug:slug>/', views.product_detail, name='product_detail'),
+    path('product/<slug:slug>/', views.product_detail, name='product_detail'),
     # path('login/', auth_views.LoginView.as_view(template_name='main/login.html'), name='login'),
     path('login/', views.custom_login, name='login'),
     # path('logout/', LogoutView.as_view(next_page='home'), name='logout'),
@@ -40,7 +42,6 @@ urlpatterns = [
     path('remove-from-cart/<int:product_id>/', views.remove_from_cart, name='remove_from_cart'),
     path('update-cart/<int:product_id>/', views.update_cart_quantity, name='update_cart_quantity'),
 #static path----
-    path('<slug:category_slug>/<slug:subcategory_slug>/', views.productCategory, name='product-category'),
     path('about-us', views.aboutus, name='about-us'),
     path('our-product', views.ourproduct, name='our-product'),
     path('contact-us', views.contactus, name='contact-us'),
@@ -94,8 +95,10 @@ urlpatterns = [
     path('sidebar-left', shopViews.sidebarLeft, name='sidebarLeft'),
     path('sidebar-right', shopViews.sidebarRight, name='sidebarRight'),
     path('variable-products', shopViews.variableProducts, name='variableProducts'),
-
-
+    
+    # SEO-friendly category URLs - must be after all specific paths
+    path('<slug:category_slug>/<slug:subcategory_slug>/', shopViews.shop, name='category-subcategory'),
+    path('<slug:category_slug>/', shopViews.shop, name='category-only'),
    
 ]
 

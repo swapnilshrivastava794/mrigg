@@ -1,10 +1,12 @@
+from django.utils import timezone
 from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.generics import ListAPIView
-from main.models import Category, Banner,Product
+from ecommerce.models import Category,Product
+from cms.models import slider
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator, EmptyPage
@@ -14,7 +16,8 @@ from django.core.paginator import Paginator, EmptyPage
 
 
 
-from .serializers import RegisterSerializer, CustomTokenObtainPairSerializer,UpdateProfileSerializer,RequestOTPSerializer, VerifyOTPChangePasswordSerializer,CategorySerializer,BannerSerializer,ProductSerializer
+
+from .serializers import RegisterSerializer, CustomTokenObtainPairSerializer,UpdateProfileSerializer,RequestOTPSerializer, VerifyOTPChangePasswordSerializer,CategorySerializer,SliderSerializer,ProductSerializer
 import random
 from django.core.mail import send_mail
 from rest_framework import status
@@ -164,10 +167,15 @@ class CategoryListView(ListAPIView):
 
 
 class BannerListView(ListAPIView):
-    serializer_class = BannerSerializer
+    serializer_class = SliderSerializer
 
     def get_queryset(self):
-        return Banner.objects.filter(is_active=True).order_by("order")
+        today = timezone.now().date()
+        return slider.objects.filter(
+            status="active",
+            ad_start_date__lte=today,
+            ad_end_date__gte=today
+        ).order_by("order")
 
 
 class ProductsByCategoryAPI(APIView):

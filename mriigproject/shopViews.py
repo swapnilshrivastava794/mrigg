@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from main.models import Category, Product
+from ecommerce.models import Category, Product
 
 def account(request):     
       data = {
@@ -75,10 +75,12 @@ def productDetails2(request):
       }
       return render(request, "shop/productDetails2.html", data)
 
-def shop(request):
-      # Get filter parameters
-      category_slug = request.GET.get('category', None)
-      subcategory_slug = request.GET.get('subcategory', None)
+def shop(request, category_slug=None, subcategory_slug=None):
+      # Get filter parameters from URL or query string (for backward compatibility)
+      if not category_slug:
+          category_slug = request.GET.get('category', None)
+      if not subcategory_slug:
+          subcategory_slug = request.GET.get('subcategory', None)
       
       # Get all categories for sidebar
       categories = Category.objects.filter(parent__isnull=True, is_active=True).prefetch_related('subcategories').order_by('order')
