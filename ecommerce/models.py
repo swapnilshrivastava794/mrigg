@@ -526,28 +526,58 @@ class ProductDetailSection(models.Model):
 
 
 class ProductImage(models.Model):
+    MEDIA_TYPE_CHOICES = [
+        ('image', 'Image'),
+        ('video', 'Video'),
+    ]
+    
     id = models.BigAutoField(primary_key=True)
     product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
+    media_type = models.CharField(
+        max_length=10,
+        choices=MEDIA_TYPE_CHOICES,
+        default='image',
+        verbose_name='Media Type'
+    )
     alt_text = models.CharField(max_length=255, blank=True)
-    image = models.ImageField(upload_to='products/%Y/%m/%d')
+    image = models.ImageField(
+        upload_to='products/%Y/%m/%d',
+        blank=True,
+        null=True,
+        help_text='Upload image or video file (for video, max 2MB)'
+    )
     
     class Meta:
         db_table = 'main_productimage'  # Use existing table name
     
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        # Validate video file size if media type is video (2MB = 2 * 1024 * 1024 bytes)
+        if self.media_type == 'video' and self.image:
+            if self.image.size > 2 * 1024 * 1024:
+                raise ValidationError({'image': 'Video file size must be less than 2MB.'})
+    
     def save(self, *args, **kwargs):
-        # Override the save method to resize the image before saving
+        # Override the save method to resize the image before saving (only for images)
         super(ProductImage, self).save(*args, **kwargs)
-        # Open the image
-        img = Image.open(self.image.path)
-        # Set the desired size for cropping (width, height)
-        desired_size = (1080, 1080)
-        # Resize the image while maintaining the aspect ratio
-        img.thumbnail(desired_size)
-        # Save the resized image back to the original path
-        img.save(self.image.path)
+        
+        # Process image if media type is image
+        if self.media_type == 'image' and self.image:
+            try:
+                # Open the image
+                img = Image.open(self.image.path)
+                # Set the desired size for cropping (width, height)
+                desired_size = (1080, 1080)
+                # Resize the image while maintaining the aspect ratio
+                img.thumbnail(desired_size)
+                # Save the resized image back to the original path
+                img.save(self.image.path)
+            except Exception as e:
+                print(f"Error processing product image: {e}")
     
     def __str__(self):
-        return f"Image for {self.product.name}"
+        media_type_display = self.get_media_type_display()
+        return f"{media_type_display} for {self.product.name}"
     
 
 class Order(models.Model):

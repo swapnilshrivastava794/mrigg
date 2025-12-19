@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'ecommerce.apps.EcommerceConfig',
     'cms',
     'api',
+    
 ]
 
 MIDDLEWARE = [

@@ -80,16 +80,46 @@
                                 <span class="dot9"></span>
                             </a>
                         </div>
-                        <a href="/" class="logo"><img src="/static/images/logo1.svg" alt="weiboo-logo"></a>
+                        <a href="{% url 'index' %}" class="logo"><img src="/static/images/logo1.svg" alt="weiboo-logo"></a>
                     </div>
                     <div class="rts-menu">
                         <nav class="menus menu-toggle">
                             <ul class="nav__menu">
-                                <li class="has-dropdown">
-                                    <a class="menu-item {% if subTitle == 'Home' %}
+                                <li class="has-dropdown"><a class="menu-item {% if subTitle == 'Home' %}
                                                                                  active1
-                                                                              {% endif %}" href="/">Home </a>
-                                   
+                                                                              {% endif %}" href="#">Home <i class="rt-plus"></i></a>
+                                    <ul class="dropdown-ul">
+                                        <li class="dropdown-li"><a class="dropdown-link" href="{% url 'index' %}">Main
+                                                Home</a>
+                                        </li>
+                                        <li class="dropdown-li"><a class="dropdown-link" href="{% url 'indexTwo' %}">Fashion
+                                                Home</a>
+                                        </li>
+                                        <li class="dropdown-li"><a class="dropdown-link" href="{% url 'indexNine' %}">Fashion
+                                                Home Two</a>
+                                        </li>
+                                        <li class="dropdown-li"><a class="dropdown-link" href="{% url 'indexThree' %}">Furniture
+                                                Home</a>
+                                        </li>
+                                        <li class="dropdown-li"><a class="dropdown-link" href="{% url 'indexFour' %}">Decor
+                                                Home</a>
+                                        </li>
+                                        <li class="dropdown-li"><a class="dropdown-link" href="{% url 'indexFive' %}">Electronics
+                                                Home</a>
+                                        </li>
+                                        <li class="dropdown-li"><a class="dropdown-link" href="{% url 'indexSix' %}">Grocery
+                                                Home</a>
+                                        </li>
+                                        <li class="dropdown-li"><a class="dropdown-link" href="{% url 'indexSeven' %}">Footwear
+                                                Home</a>
+                                        </li>
+                                        <li class="dropdown-li"><a class="dropdown-link" href="{% url 'indexEight' %}">Gaming
+                                                Home</a>
+                                        </li>
+                                        <li class="dropdown-li"><a class="dropdown-link" href="{% url 'indexTen' %}">Sunglass
+                                                Home</a>
+                                        </li>
+                                    </ul>
                                 </li>
                                 <li class="has-dropdown"><a class="menu-item {% if subTitle == 'Shop' %}
                                                                                     active1
@@ -340,8 +370,19 @@
         <nav class="side-mobile-menu side-mobile-menu1">
             <ul id="mobile-menu-active">
                 <li class="has-dropdown firstlvl">
-                    <a class="mm-link" href="/">Home <i class="rt-angle-down"></i></a>
-                    
+                    <a class="mm-link" href="{% url 'index' %}">Home <i class="rt-angle-down"></i></a>
+                    <ul class="sub-menu">
+                        <li><a href="{% url 'index' %}">Main Home</a></li>
+                        <li><a href="{% url 'indexTwo' %}">Fashion Home</a></li>
+                        <li><a href="{% url 'indexNine' %}">Fashion Home Two</a></li>
+                        <li><a href="{% url 'indexThree' %}">Furniture Home</a></li>
+                        <li><a href="{% url 'indexFour' %}">Decor Home</a></li>
+                        <li><a href="{% url 'indexFive' %}">Electronics Home</a></li>
+                        <li><a href="{% url 'indexSix' %}">Grocery Home</a></li>
+                        <li><a href="{% url 'indexSeven' %}">Footwear Home</a></li>
+                        <li><a href="{% url 'indexEight' %}">Gaming Home</a></li>
+                        <li><a href="{% url 'indexTen' %}">Sunglass Home</a></li>
+                    </ul>
                 </li>
                 <li class="has-dropdown firstlvl">
                     <a class="mm-link" href="{% url 'shop' %}">Shop <i class="rt-angle-down"></i></a>
@@ -391,7 +432,7 @@
                     </ul>
                 </li>
                 <li class="has-dropdown firstlvl">
-                    <a class="mm-link" href="/">Pages <i class="rt-angle-down"></i></a>
+                    <a class="mm-link" href="{% url 'index' %}">Pages <i class="rt-angle-down"></i></a>
                     <ul class="sub-menu">
                         <li><a href="{% url 'about' %}">About</a></li>
                         <li><a href="{% url 'faq' %}">FAQ's</a></li>
@@ -453,7 +494,7 @@
             <div class="breadcrumbs-inner">
                 <h1 class="path-title">{{title}}</h1>
                 <ul>
-                    <li><a class="home-page-link" href="/">{{subTitle}}<i class="fal fa-angle-right"></i></a></li>
+                    <li><a class="home-page-link" href="{% url 'index' %}">{{subTitle}}<i class="fal fa-angle-right"></i></a></li>
                     <li><a class="current-page" href="#">{{subTitle2}}</a></li>
                 </ul>
             </div>
