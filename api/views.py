@@ -182,26 +182,15 @@ class ProductsByCategoryAPI(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, category_id):
-
-        # 🔹 pagination params
         page = int(request.GET.get("page", 1))
         limit = int(request.GET.get("limit", 10))
 
-        # 1️⃣ Category ki saari sub-categories
-        from ecommerce.models import SubCategory
-        subcategory_ids = SubCategory.objects.filter(
-            category_id=category_id,
-            is_active=True
-        ).values_list("id", flat=True)
-
-        # 2️⃣ Subcategories ke products (DESC ORDER)
         queryset = Product.objects.filter(
-            subcategory_id__in=subcategory_ids,
+            subcategory__category_id=category_id,  # ✅ CORRECT JOIN
             is_active=True,
             available=True
-        ).order_by("-id")   # 👈 DESCENDING
+        ).order_by("-id")
 
-        # 4️⃣ Pagination
         paginator = Paginator(queryset, limit)
 
         try:
@@ -226,6 +215,8 @@ class ProductsByCategoryAPI(APIView):
             "current_page": page,
             "results": serializer.data
         })
+
+
 
 
 

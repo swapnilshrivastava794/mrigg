@@ -246,6 +246,8 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 
 class ProductVariationSerializer(serializers.ModelSerializer):
+    final_price = serializers.SerializerMethodField()
+
     class Meta:
         model = ProductVariation
         fields = [
@@ -259,7 +261,18 @@ class ProductVariationSerializer(serializers.ModelSerializer):
             "price_modifier",
             "offerprice",
             "stock",
+            "final_price",
         ]
+
+    def get_final_price(self, obj):
+        base_price = obj.product.price
+        price = base_price + (obj.price_modifier or 0)
+
+        if obj.offerprice and obj.offerprice > 0:
+            return obj.offerprice
+
+        return price
+
 
 
 
@@ -279,31 +292,85 @@ class ProductSerializer(serializers.ModelSerializer):
     variations = ProductVariationSerializer(many=True, read_only=True)
     sections = ProductDetailSectionSerializer(many=True, read_only=True)
 
+    has_variations = serializers.SerializerMethodField()
+    price_range = serializers.SerializerMethodField()
+    default_variation = serializers.SerializerMethodField()
     final_price = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
         fields = [
-            "id",                 # ✅ ANDROID ID
+            "id",
             "name",
             "slug",
             "short_description",
             "description",
+
+            # 👇 legacy fields (safe)
             "price",
             "offerprice",
             "final_price",
+
+            # 👇 new flow fields
+            "has_variations",
+            "price_range",
+            "default_variation",
+
             "stock",
             "quantity",
             "unit",
             "is_sku_code",
             "color_code",
+
             "popular",
             "latest",
             "featured",
+
             "images",
             "variations",
             "sections",
         ]
 
+    def get_has_variations(self, obj):
+        return obj.variations.exists()
+
     def get_final_price(self, obj):
+        """
+        Only used if product has NO variations
+        """
+        if obj.variations.exists():
+            return None
+
         return obj.offerprice if obj.offerprice > 0 else obj.price
+
+    def get_price_range(self, obj):
+        variations = obj.variations.all()
+
+        if not variations.exists():
+            price = obj.offerprice if obj.offerprice > 0 else obj.price
+            return {"min": price, "max": price}
+
+        prices = []
+        for v in variations:
+            base = obj.price + (v.price_modifier or 0)
+            prices.append(v.offerprice if v.offerprice > 0 else base)
+
+        return {
+            "min": min(prices),
+            "max": max(prices)
+        }
+
+    def get_default_variation(self, obj):
+        """
+        First in-stock variation
+        """
+        variation = obj.variations.filter(stock__gt=0).order_by("id").first()
+
+        if not variation:
+            return None
+
+        return ProductVariationSerializer(
+            variation,
+            context=self.context
+        ).data
+
