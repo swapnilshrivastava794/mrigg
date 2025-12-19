@@ -30,6 +30,7 @@ except ImportError:
      
 class slider(models.Model):
     # Using Category from ecommerce app - adjust if you have a different category model
+    id = models.BigAutoField(primary_key=True)
     slidercat=models.ForeignKey("ecommerce.Category", verbose_name="Select Category",null=True,blank=True,on_delete=models.CASCADE)
     sliderimage = models.ImageField(upload_to='slider/', null=True, blank=True, verbose_name="Slider Image (1400X520px)")
     #image_crop = ImageRatioField('post_image', '430x360')
@@ -90,6 +91,7 @@ class slider(models.Model):
         return self.ad_title or f"Slider {self.id}"
 
 class CMS(models.Model):
+    id = models.BigAutoField(primary_key=True)
     pagename=models.CharField(max_length=150, verbose_name="Page Name",null=True,default=None)
     Content=RichTextUploadingField(null=True,default='No News', verbose_name="Long Discretion")
     pageimage = models.ImageField(upload_to='cms/', null=True, blank=True, verbose_name="Page Image (1280X220px)")
@@ -127,6 +129,7 @@ class CMS(models.Model):
 
 
 class profile_setting(models.Model):
+    id = models.BigAutoField(primary_key=True)
     logo_light = models.ImageField(upload_to='logo/', null=True, blank=True, verbose_name="Logo Light (500X100px)")
     logo_dark = models.ImageField(upload_to='logo/', null=True, blank=True, verbose_name="Logo Dark (500X100px)")
     footer_img = models.ImageField(upload_to='profile_image/', null=True, blank=True, verbose_name="Footer Image (1920X365px)")
@@ -165,6 +168,7 @@ class profile_setting(models.Model):
 
 
 class BlogCategory(models.Model):
+    id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=100, verbose_name="Category Name")
     slug = models.SlugField(max_length=100, unique=True, verbose_name="Slug")
     description = models.TextField(max_length=500, null=True, blank=True, verbose_name="Description")
@@ -240,6 +244,7 @@ class BlogCategory(models.Model):
 
 
 class Blog(models.Model):
+    id = models.BigAutoField(primary_key=True)
     title = models.CharField(max_length=200, verbose_name="Blog Title")
     slug = models.SlugField(max_length=200, unique=True, null=True, blank=True, verbose_name="Slug")
     short_description = models.CharField(max_length=300, null=True, blank=True, verbose_name="Short Description")

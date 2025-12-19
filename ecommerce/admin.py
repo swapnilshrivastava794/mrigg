@@ -11,6 +11,40 @@ from django.db import connection, reset_queries
 logger = logging.getLogger('ecommerce.admin')
 
 
+# ==================== ORDER: 1. Brand ====================
+class BrandAdminForm(forms.ModelForm):
+    remark = forms.CharField(widget=CKEditorWidget(config_name='default'), required=False)
+    
+    class Meta:
+        model = Brand
+        fields = '__all__'
+
+@admin.register(Brand)
+class BrandAdmin(admin.ModelAdmin):
+    form = BrandAdminForm
+    list_display = ('name', 'slug', 'image', 'is_active', 'order', 'created', 'updated')
+    list_filter = ('is_active', 'created', 'updated')
+    search_fields = ('name', 'remark')
+    ordering = ('order', 'name')
+    prepopulated_fields = {'slug': ('name',)}
+    list_editable = ('is_active', 'order')
+    list_per_page = 30
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'slug', 'image', 'remark')
+        }),
+        ('Status & Ordering', {
+            'fields': ('is_active', 'order')
+        }),
+        ('Timestamps', {
+            'fields': ('created', 'updated'),
+            'classes': ('collapse',)
+        }),
+    )
+    readonly_fields = ('created', 'updated')
+
+
+# ==================== ORDER: 2. Category ====================
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug', 'image', 'is_active', 'order', 'created', 'updated')
@@ -35,6 +69,7 @@ class CategoryAdmin(admin.ModelAdmin):
     readonly_fields = ('created', 'updated')
 
 
+# ==================== ORDER: 3. SubCategory ====================
 @admin.register(SubCategory)
 class SubCategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'get_category', 'slug', 'image', 'is_active', 'order', 'created', 'updated')
@@ -68,38 +103,6 @@ class SubCategoryAdmin(admin.ModelAdmin):
         """Optimize queryset to avoid N+1 queries"""
         qs = super().get_queryset(request)
         return qs.select_related('category')
-
-
-class BrandAdminForm(forms.ModelForm):
-    remark = forms.CharField(widget=CKEditorWidget(config_name='default'), required=False)
-    
-    class Meta:
-        model = Brand
-        fields = '__all__'
-
-@admin.register(Brand)
-class BrandAdmin(admin.ModelAdmin):
-    form = BrandAdminForm
-    list_display = ('name', 'slug', 'image', 'is_active', 'order', 'created', 'updated')
-    list_filter = ('is_active', 'created', 'updated')
-    search_fields = ('name', 'remark')
-    ordering = ('order', 'name')
-    prepopulated_fields = {'slug': ('name',)}
-    list_editable = ('is_active', 'order')
-    list_per_page = 30
-    fieldsets = (
-        (None, {
-            'fields': ('name', 'slug', 'image', 'remark')
-        }),
-        ('Status & Ordering', {
-            'fields': ('is_active', 'order')
-        }),
-        ('Timestamps', {
-            'fields': ('created', 'updated'),
-            'classes': ('collapse',)
-        }),
-    )
-    readonly_fields = ('created', 'updated')
 
 
 class ProductImageInline(admin.TabularInline):
@@ -204,6 +207,7 @@ class ProductAdminForm(forms.ModelForm):
         model = Product
         fields = '__all__'
 
+# ==================== ORDER: 4. Product ====================
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     form = ProductAdminForm
@@ -354,6 +358,7 @@ class OrderItemInline(admin.TabularInline):
         qs = super().get_queryset(request)
         return qs.select_related('product')
 
+# ==================== ORDER: 5. Order ====================
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['id', 'first_name', 'last_name', 'email', 'address', 'postal_code', 'city', 'paid', 'created', 'updated']
@@ -400,3 +405,42 @@ class ContactMessageAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'mobile', 'submitted_at')
     search_fields = ('name', 'email', 'mobile')
     ordering = ('-submitted_at',)
+
+
+# ==================== Custom Admin Order Configuration ====================
+# Override get_app_list to control model order in admin sidebar
+_original_get_app_list = admin.AdminSite.get_app_list
+
+def get_app_list(self, request):
+    """
+    Custom get_app_list that orders ecommerce models as desired:
+    1. Brand, 2. Category, 3. SubCategory, 4. Product, 5. Order
+    """
+    app_list = _original_get_app_list(self, request)
+    
+    # Define the desired order for ecommerce app models
+    ecommerce_model_order = {
+        'Brand': 1,
+        'Category': 2,
+        'SubCategory': 3,
+        'Product': 4,
+        'Order': 5,
+        'OrderItem': 6,
+        'ProductImage': 7,
+        'ProductVariation': 8,
+        'ProductDetailSection': 9,
+        'ContactMessage': 10,
+        'CustomUser': 11,
+    }
+    
+    # Reorder models in ecommerce app
+    for app in app_list:
+        if app['app_label'] == 'ecommerce':
+            app['models'].sort(
+                key=lambda x: ecommerce_model_order.get(x['object_name'], 999)
+            )
+    
+    return app_list
+
+# Replace the method
+admin.AdminSite.get_app_list = get_app_list

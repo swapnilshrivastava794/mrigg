@@ -24,6 +24,7 @@ except ImportError:
 
 
 class CustomUser(AbstractUser):
+    id = models.BigAutoField(primary_key=True)
     email = models.EmailField(unique=True)
     mobile = models.CharField(max_length=15, unique=True)
 
@@ -79,6 +80,7 @@ class CustomUser(AbstractUser):
 
 class Category(models.Model):
     """Main Category (Parent Category) - No parent field"""
+    id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
     image = models.ImageField(upload_to='categories/%Y/%m/%d', blank=True, null=True, verbose_name='Category Image')
@@ -182,6 +184,7 @@ class Category(models.Model):
 
 class SubCategory(models.Model):
     """SubCategory (Child Category) - Linked to Category via ForeignKey"""
+    id = models.BigAutoField(primary_key=True)
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
@@ -281,6 +284,7 @@ class SubCategory(models.Model):
 
 
 class Brand(models.Model):
+    id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(unique=True)
     image = models.ImageField(upload_to='brands/%Y/%m/%d', blank=True, null=True, verbose_name='Brand Image')
@@ -398,6 +402,7 @@ class Product(models.Model):
         ('lb', 'lb'),
     ]
     
+    id = models.BigAutoField(primary_key=True)
     subcategory = models.ForeignKey('SubCategory', related_name='products', on_delete=models.CASCADE, verbose_name='SubCategory')
     brand = models.ForeignKey('Brand', related_name='products', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Brand')
     name = models.CharField(max_length=200)
@@ -443,6 +448,7 @@ class ProductVariation(models.Model):
         ('lb', 'lb'),
     ]
     
+    id = models.BigAutoField(primary_key=True)
     product = models.ForeignKey(Product, related_name='variations', on_delete=models.CASCADE)
     name = models.CharField(max_length=100, blank=True, null=True, verbose_name='Name')  # e.g., 'Size' or 'Color'
     quantity = models.CharField(max_length=100, blank=True, null=True, verbose_name='Qty')  # e.g., 'Large' or 'Red'
@@ -507,6 +513,7 @@ class ProductVariation(models.Model):
         return f"{self.name}" if self.name else "Variation"
     
 class ProductDetailSection(models.Model):
+    id = models.BigAutoField(primary_key=True)
     product = models.ForeignKey(Product, related_name='sections', on_delete=models.CASCADE)
     title = models.CharField(max_length=200)  # Example: 'Information', 'Cart Details', 'Shipping & Returns'
     content = models.TextField()
@@ -519,6 +526,7 @@ class ProductDetailSection(models.Model):
 
 
 class ProductImage(models.Model):
+    id = models.BigAutoField(primary_key=True)
     product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
     alt_text = models.CharField(max_length=255, blank=True)
     image = models.ImageField(upload_to='products/%Y/%m/%d')
@@ -543,6 +551,7 @@ class ProductImage(models.Model):
     
 
 class Order(models.Model):
+    id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
@@ -561,6 +570,7 @@ class Order(models.Model):
         return f'Order {self.id}'
 
 class OrderItem(models.Model):
+    id = models.BigAutoField(primary_key=True)
     order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
     product = models.ForeignKey(Product, related_name='order_items', on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -575,6 +585,7 @@ class OrderItem(models.Model):
 
 
 class ContactMessage(models.Model):
+    id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=100)
     mobile = models.CharField(max_length=20)
     email = models.EmailField()
