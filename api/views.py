@@ -10,14 +10,16 @@ from cms.models import slider
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator, EmptyPage
+from django.db.models import Q
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 
 
 
 
 
-
-from .serializers import RegisterSerializer, CustomTokenObtainPairSerializer,UpdateProfileSerializer,RequestOTPSerializer, VerifyOTPChangePasswordSerializer,CategorySerializer,SliderSerializer,ProductSerializer
+from .serializers import RegisterSerializer, CustomTokenObtainPairSerializer,UpdateProfileSerializer,RequestOTPSerializer, VerifyOTPChangePasswordSerializer,CategorySerializer,SliderSerializer,ProductSerializer,ProductSearchListSerializer
 import random
 from django.core.mail import send_mail
 from rest_framework import status
@@ -343,3 +345,30 @@ class FilterProductsAPI(APIView):
             "current_page": page,
             "results": serializer.data
         })
+    
+
+class ProductSearchListView(ListAPIView):
+    serializer_class = ProductSearchListSerializer
+
+    def get_queryset(self):
+        request = self.request
+        query = request.GET.get("q", "").strip()
+
+        # Amazon / Flipkart behavior
+        if not query:
+            return Product.objects.none()
+
+        return Product.objects.filter(
+            is_active=True,
+            available=True
+        ).select_related(
+            "subcategory",
+            "subcategory__category"
+        ).prefetch_related(
+            "images"     # ✅ variations NOT needed in listing
+        ).filter(
+            Q(name__icontains=query) |
+            Q(short_description__icontains=query) |
+            Q(subcategory__name__icontains=query) |
+            Q(subcategory__category__name__icontains=query)
+        ).order_by("-created")

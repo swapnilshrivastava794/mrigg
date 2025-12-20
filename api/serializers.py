@@ -344,3 +344,38 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def get_final_price(self, obj):
         return obj.offerprice if obj.offerprice > 0 else obj.price
+
+
+
+class ProductSearchListSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+    final_price = serializers.SerializerMethodField()
+    has_variants = serializers.SerializerMethodField()
+    subcategory = SubCategorySerializer(read_only=True)
+
+    class Meta:
+        model = Product
+        fields = [
+            "id",
+            "name",
+            "slug",
+            "image",
+            "price",
+            "offerprice",
+            "final_price",
+            "has_variants",
+            "subcategory",
+        ]
+
+    def get_image(self, obj):
+        request = self.context.get("request")
+        first_image = obj.images.first()
+        if first_image and first_image.image:
+            return request.build_absolute_uri(first_image.image.url)
+        return None
+
+    def get_final_price(self, obj):
+        return obj.offerprice if obj.offerprice > 0 else obj.price
+
+    def get_has_variants(self, obj):
+        return obj.variations.exists()

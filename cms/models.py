@@ -1,5 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from django.conf import settings
+from django.conf import settings
 from django.urls import reverse
 from PIL import Image
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -85,8 +87,11 @@ class slider(models.Model):
         ('inactive', 'Inactive'),
     )
     status = models.CharField(max_length=8, choices=STATUS_CHOICES, default='active')
-    author = models.ForeignKey(User, on_delete=models.CASCADE, default=1) 
-    
+    # author = models.ForeignKey(User, on_delete=models.CASCADE, default=1) 
+    author = models.ForeignKey(
+    settings.AUTH_USER_MODEL,
+    on_delete=models.CASCADE
+)
     def __str__(self):
         return self.ad_title or f"Slider {self.id}"
 
@@ -115,8 +120,11 @@ class CMS(models.Model):
         ('inactive', 'Inactive'),
     )
     status = models.CharField(max_length=8, choices=STATUS_CHOICES, default='active')
-    author = models.ForeignKey(User, on_delete=models.CASCADE, default=1, related_name='setting_cms_entries') 
-    
+    # author = models.ForeignKey(User, on_delete=models.CASCADE, default=1, related_name='setting_cms_entries') 
+    author = models.ForeignKey(
+    settings.AUTH_USER_MODEL,
+    on_delete=models.CASCADE
+)
     def __str__(self):
         return self.pagename
     
@@ -158,8 +166,11 @@ class profile_setting(models.Model):
         ('inactive', 'Inactive'),
     )
     status = models.CharField(max_length=8, choices=STATUS_CHOICES, default='active')
-    author = models.ForeignKey(User, on_delete=models.CASCADE, default=1, related_name='setting_entries') 
-    
+    # author = models.ForeignKey(User, on_delete=models.CASCADE, default=1, related_name='setting_entries') 
+    author = models.ForeignKey(
+    settings.AUTH_USER_MODEL,
+    on_delete=models.CASCADE
+)
     class Meta:
         verbose_name = "Profile Setting"
     
@@ -269,7 +280,11 @@ class Blog(models.Model):
         help_text="Select subcategory (child category)",
         limit_choices_to={'parent__isnull': False}
     )
-    author = models.ForeignKey(User, on_delete=models.CASCADE, default=1, related_name='blog_entries')
+    # author = models.ForeignKey(User, on_delete=models.CASCADE, default=1, related_name='blog_entries')
+    author = models.ForeignKey(
+    settings.AUTH_USER_MODEL,
+    on_delete=models.CASCADE
+)
     post_date = models.DateTimeField(auto_now_add=True, verbose_name="Published Date")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Last Updated")
     view_counter = models.IntegerField(default=0, verbose_name="Views")

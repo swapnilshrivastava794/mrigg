@@ -2,6 +2,7 @@ from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
 
 from .views import (
+    ProductSearchListView,
     RegisterView,
     CustomTokenObtainPairView,
     ProfileView,
@@ -66,5 +67,7 @@ urlpatterns = [
     "product/<str:type>/",
     FilterProductsAPI.as_view(),
     name="product_filter_by_type",
+
 ),
+    path("products/search/", ProductSearchListView.as_view(), name="product-search"),
 ]
