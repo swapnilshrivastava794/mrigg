@@ -1,0 +1,71 @@
+############################
+# Python
+############################
+__pycache__/
+*.py[cod]
+*$py.class
+
+############################
+# Django
+############################
+media/
+staticfiles/
+local_settings.py
+db.sqlite3
+
+############################
+# Environment variables
+############################
+.env
+.env.*
+*.env
+
+############################
+# Logs
+############################
+logs/
+*.log
+
+############################
+# OS / Editor
+############################
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+############################
+# Test / Coverage
+############################
+.coverage
+htmlcov/
+.pytest_cache/
+
+############################
+# Celery / Cache
+############################
+celerybeat-schedule
+celerybeat.pid
+*.pid
+
+############################
+# Build / Distribution
+############################
+build/
+dist/
+*.egg-info/
+
+############################
+# Node (agar React / Expo use ho)
+############################
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+############################
+# Django migrations (DO NOT ignore)
+############################
+# ecommerce/migrations/
+# cms/migrations/
+# api/migrations/
