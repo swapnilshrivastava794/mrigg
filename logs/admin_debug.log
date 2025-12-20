@@ -10273,3 +10273,241 @@ WARNING 2025-12-20 00:00:04,852 log Not Found: /media/products/2025/12/19/16e91f
 WARNING 2025-12-20 00:00:04,852 basehttp "GET /media/products/2025/12/19/597c9c5651986971961_a1.avif HTTP/1.1" 404 12855
 WARNING 2025-12-20 00:00:04,853 basehttp "GET /media/products/2025/12/19/771dede651986971961_3.avif HTTP/1.1" 404 12851
 WARNING 2025-12-20 00:00:04,854 basehttp "GET /media/products/2025/12/19/16e91fe651986210541_1.avif HTTP/1.1" 404 12851
+INFO 2025-12-20 12:03:42,694 autoreload Watching for file changes with StatReloader
+INFO 2025-12-20 12:04:31,182 autoreload Watching for file changes with StatReloader
+DEBUG 2025-12-20 12:04:31,471 utils (0.015) 
+                SELECT VERSION(),
+                       @@sql_mode,
+                       @@default_storage_engine,
+                       @@sql_auto_is_null,
+                       @@lower_case_table_names,
+                       CONVERT_TZ('2001-01-01 01:00:00', 'UTC', 'UTC') IS NOT NULL
+            ; args=None; alias=default
+DEBUG 2025-12-20 12:04:31,472 utils (0.000) SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED; args=None; alias=default
+DEBUG 2025-12-20 12:04:31,494 utils (0.016) 
+            SELECT
+                table_name,
+                table_type,
+                table_comment
+            FROM information_schema.tables
+            WHERE table_schema = DATABASE()
+            ; args=None; alias=default
+DEBUG 2025-12-20 12:04:31,542 utils (0.032) SELECT `django_migrations`.`id`, `django_migrations`.`app`, `django_migrations`.`name`, `django_migrations`.`applied` FROM `django_migrations`; args=(); alias=default
+DEBUG 2025-12-20 12:04:35,616 utils (0.000) 
+                SELECT VERSION(),
+                       @@sql_mode,
+                       @@default_storage_engine,
+                       @@sql_auto_is_null,
+                       @@lower_case_table_names,
+                       CONVERT_TZ('2001-01-01 01:00:00', 'UTC', 'UTC') IS NOT NULL
+            ; args=None; alias=default
+DEBUG 2025-12-20 12:04:35,617 utils (0.000) SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED; args=None; alias=default
+DEBUG 2025-12-20 12:04:35,621 utils (0.000) SELECT `main_category`.`id`, `main_category`.`name`, `main_category`.`slug`, `main_category`.`image`, `main_category`.`is_active`, `main_category`.`order`, `main_category`.`created`, `main_category`.`updated` FROM `main_category` WHERE (`main_category`.`image` IS NOT NULL AND `main_category`.`is_active` = 1) ORDER BY `main_category`.`order` ASC LIMIT 6; args=(True,); alias=default
+DEBUG 2025-12-20 12:04:35,629 utils (0.015) SELECT `main_subcategory`.`id`, `main_subcategory`.`category_id`, `main_subcategory`.`name`, `main_subcategory`.`slug`, `main_subcategory`.`image`, `main_subcategory`.`is_active`, `main_subcategory`.`order`, `main_subcategory`.`created`, `main_subcategory`.`updated` FROM `main_subcategory` INNER JOIN `main_category` ON (`main_subcategory`.`category_id` = `main_category`.`id`) WHERE `main_subcategory`.`category_id` IN (2, 3, 1) ORDER BY `main_category`.`order` ASC, `main_category`.`name` ASC, `main_subcategory`.`order` ASC, `main_subcategory`.`name` ASC; args=(2, 3, 1); alias=default
+DEBUG 2025-12-20 12:04:35,632 utils (0.000) SELECT `main_subcategory`.`id` AS `id` FROM `main_subcategory` INNER JOIN `main_category` ON (`main_subcategory`.`category_id` = `main_category`.`id`) WHERE (`main_subcategory`.`category_id` = 2 AND `main_subcategory`.`is_active` = 1) ORDER BY `main_category`.`order` ASC, `main_category`.`name` ASC, `main_subcategory`.`order` ASC, `main_subcategory`.`name` ASC; args=(2, True); alias=default
+DEBUG 2025-12-20 12:04:35,638 utils (0.000) SELECT COUNT(*) AS `__count` FROM `main_product` WHERE (`main_product`.`is_active` = 1 AND `main_product`.`subcategory_id` IN (3)); args=(True, 3); alias=default
+DEBUG 2025-12-20 12:04:35,642 utils (0.016) SELECT `main_subcategory`.`id` AS `id` FROM `main_subcategory` INNER JOIN `main_category` ON (`main_subcategory`.`category_id` = `main_category`.`id`) WHERE (`main_subcategory`.`category_id` = 3 AND `main_subcategory`.`is_active` = 1) ORDER BY `main_category`.`order` ASC, `main_category`.`name` ASC, `main_subcategory`.`order` ASC, `main_subcategory`.`name` ASC; args=(3, True); alias=default
+DEBUG 2025-12-20 12:04:35,645 utils (0.000) SELECT COUNT(*) AS `__count` FROM `main_product` WHERE (`main_product`.`is_active` = 1 AND `main_product`.`subcategory_id` IN (4, 5)); args=(True, 4, 5); alias=default
+DEBUG 2025-12-20 12:04:35,647 utils (0.000) SELECT `main_subcategory`.`id` AS `id` FROM `main_subcategory` INNER JOIN `main_category` ON (`main_subcategory`.`category_id` = `main_category`.`id`) WHERE (`main_subcategory`.`category_id` = 1 AND `main_subcategory`.`is_active` = 1) ORDER BY `main_category`.`order` ASC, `main_category`.`name` ASC, `main_subcategory`.`order` ASC, `main_subcategory`.`name` ASC; args=(1, True); alias=default
+DEBUG 2025-12-20 12:04:35,650 utils (0.000) SELECT COUNT(*) AS `__count` FROM `main_product` WHERE (`main_product`.`is_active` = 1 AND `main_product`.`subcategory_id` IN (6, 7, 1, 2)); args=(True, 6, 7, 1, 2); alias=default
+DEBUG 2025-12-20 12:04:35,678 utils (0.015) SELECT `django_session`.`session_key`, `django_session`.`session_data`, `django_session`.`expire_date` FROM `django_session` WHERE (`django_session`.`expire_date` > '2025-12-20 06:34:35.662224' AND `django_session`.`session_key` = 'ard9q1n9po5dq40n7h4hsrynh3i97etj') LIMIT 21; args=('2025-12-20 06:34:35.662224', 'ard9q1n9po5dq40n7h4hsrynh3i97etj'); alias=default
+DEBUG 2025-12-20 12:04:35,707 utils (0.000) SELECT `main_category`.`id`, `main_category`.`name`, `main_category`.`slug`, `main_category`.`image`, `main_category`.`is_active`, `main_category`.`order`, `main_category`.`created`, `main_category`.`updated` FROM `main_category` WHERE `main_category`.`is_active` = 1 ORDER BY `main_category`.`order` ASC; args=(True,); alias=default
+DEBUG 2025-12-20 12:04:35,709 utils (0.000) SELECT `main_subcategory`.`id`, `main_subcategory`.`category_id`, `main_subcategory`.`name`, `main_subcategory`.`slug`, `main_subcategory`.`image`, `main_subcategory`.`is_active`, `main_subcategory`.`order`, `main_subcategory`.`created`, `main_subcategory`.`updated` FROM `main_subcategory` INNER JOIN `main_category` ON (`main_subcategory`.`category_id` = `main_category`.`id`) WHERE `main_subcategory`.`category_id` IN (2, 3, 1) ORDER BY `main_category`.`order` ASC, `main_category`.`name` ASC, `main_subcategory`.`order` ASC, `main_subcategory`.`name` ASC; args=(2, 3, 1); alias=default
+DEBUG 2025-12-20 12:04:35,725 utils (0.015) SELECT `cms_slider`.`id`, `cms_slider`.`slidercat_id`, `cms_slider`.`sliderimage`, `cms_slider`.`ad_title`, `cms_slider`.`ad_description`, `cms_slider`.`product_id`, `cms_slider`.`deal_type`, `cms_slider`.`ad_start_date`, `cms_slider`.`ad_end_date`, `cms_slider`.`slug`, `cms_slider`.`post_date`, `cms_slider`.`updated_at`, `cms_slider`.`order`, `cms_slider`.`status`, `cms_slider`.`author_id`, `main_category`.`id`, `main_category`.`name`, `main_category`.`slug`, `main_category`.`image`, `main_category`.`is_active`, `main_category`.`order`, `main_category`.`created`, `main_category`.`updated`, `main_product`.`id`, `main_product`.`subcategory_id`, `main_product`.`brand_id`, `main_product`.`name`, `main_product`.`slug`, `main_product`.`short_description`, `main_product`.`description`, `main_product`.`price`, `main_product`.`offerprice`, `main_product`.`stock`, `main_product`.`quantity`, `main_product`.`unit`, `main_product`.`is_sku_code`, `main_product`.`color_code`, `main_product`.`popular`, `main_product`.`latest`, `main_product`.`featured`, `main_product`.`available`, `main_product`.`is_active`, `main_product`.`order`, `main_product`.`created`, `main_product`.`updated` FROM `cms_slider` LEFT OUTER JOIN `main_category` ON (`cms_slider`.`slidercat_id` = `main_category`.`id`) LEFT OUTER JOIN `main_product` ON (`cms_slider`.`product_id` = `main_product`.`id`) WHERE (`cms_slider`.`deal_type` = 'hot_deals' AND `cms_slider`.`status` = 'active' AND (`cms_slider`.`ad_start_date` IS NULL OR `cms_slider`.`ad_start_date` <= '2025-12-20') AND (`cms_slider`.`ad_end_date` IS NULL OR `cms_slider`.`ad_end_date` >= '2025-12-20')) ORDER BY `cms_slider`.`order` ASC, `cms_slider`.`post_date` DESC; args=('hot_deals', 'active', '2025-12-20', '2025-12-20'); alias=default
+DEBUG 2025-12-20 12:04:35,733 utils (0.000) SELECT `main_product`.`id`, `main_product`.`subcategory_id`, `main_product`.`brand_id`, `main_product`.`name`, `main_product`.`slug`, `main_product`.`short_description`, `main_product`.`description`, `main_product`.`price`, `main_product`.`offerprice`, `main_product`.`stock`, `main_product`.`quantity`, `main_product`.`unit`, `main_product`.`is_sku_code`, `main_product`.`color_code`, `main_product`.`popular`, `main_product`.`latest`, `main_product`.`featured`, `main_product`.`available`, `main_product`.`is_active`, `main_product`.`order`, `main_product`.`created`, `main_product`.`updated` FROM `main_product` WHERE (`main_product`.`featured` = 1 AND `main_product`.`is_active` = 1) ORDER BY `main_product`.`id` DESC LIMIT 12; args=(True, True); alias=default
+DEBUG 2025-12-20 12:04:35,736 utils (0.000) SELECT `main_productimage`.`id`, `main_productimage`.`product_id`, `main_productimage`.`media_type`, `main_productimage`.`alt_text`, `main_productimage`.`image` FROM `main_productimage` WHERE `main_productimage`.`product_id` IN (10, 9, 8, 7, 6, 5, 4, 3, 2, 1); args=(10, 9, 8, 7, 6, 5, 4, 3, 2, 1); alias=default
+INFO 2025-12-20 12:04:35,744 basehttp "GET / HTTP/1.1" 200 131841
+INFO 2025-12-20 12:04:35,764 basehttp "GET /static/css/bootstrap.min.css HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,772 basehttp "GET /static/css/all.min.css HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,773 basehttp "GET /static/css/rt-icons.css HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,776 basehttp "GET /static/css/animate.min.css HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,778 basehttp "GET /static/css/magnific-popup.css HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,778 basehttp "GET /static/css/swiper-bundle.min.css HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,779 basehttp "GET /static/css/metisMenu.css HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,779 basehttp "GET /static/css/main.css HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,779 basehttp "GET /static/css/rtsmenu.css HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,780 basehttp "GET /static/css/preloader.css HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,781 basehttp "GET /static/css/category_mega_menu.css HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,784 basehttp "GET /static/images/logo1.svg HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,787 basehttp "GET /static/images/slider/image1.jpg HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,788 basehttp "GET /static/js/vendors/jquery-3.6.0.min.js HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,788 basehttp "GET /static/images/slider/image2.jpg HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,788 basehttp "GET /static/images/slider/image5.jpg HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,792 basehttp "GET /static/js/vendors/bootstrap.min.js HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,796 basehttp "GET /static/js/vendors/swiper-bundle.min.js HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,796 basehttp "GET /static/js/vendors/wow.min.js HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,796 basehttp "GET /static/js/vendors/jquery.nice-select.js HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,797 basehttp "GET /static/js/vendors/metisMenu.min.js HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,798 basehttp "GET /static/js/vendors/rtsmenu.js HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,800 basehttp "GET /static/js/vendors/isotope.pkgd.min.js HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,806 basehttp "GET /static/js/category_mega_menu.js HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,807 basehttp "GET /static/js/vendors/jquery.magnific-popup.min.js HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,808 basehttp "GET /static/js/main.js HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,808 basehttp "GET /media/categories/2025/12/19/mackup.webp HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,808 basehttp "GET /static/images/banner/wvbo-icon.png HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,808 basehttp "GET /static/js/vendors/zoom.js HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,821 basehttp "GET /static/images/catagory/item-1.png HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,855 basehttp "GET /static/js/vendors/jquery-3.6.0.min.js HTTP/1.1" 200 89501
+WARNING 2025-12-20 12:04:35,892 log Not Found: /media/products/2025/12/19/99ca87fNYKAC00002725_1.avif
+INFO 2025-12-20 12:04:35,892 basehttp "GET /static/js/vendors/rtsmenu.js HTTP/1.1" 200 0
+WARNING 2025-12-20 12:04:35,893 log Not Found: /media/products/2025/12/19/bf16427NYXPR00000672_2.avif
+INFO 2025-12-20 12:04:35,893 basehttp "GET /static/js/vendors/metisMenu.min.js HTTP/1.1" 200 7253
+INFO 2025-12-20 12:04:35,893 basehttp "GET /static/js/vendors/jquery.nice-select.js HTTP/1.1" 200 5825
+WARNING 2025-12-20 12:04:35,893 log Not Found: /media/products/2025/12/19/0076e1eNYXPR00000181_1.avif
+WARNING 2025-12-20 12:04:35,893 log Not Found: /media/products/2025/12/19/0076e1eNYXPR00000181_1_1.avif
+INFO 2025-12-20 12:04:35,894 basehttp "GET /static/js/vendors/wow.min.js HTTP/1.1" 200 8446
+WARNING 2025-12-20 12:04:35,894 log Not Found: /media/products/2025/12/19/bf16427NYXPR00000672_1.avif
+WARNING 2025-12-20 12:04:35,894 basehttp "GET /media/products/2025/12/19/99ca87fNYKAC00002725_1.avif HTTP/1.1" 404 12855
+WARNING 2025-12-20 12:04:35,895 log Not Found: /media/products/2025/12/19/99ca87fNYKAC00002725_2.avif
+WARNING 2025-12-20 12:04:35,895 basehttp "GET /media/products/2025/12/19/bf16427NYXPR00000672_2.avif HTTP/1.1" 404 12855
+WARNING 2025-12-20 12:04:35,897 basehttp "GET /media/products/2025/12/19/0076e1eNYXPR00000181_1.avif HTTP/1.1" 404 12855
+WARNING 2025-12-20 12:04:35,898 basehttp "GET /media/products/2025/12/19/0076e1eNYXPR00000181_1_1.avif HTTP/1.1" 404 12863
+INFO 2025-12-20 12:04:35,899 basehttp "GET /static/js/vendors/bootstrap.min.js HTTP/1.1" 200 60047
+WARNING 2025-12-20 12:04:35,900 basehttp "GET /media/products/2025/12/19/bf16427NYXPR00000672_1.avif HTTP/1.1" 404 12855
+INFO 2025-12-20 12:04:35,901 basehttp "GET /static/js/vendors/jquery.magnific-popup.min.js HTTP/1.1" 200 20216
+INFO 2025-12-20 12:04:35,901 basehttp "GET /static/js/category_mega_menu.js HTTP/1.1" 200 2735
+WARNING 2025-12-20 12:04:35,902 basehttp "GET /media/products/2025/12/19/99ca87fNYKAC00002725_2.avif HTTP/1.1" 404 12855
+WARNING 2025-12-20 12:04:35,909 log Not Found: /media/products/2025/12/19/771dede651986971961_3.avif
+WARNING 2025-12-20 12:04:35,917 log Not Found: /media/products/2025/12/19/597c9c5651986971961_a1.avif
+WARNING 2025-12-20 12:04:35,926 log Not Found: /media/products/2025/12/19/16e91fe651986210541_1.avif
+INFO 2025-12-20 12:04:35,926 basehttp "GET /static/js/vendors/isotope.pkgd.min.js HTTP/1.1" 200 35445
+WARNING 2025-12-20 12:04:35,931 log Not Found: /media/products/2025/12/19/16e91fe651986210541_3.avif
+WARNING 2025-12-20 12:04:35,935 log Not Found: /media/products/2025/12/19/ONION-HAIR-SHAMPOO-KEY-POINTS.png
+INFO 2025-12-20 12:04:35,937 basehttp "GET /static/js/vendors/zoom.js HTTP/1.1" 200 0
+WARNING 2025-12-20 12:04:35,938 basehttp "GET /media/products/2025/12/19/771dede651986971961_3.avif HTTP/1.1" 404 12851
+INFO 2025-12-20 12:04:35,938 basehttp "GET /static/js/main.js HTTP/1.1" 200 35022
+INFO 2025-12-20 12:04:35,938 basehttp "GET /static/js/vendors/swiper-bundle.min.js HTTP/1.1" 200 139367
+WARNING 2025-12-20 12:04:35,944 log Not Found: /media/products/2025/12/19/Onion-Hair-Shampoo-Front-scaled.jpg
+WARNING 2025-12-20 12:04:35,944 basehttp "GET /media/products/2025/12/19/16e91fe651986210541_1.avif HTTP/1.1" 404 12851
+WARNING 2025-12-20 12:04:35,944 basehttp "GET /media/products/2025/12/19/597c9c5651986971961_a1.avif HTTP/1.1" 404 12855
+WARNING 2025-12-20 12:04:35,945 basehttp "GET /media/products/2025/12/19/16e91fe651986210541_3.avif HTTP/1.1" 404 12851
+WARNING 2025-12-20 12:04:35,945 basehttp "GET /media/products/2025/12/19/ONION-HAIR-SHAMPOO-KEY-POINTS.png HTTP/1.1" 404 12879
+WARNING 2025-12-20 12:04:35,949 basehttp "GET /media/products/2025/12/19/Onion-Hair-Shampoo-Front-scaled.jpg HTTP/1.1" 404 12887
+WARNING 2025-12-20 12:04:35,954 log Not Found: /media/products/2025/12/19/Onion-Hair-Oil-with-Onion-and-Fenugreek.png
+WARNING 2025-12-20 12:04:35,962 log Not Found: /media/products/2025/12/19/Onion-Hair-Oil-Side-scaled.jpg
+WARNING 2025-12-20 12:04:35,967 log Not Found: /media/products/2025/12/19/Lotion-with-Licorice-Back-2048x2048.jpg
+INFO 2025-12-20 12:04:35,969 basehttp "GET /media/products/2025/12/19/a4bed56NYKAC00001686_1.avif HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,969 basehttp "GET /static/images/hand-picked/slider-img8.webp HTTP/1.1" 304 0
+WARNING 2025-12-20 12:04:35,974 log Not Found: /media/products/2025/12/19/Lotion-with-Licorice-Front-scaled.jpg
+WARNING 2025-12-20 12:04:35,974 basehttp "GET /media/products/2025/12/19/Onion-Hair-Oil-with-Onion-and-Fenugreek.png HTTP/1.1" 404 12919
+WARNING 2025-12-20 12:04:35,975 basehttp "GET /media/products/2025/12/19/Onion-Hair-Oil-Side-scaled.jpg HTTP/1.1" 404 12867
+WARNING 2025-12-20 12:04:35,975 basehttp "GET /media/products/2025/12/19/Lotion-with-Licorice-Back-2048x2048.jpg HTTP/1.1" 404 12903
+WARNING 2025-12-20 12:04:35,976 basehttp "GET /media/products/2025/12/19/Lotion-with-Licorice-Front-scaled.jpg HTTP/1.1" 404 12895
+INFO 2025-12-20 12:04:35,987 basehttp "GET /media/products/2025/12/19/a4bed56NYKAC00001686_3.avif HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,991 basehttp "GET /static/images/hand-picked/slider-img13-1.webp HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,991 basehttp "GET /static/images/hand-picked/slider-img14-1.webp HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,992 basehttp "GET /static/images/hand-picked/slider-img13.webp HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,992 basehttp "GET /static/images/hand-picked/deal-icon.png HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,992 basehttp "GET /static/images/hand-picked/slider-img12-1.webp HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,992 basehttp "GET /static/images/hand-picked/slider-img14.webp HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,995 basehttp "GET /static/images/products/product-details.jpg HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,995 basehttp "GET /media/slider/m3.jpg HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,996 basehttp "GET /static/images/products/product-filt2.jpg HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,997 basehttp "GET /static/images/products/product-filt3.jpg HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,998 basehttp "GET /static/images/products/product-filt1.jpg HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:35,998 basehttp "GET /static/images/icons/doubleplus.png HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:36,005 basehttp "GET /static/images/hand-picked/slider-img12.webp HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:36,005 basehttp "GET /static/images/hand-picked/slider-img12-3.webp HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:36,005 basehttp "GET /static/images/featured/3rd-image.png HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:36,005 basehttp "GET /static/images/hand-picked/slider-img11_1.webp HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:36,005 basehttp "GET /static/images/featured/pot.png HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:36,005 basehttp "GET /static/images/products/dress.png HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:36,016 basehttp "GET /static/images/brands/client-03.png HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:36,016 basehttp "GET /static/images/brands/client-04.png HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:36,017 basehttp "GET /static/images/brands/client-01.png HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:36,017 basehttp "GET /static/images/brands/client-02.png HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:36,017 basehttp "GET /static/images/brands/client-05.png HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:36,017 basehttp "GET /static/images/brands/client-06.png HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:36,026 basehttp "GET /static/images/featured/img-2.jpg HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:36,026 basehttp "GET /static/images/featured/author.png HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:36,027 basehttp "GET /static/images/items/playstore.jpg HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:36,027 basehttp "GET /static/images/items/appstore.jpg HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:36,027 basehttp "GET /static/images/featured/img-1.jpg HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:36,027 basehttp "GET /static/images/featured/img-3.jpg HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:36,036 basehttp "GET /static/images/brands/sponsor-overley-1.jpg HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:36,036 basehttp "GET /static/images/banner/offer-bg.jpg HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:36,036 basehttp "GET /static/images/hand-picked/counter-bg-1.jpg HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:36,036 basehttp "GET /static/fonts/rt-icons.woff2?57054479 HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:36,036 basehttp "GET /static/images/footer/payment2.svg HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:36,048 basehttp "GET /static/fonts/fa-light-300.woff2 HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:36,048 basehttp "GET /static/fonts/fa-brands-400.woff2 HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:36,049 basehttp "GET /static/fonts/fa-solid-900.woff2 HTTP/1.1" 304 0
+INFO 2025-12-20 12:04:36,049 basehttp "GET /static/fonts/fa-regular-400.woff2 HTTP/1.1" 304 0
+WARNING 2025-12-20 12:04:36,174 log Not Found: /media/products/2025/12/19/bf16427NYXPR00000672_1.avif
+WARNING 2025-12-20 12:04:36,178 log Not Found: /media/products/2025/12/19/bf16427NYXPR00000672_2.avif
+WARNING 2025-12-20 12:04:36,183 log Not Found: /media/products/2025/12/19/99ca87fNYKAC00002725_1.avif
+WARNING 2025-12-20 12:04:36,186 log Not Found: /media/products/2025/12/19/0076e1eNYXPR00000181_1.avif
+WARNING 2025-12-20 12:04:36,191 log Not Found: /media/products/2025/12/19/0076e1eNYXPR00000181_1_1.avif
+WARNING 2025-12-20 12:04:36,196 log Not Found: /media/products/2025/12/19/99ca87fNYKAC00002725_2.avif
+WARNING 2025-12-20 12:04:36,197 basehttp "GET /media/products/2025/12/19/bf16427NYXPR00000672_1.avif HTTP/1.1" 404 12855
+WARNING 2025-12-20 12:04:36,197 basehttp "GET /media/products/2025/12/19/99ca87fNYKAC00002725_1.avif HTTP/1.1" 404 12855
+WARNING 2025-12-20 12:04:36,198 basehttp "GET /media/products/2025/12/19/bf16427NYXPR00000672_2.avif HTTP/1.1" 404 12855
+WARNING 2025-12-20 12:04:36,198 basehttp "GET /media/products/2025/12/19/0076e1eNYXPR00000181_1.avif HTTP/1.1" 404 12855
+WARNING 2025-12-20 12:04:36,199 basehttp "GET /media/products/2025/12/19/0076e1eNYXPR00000181_1_1.avif HTTP/1.1" 404 12863
+WARNING 2025-12-20 12:04:36,199 basehttp "GET /media/products/2025/12/19/99ca87fNYKAC00002725_2.avif HTTP/1.1" 404 12855
+WARNING 2025-12-20 12:04:36,212 log Not Found: /media/products/2025/12/19/597c9c5651986971961_a1.avif
+WARNING 2025-12-20 12:04:36,218 log Not Found: /media/products/2025/12/19/16e91fe651986210541_3.avif
+WARNING 2025-12-20 12:04:36,223 log Not Found: /media/products/2025/12/19/771dede651986971961_3.avif
+WARNING 2025-12-20 12:04:36,228 log Not Found: /media/products/2025/12/19/16e91fe651986210541_1.avif
+WARNING 2025-12-20 12:04:36,232 log Not Found: /media/products/2025/12/19/ONION-HAIR-SHAMPOO-KEY-POINTS.png
+WARNING 2025-12-20 12:04:36,233 basehttp "GET /media/products/2025/12/19/597c9c5651986971961_a1.avif HTTP/1.1" 404 12855
+WARNING 2025-12-20 12:04:36,238 log Not Found: /media/products/2025/12/19/Onion-Hair-Shampoo-Front-scaled.jpg
+WARNING 2025-12-20 12:04:36,238 basehttp "GET /media/products/2025/12/19/16e91fe651986210541_3.avif HTTP/1.1" 404 12851
+WARNING 2025-12-20 12:04:36,239 basehttp "GET /media/products/2025/12/19/771dede651986971961_3.avif HTTP/1.1" 404 12851
+WARNING 2025-12-20 12:04:36,239 basehttp "GET /media/products/2025/12/19/16e91fe651986210541_1.avif HTTP/1.1" 404 12851
+WARNING 2025-12-20 12:04:36,240 basehttp "GET /media/products/2025/12/19/ONION-HAIR-SHAMPOO-KEY-POINTS.png HTTP/1.1" 404 12879
+WARNING 2025-12-20 12:04:36,250 log Not Found: /media/products/2025/12/19/Lotion-with-Licorice-Front-scaled.jpg
+WARNING 2025-12-20 12:04:36,250 basehttp "GET /media/products/2025/12/19/Onion-Hair-Shampoo-Front-scaled.jpg HTTP/1.1" 404 12887
+WARNING 2025-12-20 12:04:36,256 log Not Found: /media/products/2025/12/19/Onion-Hair-Oil-with-Onion-and-Fenugreek.png
+WARNING 2025-12-20 12:04:36,261 log Not Found: /media/products/2025/12/19/Lotion-with-Licorice-Back-2048x2048.jpg
+WARNING 2025-12-20 12:04:36,263 basehttp "GET /media/products/2025/12/19/Lotion-with-Licorice-Front-scaled.jpg HTTP/1.1" 404 12895
+WARNING 2025-12-20 12:04:36,267 log Not Found: /media/products/2025/12/19/Onion-Hair-Oil-Side-scaled.jpg
+WARNING 2025-12-20 12:04:36,268 basehttp "GET /media/products/2025/12/19/Onion-Hair-Oil-with-Onion-and-Fenugreek.png HTTP/1.1" 404 12919
+WARNING 2025-12-20 12:04:36,269 basehttp "GET /media/products/2025/12/19/Lotion-with-Licorice-Back-2048x2048.jpg HTTP/1.1" 404 12903
+WARNING 2025-12-20 12:04:36,269 basehttp "GET /media/products/2025/12/19/Onion-Hair-Oil-Side-scaled.jpg HTTP/1.1" 404 12867
+INFO 2025-12-20 12:04:36,392 basehttp "GET /static/images/fav.png HTTP/1.1" 304 0
+WARNING 2025-12-20 12:04:55,240 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-20 12:04:55,241 basehttp "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 12770
+INFO 2025-12-20 12:04:55,370 basehttp "GET /static/css/main.css.map HTTP/1.1" 200 94933
+WARNING 2025-12-20 12:09:05,379 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-20 12:09:05,380 basehttp "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 12770
+DEBUG 2025-12-20 12:11:51,368 utils (0.000) 
+                SELECT VERSION(),
+                       @@sql_mode,
+                       @@default_storage_engine,
+                       @@sql_auto_is_null,
+                       @@lower_case_table_names,
+                       CONVERT_TZ('2001-01-01 01:00:00', 'UTC', 'UTC') IS NOT NULL
+            ; args=None; alias=default
+DEBUG 2025-12-20 12:11:51,369 utils (0.000) SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED; args=None; alias=default
+DEBUG 2025-12-20 12:11:51,370 utils (0.000) SELECT `main_category`.`id`, `main_category`.`name`, `main_category`.`slug`, `main_category`.`image`, `main_category`.`is_active`, `main_category`.`order`, `main_category`.`created`, `main_category`.`updated` FROM `main_category` WHERE (`main_category`.`image` IS NOT NULL AND `main_category`.`is_active` = 1) ORDER BY `main_category`.`order` ASC LIMIT 6; args=(True,); alias=default
+DEBUG 2025-12-20 12:11:51,373 utils (0.000) SELECT `main_subcategory`.`id`, `main_subcategory`.`category_id`, `main_subcategory`.`name`, `main_subcategory`.`slug`, `main_subcategory`.`image`, `main_subcategory`.`is_active`, `main_subcategory`.`order`, `main_subcategory`.`created`, `main_subcategory`.`updated` FROM `main_subcategory` INNER JOIN `main_category` ON (`main_subcategory`.`category_id` = `main_category`.`id`) WHERE `main_subcategory`.`category_id` IN (2, 3, 1) ORDER BY `main_category`.`order` ASC, `main_category`.`name` ASC, `main_subcategory`.`order` ASC, `main_subcategory`.`name` ASC; args=(2, 3, 1); alias=default
+DEBUG 2025-12-20 12:11:51,374 utils (0.015) SELECT `main_subcategory`.`id` AS `id` FROM `main_subcategory` INNER JOIN `main_category` ON (`main_subcategory`.`category_id` = `main_category`.`id`) WHERE (`main_subcategory`.`category_id` = 2 AND `main_subcategory`.`is_active` = 1) ORDER BY `main_category`.`order` ASC, `main_category`.`name` ASC, `main_subcategory`.`order` ASC, `main_subcategory`.`name` ASC; args=(2, True); alias=default
+DEBUG 2025-12-20 12:11:51,376 utils (0.000) SELECT COUNT(*) AS `__count` FROM `main_product` WHERE (`main_product`.`is_active` = 1 AND `main_product`.`subcategory_id` IN (3)); args=(True, 3); alias=default
+DEBUG 2025-12-20 12:11:51,377 utils (0.000) SELECT `main_subcategory`.`id` AS `id` FROM `main_subcategory` INNER JOIN `main_category` ON (`main_subcategory`.`category_id` = `main_category`.`id`) WHERE (`main_subcategory`.`category_id` = 3 AND `main_subcategory`.`is_active` = 1) ORDER BY `main_category`.`order` ASC, `main_category`.`name` ASC, `main_subcategory`.`order` ASC, `main_subcategory`.`name` ASC; args=(3, True); alias=default
+DEBUG 2025-12-20 12:11:51,379 utils (0.000) SELECT COUNT(*) AS `__count` FROM `main_product` WHERE (`main_product`.`is_active` = 1 AND `main_product`.`subcategory_id` IN (4, 5)); args=(True, 4, 5); alias=default
+DEBUG 2025-12-20 12:11:51,381 utils (0.000) SELECT `main_subcategory`.`id` AS `id` FROM `main_subcategory` INNER JOIN `main_category` ON (`main_subcategory`.`category_id` = `main_category`.`id`) WHERE (`main_subcategory`.`category_id` = 1 AND `main_subcategory`.`is_active` = 1) ORDER BY `main_category`.`order` ASC, `main_category`.`name` ASC, `main_subcategory`.`order` ASC, `main_subcategory`.`name` ASC; args=(1, True); alias=default
+DEBUG 2025-12-20 12:11:51,383 utils (0.000) SELECT COUNT(*) AS `__count` FROM `main_product` WHERE (`main_product`.`is_active` = 1 AND `main_product`.`subcategory_id` IN (6, 7, 1, 2)); args=(True, 6, 7, 1, 2); alias=default
+DEBUG 2025-12-20 12:11:51,385 utils (0.000) SELECT `django_session`.`session_key`, `django_session`.`session_data`, `django_session`.`expire_date` FROM `django_session` WHERE (`django_session`.`expire_date` > '2025-12-20 06:41:51.384791' AND `django_session`.`session_key` = 'ard9q1n9po5dq40n7h4hsrynh3i97etj') LIMIT 21; args=('2025-12-20 06:41:51.384791', 'ard9q1n9po5dq40n7h4hsrynh3i97etj'); alias=default
+DEBUG 2025-12-20 12:11:51,392 utils (0.000) SELECT `main_category`.`id`, `main_category`.`name`, `main_category`.`slug`, `main_category`.`image`, `main_category`.`is_active`, `main_category`.`order`, `main_category`.`created`, `main_category`.`updated` FROM `main_category` WHERE `main_category`.`is_active` = 1 ORDER BY `main_category`.`order` ASC; args=(True,); alias=default
+DEBUG 2025-12-20 12:11:51,395 utils (0.000) SELECT `main_subcategory`.`id`, `main_subcategory`.`category_id`, `main_subcategory`.`name`, `main_subcategory`.`slug`, `main_subcategory`.`image`, `main_subcategory`.`is_active`, `main_subcategory`.`order`, `main_subcategory`.`created`, `main_subcategory`.`updated` FROM `main_subcategory` INNER JOIN `main_category` ON (`main_subcategory`.`category_id` = `main_category`.`id`) WHERE `main_subcategory`.`category_id` IN (2, 3, 1) ORDER BY `main_category`.`order` ASC, `main_category`.`name` ASC, `main_subcategory`.`order` ASC, `main_subcategory`.`name` ASC; args=(2, 3, 1); alias=default
+DEBUG 2025-12-20 12:11:51,400 utils (0.000) SELECT `cms_slider`.`id`, `cms_slider`.`slidercat_id`, `cms_slider`.`sliderimage`, `cms_slider`.`ad_title`, `cms_slider`.`ad_description`, `cms_slider`.`product_id`, `cms_slider`.`deal_type`, `cms_slider`.`ad_start_date`, `cms_slider`.`ad_end_date`, `cms_slider`.`slug`, `cms_slider`.`post_date`, `cms_slider`.`updated_at`, `cms_slider`.`order`, `cms_slider`.`status`, `cms_slider`.`author_id`, `main_category`.`id`, `main_category`.`name`, `main_category`.`slug`, `main_category`.`image`, `main_category`.`is_active`, `main_category`.`order`, `main_category`.`created`, `main_category`.`updated`, `main_product`.`id`, `main_product`.`subcategory_id`, `main_product`.`brand_id`, `main_product`.`name`, `main_product`.`slug`, `main_product`.`short_description`, `main_product`.`description`, `main_product`.`price`, `main_product`.`offerprice`, `main_product`.`stock`, `main_product`.`quantity`, `main_product`.`unit`, `main_product`.`is_sku_code`, `main_product`.`color_code`, `main_product`.`popular`, `main_product`.`latest`, `main_product`.`featured`, `main_product`.`available`, `main_product`.`is_active`, `main_product`.`order`, `main_product`.`created`, `main_product`.`updated` FROM `cms_slider` LEFT OUTER JOIN `main_category` ON (`cms_slider`.`slidercat_id` = `main_category`.`id`) LEFT OUTER JOIN `main_product` ON (`cms_slider`.`product_id` = `main_product`.`id`) WHERE (`cms_slider`.`deal_type` = 'hot_deals' AND `cms_slider`.`status` = 'active' AND (`cms_slider`.`ad_start_date` IS NULL OR `cms_slider`.`ad_start_date` <= '2025-12-20') AND (`cms_slider`.`ad_end_date` IS NULL OR `cms_slider`.`ad_end_date` >= '2025-12-20')) ORDER BY `cms_slider`.`order` ASC, `cms_slider`.`post_date` DESC; args=('hot_deals', 'active', '2025-12-20', '2025-12-20'); alias=default
+DEBUG 2025-12-20 12:11:51,404 utils (0.000) SELECT `main_product`.`id`, `main_product`.`subcategory_id`, `main_product`.`brand_id`, `main_product`.`name`, `main_product`.`slug`, `main_product`.`short_description`, `main_product`.`description`, `main_product`.`price`, `main_product`.`offerprice`, `main_product`.`stock`, `main_product`.`quantity`, `main_product`.`unit`, `main_product`.`is_sku_code`, `main_product`.`color_code`, `main_product`.`popular`, `main_product`.`latest`, `main_product`.`featured`, `main_product`.`available`, `main_product`.`is_active`, `main_product`.`order`, `main_product`.`created`, `main_product`.`updated` FROM `main_product` WHERE (`main_product`.`featured` = 1 AND `main_product`.`is_active` = 1) ORDER BY `main_product`.`id` DESC LIMIT 12; args=(True, True); alias=default
+DEBUG 2025-12-20 12:11:51,406 utils (0.016) SELECT `main_productimage`.`id`, `main_productimage`.`product_id`, `main_productimage`.`media_type`, `main_productimage`.`alt_text`, `main_productimage`.`image` FROM `main_productimage` WHERE `main_productimage`.`product_id` IN (10, 9, 8, 7, 6, 5, 4, 3, 2, 1); args=(10, 9, 8, 7, 6, 5, 4, 3, 2, 1); alias=default
+INFO 2025-12-20 12:11:51,413 basehttp "GET / HTTP/1.1" 200 131841
+INFO 2025-12-20 12:11:51,443 basehttp "GET /media/products/2025/12/19/bf16427NYXPR00000672_1.avif HTTP/1.1" 200 17300
+INFO 2025-12-20 12:11:51,459 basehttp "GET /media/products/2025/12/19/99ca87fNYKAC00002725_1.avif HTTP/1.1" 200 9938
+INFO 2025-12-20 12:11:51,461 basehttp "GET /media/products/2025/12/19/99ca87fNYKAC00002725_2.avif HTTP/1.1" 200 12986
+INFO 2025-12-20 12:11:51,461 basehttp "GET /media/products/2025/12/19/0076e1eNYXPR00000181_1_1.avif HTTP/1.1" 200 22161
+INFO 2025-12-20 12:11:51,461 basehttp "GET /media/products/2025/12/19/0076e1eNYXPR00000181_1.avif HTTP/1.1" 200 22161
+INFO 2025-12-20 12:11:51,462 basehttp "GET /media/products/2025/12/19/bf16427NYXPR00000672_2.avif HTTP/1.1" 200 55017
+INFO 2025-12-20 12:11:51,463 basehttp "GET /media/products/2025/12/19/597c9c5651986971961_a1.avif HTTP/1.1" 200 28299
+INFO 2025-12-20 12:11:51,474 basehttp "GET /media/products/2025/12/19/16e91fe651986210541_1.avif HTTP/1.1" 200 9080
+INFO 2025-12-20 12:11:51,475 basehttp "GET /media/products/2025/12/19/771dede651986971961_3.avif HTTP/1.1" 200 96035
+INFO 2025-12-20 12:11:51,476 basehttp "GET /media/products/2025/12/19/16e91fe651986210541_3.avif HTTP/1.1" 200 153065
+INFO 2025-12-20 12:11:51,506 basehttp "GET /media/products/2025/12/19/ONION-HAIR-SHAMPOO-KEY-POINTS.png HTTP/1.1" 200 551380
+INFO 2025-12-20 12:11:51,506 basehttp "GET /media/products/2025/12/19/Lotion-with-Licorice-Front-scaled.jpg HTTP/1.1" 200 51992
+INFO 2025-12-20 12:11:51,506 basehttp "GET /media/products/2025/12/19/Onion-Hair-Oil-Side-scaled.jpg HTTP/1.1" 200 67790
+INFO 2025-12-20 12:11:51,507 basehttp "GET /media/products/2025/12/19/Onion-Hair-Oil-with-Onion-and-Fenugreek.png HTTP/1.1" 200 801078
+INFO 2025-12-20 12:11:51,509 basehttp "GET /media/products/2025/12/19/Onion-Hair-Shampoo-Front-scaled.jpg HTTP/1.1" 200 53380
+INFO 2025-12-20 12:11:51,519 basehttp "GET /media/products/2025/12/19/Lotion-with-Licorice-Back-2048x2048.jpg HTTP/1.1" 200 51273
