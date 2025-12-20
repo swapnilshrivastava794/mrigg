@@ -195,6 +195,9 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class SliderSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
+    deal_label = serializers.SerializerMethodField()
+    cta_text = serializers.SerializerMethodField()
+    redirect = serializers.SerializerMethodField()
 
     class Meta:
         model = slider
@@ -202,17 +205,51 @@ class SliderSerializer(serializers.ModelSerializer):
             "id",
             "ad_title",
             "ad_description",
-            "image",          # frontend-friendly key
+            "image",
             "deal_type",
-            "slug",
-            "order",
-            "status",
+            "deal_label",
+            "cta_text",
+            "redirect",
         ]
 
     def get_image(self, obj):
         request = self.context.get("request")
         if obj.sliderimage and request:
             return request.build_absolute_uri(obj.sliderimage.url)
+        return None
+
+    def get_deal_label(self, obj):
+        mapping = {
+            "hot_deals": "HOT DEAL",
+            "summer_deal": "SUMMER SALE",
+            "best_sale_product": "BEST SELLER",
+            "high_demand_product": "TRENDING",
+        }
+        return mapping.get(obj.deal_type, "SPECIAL OFFER")
+
+    def get_cta_text(self, obj):
+        return "SHOP NOW"
+
+    def get_redirect(self, obj):
+        """
+        Frontend ko pata ho:
+        - product open karna hai
+        - category open karni hai
+        """
+        if obj.product:
+            return {
+                "type": "product",
+                "id": obj.product.id,
+                "slug": obj.product.slug,
+            }
+
+        if obj.slidercat:
+            return {
+                "type": "category",
+                "id": obj.slidercat.id,
+                "slug": obj.slidercat.slug,
+            }
+
         return None
 
 
@@ -284,7 +321,7 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = [
-            "id",                 # ✅ ANDROID ID
+            "id",                 
             "name",
             "slug",
             "short_description",

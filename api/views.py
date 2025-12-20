@@ -175,6 +175,9 @@ class BannerListView(ListAPIView):
             status="active",
             ad_start_date__lte=today,
             ad_end_date__gte=today
+        ).select_related(
+            "product",
+            "slidercat"
         ).order_by("order")
 
 
