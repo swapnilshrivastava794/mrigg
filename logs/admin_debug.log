@@ -10511,3 +10511,441 @@ INFO 2025-12-20 12:11:51,506 basehttp "GET /media/products/2025/12/19/Onion-Hair
 INFO 2025-12-20 12:11:51,507 basehttp "GET /media/products/2025/12/19/Onion-Hair-Oil-with-Onion-and-Fenugreek.png HTTP/1.1" 200 801078
 INFO 2025-12-20 12:11:51,509 basehttp "GET /media/products/2025/12/19/Onion-Hair-Shampoo-Front-scaled.jpg HTTP/1.1" 200 53380
 INFO 2025-12-20 12:11:51,519 basehttp "GET /media/products/2025/12/19/Lotion-with-Licorice-Back-2048x2048.jpg HTTP/1.1" 200 51273
+INFO 2025-12-20 12:46:38,605 autoreload Watching for file changes with StatReloader
+DEBUG 2025-12-20 12:46:39,793 utils (0.078) 
+                SELECT VERSION(),
+                       @@sql_mode,
+                       @@default_storage_engine,
+                       @@sql_auto_is_null,
+                       @@lower_case_table_names,
+                       CONVERT_TZ('2001-01-01 01:00:00', 'UTC', 'UTC') IS NOT NULL
+            ; args=None; alias=default
+DEBUG 2025-12-20 12:46:39,797 utils (0.000) SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED; args=None; alias=default
+DEBUG 2025-12-20 12:46:39,828 utils (0.031) 
+            SELECT
+                table_name,
+                table_type,
+                table_comment
+            FROM information_schema.tables
+            WHERE table_schema = DATABASE()
+            ; args=None; alias=default
+DEBUG 2025-12-20 12:46:39,842 utils (0.000) SELECT `django_migrations`.`id`, `django_migrations`.`app`, `django_migrations`.`name`, `django_migrations`.`applied` FROM `django_migrations`; args=(); alias=default
+DEBUG 2025-12-20 12:47:10,778 utils (0.016) 
+                SELECT VERSION(),
+                       @@sql_mode,
+                       @@default_storage_engine,
+                       @@sql_auto_is_null,
+                       @@lower_case_table_names,
+                       CONVERT_TZ('2001-01-01 01:00:00', 'UTC', 'UTC') IS NOT NULL
+            ; args=None; alias=default
+DEBUG 2025-12-20 12:47:10,779 utils (0.000) SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED; args=None; alias=default
+DEBUG 2025-12-20 12:47:10,780 utils (0.000) 
+                SELECT VERSION(),
+                       @@sql_mode,
+                       @@default_storage_engine,
+                       @@sql_auto_is_null,
+                       @@lower_case_table_names,
+                       CONVERT_TZ('2001-01-01 01:00:00', 'UTC', 'UTC') IS NOT NULL
+            ; args=None; alias=default
+DEBUG 2025-12-20 12:47:10,908 utils (0.000) SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED; args=None; alias=default
+DEBUG 2025-12-20 12:47:10,918 utils (0.015) 
+            SELECT
+                table_name,
+                table_type,
+                table_comment
+            FROM information_schema.tables
+            WHERE table_schema = DATABASE()
+            ; args=None; alias=default
+DEBUG 2025-12-20 12:47:10,930 utils (0.000) SELECT `django_migrations`.`id`, `django_migrations`.`app`, `django_migrations`.`name`, `django_migrations`.`applied` FROM `django_migrations`; args=(); alias=default
+DEBUG 2025-12-20 12:47:10,935 utils (0.000) 
+            SELECT
+                table_name,
+                table_type,
+                table_comment
+            FROM information_schema.tables
+            WHERE table_schema = DATABASE()
+            ; args=None; alias=default
+DEBUG 2025-12-20 12:47:10,948 utils (0.015) SELECT `django_migrations`.`id`, `django_migrations`.`app`, `django_migrations`.`name`, `django_migrations`.`applied` FROM `django_migrations`; args=(); alias=default
+DEBUG 2025-12-20 12:47:16,743 utils (0.000) 
+                SELECT VERSION(),
+                       @@sql_mode,
+                       @@default_storage_engine,
+                       @@sql_auto_is_null,
+                       @@lower_case_table_names,
+                       CONVERT_TZ('2001-01-01 01:00:00', 'UTC', 'UTC') IS NOT NULL
+            ; args=None; alias=default
+DEBUG 2025-12-20 12:47:16,745 utils (0.000) SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED; args=None; alias=default
+DEBUG 2025-12-20 12:47:16,746 utils (0.000) 
+                SELECT VERSION(),
+                       @@sql_mode,
+                       @@default_storage_engine,
+                       @@sql_auto_is_null,
+                       @@lower_case_table_names,
+                       CONVERT_TZ('2001-01-01 01:00:00', 'UTC', 'UTC') IS NOT NULL
+            ; args=None; alias=default
+DEBUG 2025-12-20 12:47:16,957 utils (0.000) SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED; args=None; alias=default
+DEBUG 2025-12-20 12:47:16,966 utils (0.016) 
+            SELECT
+                table_name,
+                table_type,
+                table_comment
+            FROM information_schema.tables
+            WHERE table_schema = DATABASE()
+            ; args=None; alias=default
+DEBUG 2025-12-20 12:47:16,977 utils (0.000) SELECT `django_migrations`.`id`, `django_migrations`.`app`, `django_migrations`.`name`, `django_migrations`.`applied` FROM `django_migrations`; args=(); alias=default
+DEBUG 2025-12-20 12:47:16,982 utils (0.000) 
+            SELECT
+                table_name,
+                table_type,
+                table_comment
+            FROM information_schema.tables
+            WHERE table_schema = DATABASE()
+            ; args=None; alias=default
+DEBUG 2025-12-20 12:47:16,987 utils (0.000) SELECT `django_migrations`.`id`, `django_migrations`.`app`, `django_migrations`.`name`, `django_migrations`.`applied` FROM `django_migrations`; args=(); alias=default
+INFO 2025-12-20 12:47:29,432 autoreload Watching for file changes with StatReloader
+DEBUG 2025-12-20 12:47:29,920 utils (0.015) 
+                SELECT VERSION(),
+                       @@sql_mode,
+                       @@default_storage_engine,
+                       @@sql_auto_is_null,
+                       @@lower_case_table_names,
+                       CONVERT_TZ('2001-01-01 01:00:00', 'UTC', 'UTC') IS NOT NULL
+            ; args=None; alias=default
+DEBUG 2025-12-20 12:47:29,920 utils (0.000) SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED; args=None; alias=default
+DEBUG 2025-12-20 12:47:29,929 utils (0.000) 
+            SELECT
+                table_name,
+                table_type,
+                table_comment
+            FROM information_schema.tables
+            WHERE table_schema = DATABASE()
+            ; args=None; alias=default
+DEBUG 2025-12-20 12:47:29,936 utils (0.000) SELECT `django_migrations`.`id`, `django_migrations`.`app`, `django_migrations`.`name`, `django_migrations`.`applied` FROM `django_migrations`; args=(); alias=default
+DEBUG 2025-12-20 12:47:56,392 utils (0.016) 
+                SELECT VERSION(),
+                       @@sql_mode,
+                       @@default_storage_engine,
+                       @@sql_auto_is_null,
+                       @@lower_case_table_names,
+                       CONVERT_TZ('2001-01-01 01:00:00', 'UTC', 'UTC') IS NOT NULL
+            ; args=None; alias=default
+DEBUG 2025-12-20 12:47:56,393 utils (0.000) SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED; args=None; alias=default
+DEBUG 2025-12-20 12:47:56,402 utils (0.016) SELECT `main_category`.`id`, `main_category`.`name`, `main_category`.`slug`, `main_category`.`image`, `main_category`.`is_active`, `main_category`.`order`, `main_category`.`created`, `main_category`.`updated` FROM `main_category` WHERE (`main_category`.`image` IS NOT NULL AND `main_category`.`is_active` = 1) ORDER BY `main_category`.`order` ASC LIMIT 6; args=(True,); alias=default
+DEBUG 2025-12-20 12:47:56,422 utils (0.015) SELECT `main_subcategory`.`id`, `main_subcategory`.`category_id`, `main_subcategory`.`name`, `main_subcategory`.`slug`, `main_subcategory`.`image`, `main_subcategory`.`is_active`, `main_subcategory`.`order`, `main_subcategory`.`created`, `main_subcategory`.`updated` FROM `main_subcategory` INNER JOIN `main_category` ON (`main_subcategory`.`category_id` = `main_category`.`id`) WHERE `main_subcategory`.`category_id` IN (3, 4, 1, 5, 2) ORDER BY `main_category`.`order` ASC, `main_category`.`name` ASC, `main_subcategory`.`order` ASC, `main_subcategory`.`name` ASC; args=(3, 4, 1, 5, 2); alias=default
+DEBUG 2025-12-20 12:47:56,426 utils (0.000) SELECT `main_subcategory`.`id` AS `id` FROM `main_subcategory` INNER JOIN `main_category` ON (`main_subcategory`.`category_id` = `main_category`.`id`) WHERE (`main_subcategory`.`category_id` = 3 AND `main_subcategory`.`is_active` = 1) ORDER BY `main_category`.`order` ASC, `main_category`.`name` ASC, `main_subcategory`.`order` ASC, `main_subcategory`.`name` ASC; args=(3, True); alias=default
+DEBUG 2025-12-20 12:47:56,428 utils (0.000) SELECT `main_subcategory`.`id` AS `id` FROM `main_subcategory` INNER JOIN `main_category` ON (`main_subcategory`.`category_id` = `main_category`.`id`) WHERE (`main_subcategory`.`category_id` = 4 AND `main_subcategory`.`is_active` = 1) ORDER BY `main_category`.`order` ASC, `main_category`.`name` ASC, `main_subcategory`.`order` ASC, `main_subcategory`.`name` ASC; args=(4, True); alias=default
+DEBUG 2025-12-20 12:47:56,438 utils (0.016) SELECT COUNT(*) AS `__count` FROM `main_product` WHERE (`main_product`.`is_active` = 1 AND `main_product`.`subcategory_id` IN (1)); args=(True, 1); alias=default
+DEBUG 2025-12-20 12:47:56,441 utils (0.000) SELECT `main_subcategory`.`id` AS `id` FROM `main_subcategory` INNER JOIN `main_category` ON (`main_subcategory`.`category_id` = `main_category`.`id`) WHERE (`main_subcategory`.`category_id` = 1 AND `main_subcategory`.`is_active` = 1) ORDER BY `main_category`.`order` ASC, `main_category`.`name` ASC, `main_subcategory`.`order` ASC, `main_subcategory`.`name` ASC; args=(1, True); alias=default
+DEBUG 2025-12-20 12:47:56,447 utils (0.015) SELECT `main_subcategory`.`id` AS `id` FROM `main_subcategory` INNER JOIN `main_category` ON (`main_subcategory`.`category_id` = `main_category`.`id`) WHERE (`main_subcategory`.`category_id` = 5 AND `main_subcategory`.`is_active` = 1) ORDER BY `main_category`.`order` ASC, `main_category`.`name` ASC, `main_subcategory`.`order` ASC, `main_subcategory`.`name` ASC; args=(5, True); alias=default
+DEBUG 2025-12-20 12:47:56,450 utils (0.000) SELECT COUNT(*) AS `__count` FROM `main_product` WHERE (`main_product`.`is_active` = 1 AND `main_product`.`subcategory_id` IN (2)); args=(True, 2); alias=default
+DEBUG 2025-12-20 12:47:56,457 utils (0.000) SELECT `main_subcategory`.`id` AS `id` FROM `main_subcategory` INNER JOIN `main_category` ON (`main_subcategory`.`category_id` = `main_category`.`id`) WHERE (`main_subcategory`.`category_id` = 2 AND `main_subcategory`.`is_active` = 1) ORDER BY `main_category`.`order` ASC, `main_category`.`name` ASC, `main_subcategory`.`order` ASC, `main_subcategory`.`name` ASC; args=(2, True); alias=default
+DEBUG 2025-12-20 12:47:56,568 utils (0.000) SELECT `django_session`.`session_key`, `django_session`.`session_data`, `django_session`.`expire_date` FROM `django_session` WHERE (`django_session`.`expire_date` > '2025-12-20 07:17:56.560894' AND `django_session`.`session_key` = 'smviv8hncdsmr8rdn6g4vfeg37iu4k5u') LIMIT 21; args=('2025-12-20 07:17:56.560894', 'smviv8hncdsmr8rdn6g4vfeg37iu4k5u'); alias=default
+DEBUG 2025-12-20 12:47:56,726 utils (0.000) SELECT `main_category`.`id`, `main_category`.`name`, `main_category`.`slug`, `main_category`.`image`, `main_category`.`is_active`, `main_category`.`order`, `main_category`.`created`, `main_category`.`updated` FROM `main_category` WHERE `main_category`.`is_active` = 1 ORDER BY `main_category`.`order` ASC; args=(True,); alias=default
+DEBUG 2025-12-20 12:47:56,728 utils (0.016) SELECT `main_subcategory`.`id`, `main_subcategory`.`category_id`, `main_subcategory`.`name`, `main_subcategory`.`slug`, `main_subcategory`.`image`, `main_subcategory`.`is_active`, `main_subcategory`.`order`, `main_subcategory`.`created`, `main_subcategory`.`updated` FROM `main_subcategory` INNER JOIN `main_category` ON (`main_subcategory`.`category_id` = `main_category`.`id`) WHERE `main_subcategory`.`category_id` IN (3, 4, 1, 5, 2) ORDER BY `main_category`.`order` ASC, `main_category`.`name` ASC, `main_subcategory`.`order` ASC, `main_subcategory`.`name` ASC; args=(3, 4, 1, 5, 2); alias=default
+DEBUG 2025-12-20 12:47:56,738 utils (0.000) SELECT `cms_slider`.`id`, `cms_slider`.`slidercat_id`, `cms_slider`.`sliderimage`, `cms_slider`.`ad_title`, `cms_slider`.`ad_description`, `cms_slider`.`product_id`, `cms_slider`.`deal_type`, `cms_slider`.`ad_start_date`, `cms_slider`.`ad_end_date`, `cms_slider`.`slug`, `cms_slider`.`post_date`, `cms_slider`.`updated_at`, `cms_slider`.`order`, `cms_slider`.`status`, `cms_slider`.`author_id`, `main_category`.`id`, `main_category`.`name`, `main_category`.`slug`, `main_category`.`image`, `main_category`.`is_active`, `main_category`.`order`, `main_category`.`created`, `main_category`.`updated`, `main_product`.`id`, `main_product`.`subcategory_id`, `main_product`.`brand_id`, `main_product`.`name`, `main_product`.`slug`, `main_product`.`short_description`, `main_product`.`description`, `main_product`.`price`, `main_product`.`offerprice`, `main_product`.`stock`, `main_product`.`quantity`, `main_product`.`unit`, `main_product`.`is_sku_code`, `main_product`.`color_code`, `main_product`.`popular`, `main_product`.`latest`, `main_product`.`featured`, `main_product`.`available`, `main_product`.`is_active`, `main_product`.`order`, `main_product`.`created`, `main_product`.`updated` FROM `cms_slider` LEFT OUTER JOIN `main_category` ON (`cms_slider`.`slidercat_id` = `main_category`.`id`) LEFT OUTER JOIN `main_product` ON (`cms_slider`.`product_id` = `main_product`.`id`) WHERE (`cms_slider`.`deal_type` = 'hot_deals' AND `cms_slider`.`status` = 'active' AND (`cms_slider`.`ad_start_date` IS NULL OR `cms_slider`.`ad_start_date` <= '2025-12-20') AND (`cms_slider`.`ad_end_date` IS NULL OR `cms_slider`.`ad_end_date` >= '2025-12-20')) ORDER BY `cms_slider`.`order` ASC, `cms_slider`.`post_date` DESC; args=('hot_deals', 'active', '2025-12-20', '2025-12-20'); alias=default
+DEBUG 2025-12-20 12:47:56,754 utils (0.000) SELECT `main_product`.`id`, `main_product`.`subcategory_id`, `main_product`.`brand_id`, `main_product`.`name`, `main_product`.`slug`, `main_product`.`short_description`, `main_product`.`description`, `main_product`.`price`, `main_product`.`offerprice`, `main_product`.`stock`, `main_product`.`quantity`, `main_product`.`unit`, `main_product`.`is_sku_code`, `main_product`.`color_code`, `main_product`.`popular`, `main_product`.`latest`, `main_product`.`featured`, `main_product`.`available`, `main_product`.`is_active`, `main_product`.`order`, `main_product`.`created`, `main_product`.`updated` FROM `main_product` WHERE (`main_product`.`featured` = 1 AND `main_product`.`is_active` = 1) ORDER BY `main_product`.`id` DESC LIMIT 12; args=(True, True); alias=default
+DEBUG 2025-12-20 12:47:56,760 utils (0.016) SELECT `main_productimage`.`id`, `main_productimage`.`product_id`, `main_productimage`.`media_type`, `main_productimage`.`alt_text`, `main_productimage`.`image` FROM `main_productimage` WHERE `main_productimage`.`product_id` IN (4, 1); args=(4, 1); alias=default
+INFO 2025-12-20 12:47:56,861 basehttp "GET / HTTP/1.1" 200 105871
+INFO 2025-12-20 12:47:56,942 basehttp "GET /static/css/main.css HTTP/1.1" 304 0
+INFO 2025-12-20 12:47:56,943 basehttp "GET /static/css/category_mega_menu.css HTTP/1.1" 304 0
+INFO 2025-12-20 12:47:56,960 basehttp "GET /static/js/category_mega_menu.js HTTP/1.1" 304 0
+WARNING 2025-12-20 12:47:57,019 log Not Found: /media/categories/2025/12/19/WhatsApp_Image_2025-11-30_at_12.05.53_PM.webp
+WARNING 2025-12-20 12:47:57,019 log Not Found: /media/categories/2025/12/14/WhatsApp_Image_2025-11-30_at_12.05.53_PM.webp
+WARNING 2025-12-20 12:47:57,020 log Not Found: /media/products/2025/12/17/1_U9oJErL.jpg
+WARNING 2025-12-20 12:47:57,021 basehttp "GET /media/categories/2025/12/19/WhatsApp_Image_2025-11-30_at_12.05.53_PM.webp HTTP/1.1" 404 12938
+WARNING 2025-12-20 12:47:57,022 basehttp "GET /media/categories/2025/12/14/WhatsApp_Image_2025-11-30_at_12.05.53_PM.webp HTTP/1.1" 404 12938
+WARNING 2025-12-20 12:47:57,023 basehttp "GET /media/products/2025/12/17/1_U9oJErL.jpg HTTP/1.1" 404 12802
+INFO 2025-12-20 12:47:57,051 basehttp "GET /media/slider/m3.jpg HTTP/1.1" 304 0
+INFO 2025-12-20 12:47:57,054 basehttp "GET /static/images/banner/offer-bg.jpg HTTP/1.1" 304 0
+WARNING 2025-12-20 12:47:57,538 log Not Found: /media/categories/2025/12/19/WhatsApp_Image_2025-11-30_at_12.05.53_PM.webp
+WARNING 2025-12-20 12:47:57,543 log Not Found: /media/products/2025/12/17/1_U9oJErL.jpg
+WARNING 2025-12-20 12:47:57,551 log Not Found: /media/categories/2025/12/14/WhatsApp_Image_2025-11-30_at_12.05.53_PM.webp
+WARNING 2025-12-20 12:47:57,553 basehttp "GET /media/categories/2025/12/19/WhatsApp_Image_2025-11-30_at_12.05.53_PM.webp HTTP/1.1" 404 12938
+WARNING 2025-12-20 12:47:57,554 basehttp "GET /media/products/2025/12/17/1_U9oJErL.jpg HTTP/1.1" 404 12802
+WARNING 2025-12-20 12:47:57,556 basehttp "GET /media/categories/2025/12/14/WhatsApp_Image_2025-11-30_at_12.05.53_PM.webp HTTP/1.1" 404 12938
+DEBUG 2025-12-20 12:48:02,181 utils (0.016) 
+                SELECT VERSION(),
+                       @@sql_mode,
+                       @@default_storage_engine,
+                       @@sql_auto_is_null,
+                       @@lower_case_table_names,
+                       CONVERT_TZ('2001-01-01 01:00:00', 'UTC', 'UTC') IS NOT NULL
+            ; args=None; alias=default
+DEBUG 2025-12-20 12:48:02,183 utils (0.000) SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED; args=None; alias=default
+DEBUG 2025-12-20 12:48:02,186 utils (0.000) SELECT `django_session`.`session_key`, `django_session`.`session_data`, `django_session`.`expire_date` FROM `django_session` WHERE (`django_session`.`expire_date` > '2025-12-20 07:18:02.172083' AND `django_session`.`session_key` = 'smviv8hncdsmr8rdn6g4vfeg37iu4k5u') LIMIT 21; args=('2025-12-20 07:18:02.172083', 'smviv8hncdsmr8rdn6g4vfeg37iu4k5u'); alias=default
+DEBUG 2025-12-20 12:48:02,191 utils (0.000) SELECT `auth_user`.`id`, `auth_user`.`password`, `auth_user`.`last_login`, `auth_user`.`is_superuser`, `auth_user`.`username`, `auth_user`.`first_name`, `auth_user`.`last_name`, `auth_user`.`email`, `auth_user`.`is_staff`, `auth_user`.`is_active`, `auth_user`.`date_joined` FROM `auth_user` WHERE `auth_user`.`id` = 2 LIMIT 21; args=(2,); alias=default
+DEBUG 2025-12-20 12:48:02,234 utils (0.032) SELECT COUNT(*) AS `__count` FROM `main_category`; args=(); alias=default
+DEBUG 2025-12-20 12:48:02,237 utils (0.000) SELECT COUNT(*) AS `__count` FROM `main_category`; args=(); alias=default
+DEBUG 2025-12-20 12:48:02,240 utils (0.000) SELECT `main_category`.`id`, `main_category`.`name`, `main_category`.`slug`, `main_category`.`image`, `main_category`.`is_active`, `main_category`.`order`, `main_category`.`created`, `main_category`.`updated` FROM `main_category` ORDER BY `main_category`.`order` ASC, `main_category`.`name` ASC, `main_category`.`id` DESC; args=(); alias=default
+DEBUG 2025-12-20 12:48:02,266 utils (0.000) SELECT COUNT(*) AS `__count` FROM `cms_profile_setting`; args=(); alias=default
+DEBUG 2025-12-20 12:48:02,269 utils (0.000) SELECT COUNT(*) AS `__count` FROM `cms_profile_setting`; args=(); alias=default
+INFO 2025-12-20 12:48:02,454 basehttp "GET /admin/ecommerce/category/ HTTP/1.1" 200 25206
+DEBUG 2025-12-20 12:48:02,499 utils (0.000) SELECT `django_session`.`session_key`, `django_session`.`session_data`, `django_session`.`expire_date` FROM `django_session` WHERE (`django_session`.`expire_date` > '2025-12-20 07:18:02.497220' AND `django_session`.`session_key` = 'smviv8hncdsmr8rdn6g4vfeg37iu4k5u') LIMIT 21; args=('2025-12-20 07:18:02.497220', 'smviv8hncdsmr8rdn6g4vfeg37iu4k5u'); alias=default
+DEBUG 2025-12-20 12:48:02,502 utils (0.000) SELECT `auth_user`.`id`, `auth_user`.`password`, `auth_user`.`last_login`, `auth_user`.`is_superuser`, `auth_user`.`username`, `auth_user`.`first_name`, `auth_user`.`last_name`, `auth_user`.`email`, `auth_user`.`is_staff`, `auth_user`.`is_active`, `auth_user`.`date_joined` FROM `auth_user` WHERE `auth_user`.`id` = 2 LIMIT 21; args=(2,); alias=default
+INFO 2025-12-20 12:48:02,511 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-12-20 12:48:02,595 basehttp "GET /static/images/fav.png HTTP/1.1" 200 7392
+DEBUG 2025-12-20 12:48:10,455 utils (0.000) SELECT `django_session`.`session_key`, `django_session`.`session_data`, `django_session`.`expire_date` FROM `django_session` WHERE (`django_session`.`expire_date` > '2025-12-20 07:18:10.453161' AND `django_session`.`session_key` = 'smviv8hncdsmr8rdn6g4vfeg37iu4k5u') LIMIT 21; args=('2025-12-20 07:18:10.453161', 'smviv8hncdsmr8rdn6g4vfeg37iu4k5u'); alias=default
+DEBUG 2025-12-20 12:48:10,457 utils (0.000) SELECT `auth_user`.`id`, `auth_user`.`password`, `auth_user`.`last_login`, `auth_user`.`is_superuser`, `auth_user`.`username`, `auth_user`.`first_name`, `auth_user`.`last_name`, `auth_user`.`email`, `auth_user`.`is_staff`, `auth_user`.`is_active`, `auth_user`.`date_joined` FROM `auth_user` WHERE `auth_user`.`id` = 2 LIMIT 21; args=(2,); alias=default
+DEBUG 2025-12-20 12:48:10,467 utils (0.000) SELECT COUNT(*) AS `__count` FROM `cms_profile_setting`; args=(); alias=default
+DEBUG 2025-12-20 12:48:10,469 utils (0.000) SELECT COUNT(*) AS `__count` FROM `cms_profile_setting`; args=(); alias=default
+DEBUG 2025-12-20 12:48:10,477 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE (`django_content_type`.`app_label` = 'ecommerce' AND `django_content_type`.`model` = 'product') LIMIT 21; args=('ecommerce', 'product'); alias=default
+DEBUG 2025-12-20 12:48:10,554 utils (0.000) SELECT `main_subcategory`.`id`, `main_subcategory`.`category_id`, `main_subcategory`.`name`, `main_subcategory`.`slug`, `main_subcategory`.`image`, `main_subcategory`.`is_active`, `main_subcategory`.`order`, `main_subcategory`.`created`, `main_subcategory`.`updated`, `main_category`.`id`, `main_category`.`name`, `main_category`.`slug`, `main_category`.`image`, `main_category`.`is_active`, `main_category`.`order`, `main_category`.`created`, `main_category`.`updated` FROM `main_subcategory` INNER JOIN `main_category` ON (`main_subcategory`.`category_id` = `main_category`.`id`) WHERE `main_subcategory`.`is_active` = 1 ORDER BY `main_category`.`order` ASC, `main_category`.`name` ASC, `main_subcategory`.`order` ASC, `main_subcategory`.`name` ASC; args=(True,); alias=default
+DEBUG 2025-12-20 12:48:10,563 utils (0.000) SELECT `main_brand`.`id`, `main_brand`.`name`, `main_brand`.`slug`, `main_brand`.`image`, `main_brand`.`remark`, `main_brand`.`is_active`, `main_brand`.`order`, `main_brand`.`created`, `main_brand`.`updated` FROM `main_brand` ORDER BY `main_brand`.`order` ASC, `main_brand`.`name` ASC; args=(); alias=default
+INFO 2025-12-20 12:48:10,607 basehttp "GET /admin/ecommerce/product/add/ HTTP/1.1" 200 31424
+DEBUG 2025-12-20 12:48:10,635 utils (0.016) SELECT `django_session`.`session_key`, `django_session`.`session_data`, `django_session`.`expire_date` FROM `django_session` WHERE (`django_session`.`expire_date` > '2025-12-20 07:18:10.633144' AND `django_session`.`session_key` = 'smviv8hncdsmr8rdn6g4vfeg37iu4k5u') LIMIT 21; args=('2025-12-20 07:18:10.633144', 'smviv8hncdsmr8rdn6g4vfeg37iu4k5u'); alias=default
+DEBUG 2025-12-20 12:48:10,639 utils (0.000) SELECT `auth_user`.`id`, `auth_user`.`password`, `auth_user`.`last_login`, `auth_user`.`is_superuser`, `auth_user`.`username`, `auth_user`.`first_name`, `auth_user`.`last_name`, `auth_user`.`email`, `auth_user`.`is_staff`, `auth_user`.`is_active`, `auth_user`.`date_joined` FROM `auth_user` WHERE `auth_user`.`id` = 2 LIMIT 21; args=(2,); alias=default
+INFO 2025-12-20 12:48:10,642 basehttp "GET /static/ckeditor/ckeditor-init.js HTTP/1.1" 304 0
+INFO 2025-12-20 12:48:10,642 basehttp "GET /static/ckeditor/ckeditor/ckeditor.js HTTP/1.1" 304 0
+INFO 2025-12-20 12:48:10,645 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+DEBUG 2025-12-20 12:48:31,476 utils (0.000) SELECT `django_session`.`session_key`, `django_session`.`session_data`, `django_session`.`expire_date` FROM `django_session` WHERE (`django_session`.`expire_date` > '2025-12-20 07:18:31.473998' AND `django_session`.`session_key` = 'smviv8hncdsmr8rdn6g4vfeg37iu4k5u') LIMIT 21; args=('2025-12-20 07:18:31.473998', 'smviv8hncdsmr8rdn6g4vfeg37iu4k5u'); alias=default
+DEBUG 2025-12-20 12:48:31,479 utils (0.016) SELECT `auth_user`.`id`, `auth_user`.`password`, `auth_user`.`last_login`, `auth_user`.`is_superuser`, `auth_user`.`username`, `auth_user`.`first_name`, `auth_user`.`last_name`, `auth_user`.`email`, `auth_user`.`is_staff`, `auth_user`.`is_active`, `auth_user`.`date_joined` FROM `auth_user` WHERE `auth_user`.`id` = 2 LIMIT 21; args=(2,); alias=default
+DEBUG 2025-12-20 12:48:31,480 utils (0.000) BEGIN; args=None; alias=default
+DEBUG 2025-12-20 12:48:31,490 utils (0.000) SELECT `main_subcategory`.`id`, `main_subcategory`.`category_id`, `main_subcategory`.`name`, `main_subcategory`.`slug`, `main_subcategory`.`image`, `main_subcategory`.`is_active`, `main_subcategory`.`order`, `main_subcategory`.`created`, `main_subcategory`.`updated`, `main_category`.`id`, `main_category`.`name`, `main_category`.`slug`, `main_category`.`image`, `main_category`.`is_active`, `main_category`.`order`, `main_category`.`created`, `main_category`.`updated` FROM `main_subcategory` INNER JOIN `main_category` ON (`main_subcategory`.`category_id` = `main_category`.`id`) WHERE (`main_subcategory`.`is_active` = 1 AND `main_subcategory`.`id` = 1) LIMIT 21; args=(True, 1); alias=default
+DEBUG 2025-12-20 12:48:31,494 utils (0.015) SELECT `main_brand`.`id`, `main_brand`.`name`, `main_brand`.`slug`, `main_brand`.`image`, `main_brand`.`remark`, `main_brand`.`is_active`, `main_brand`.`order`, `main_brand`.`created`, `main_brand`.`updated` FROM `main_brand` WHERE `main_brand`.`id` = 1 LIMIT 21; args=(1,); alias=default
+DEBUG 2025-12-20 12:48:31,507 utils (0.000) SELECT 1 AS `a` FROM `main_subcategory` WHERE `main_subcategory`.`id` = 1 LIMIT 1; args=(1, 1); alias=default
+DEBUG 2025-12-20 12:48:31,508 utils (0.000) SELECT 1 AS `a` FROM `main_brand` WHERE `main_brand`.`id` = 1 LIMIT 1; args=(1, 1); alias=default
+DEBUG 2025-12-20 12:48:31,511 utils (0.016) SELECT 1 AS `a` FROM `main_product` WHERE `main_product`.`slug` = 'fdsfh' LIMIT 1; args=(1, 'fdsfh'); alias=default
+DEBUG 2025-12-20 12:48:31,522 utils (0.000) None; args=[1, 1, 'fdsfh', 'fdsfh', 'fklddfjsl', '<p>djsklajdklas</p>', Decimal('11'), Decimal('11'), 11, '11', 'ml', 'dhawsjkldhask', '#000000', True, True, True, True, True, 111, '2025-12-20 07:18:31.517435', '2025-12-20 07:18:31.517435']; alias=default
+DEBUG 2025-12-20 12:48:31,523 utils (0.000) ROLLBACK; args=None; alias=default
+DEBUG 2025-12-20 12:48:31,907 utils (0.000) SELECT `main_product`.`id`, `main_product`.`subcategory_id`, `main_product`.`brand_id`, `main_product`.`name`, `main_product`.`slug`, `main_product`.`short_description`, `main_product`.`description`, `main_product`.`price`, `main_product`.`offerprice`, `main_product`.`stock`, `main_product`.`quantity`, `main_product`.`unit`, `main_product`.`is_sku_code`, `main_product`.`color_code`, `main_product`.`popular`, `main_product`.`latest`, `main_product`.`featured`, `main_product`.`available`, `main_product`.`is_active`, `main_product`.`order`, `main_product`.`created`, `main_product`.`updated` FROM `main_product` LIMIT 21; args=(); alias=default
+ERROR 2025-12-20 12:48:31,955 log Internal Server Error: /admin/ecommerce/product/add/
+Traceback (most recent call last):
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\mysql\base.py", line 76, in execute
+    return self.cursor.execute(query, args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 575, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 826, in _read_query_result
+    result.read()
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 1203, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 782, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1364, "Field 'category_id' doesn't have a default value")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\contrib\admin\options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\views\decorators\cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\contrib\admin\sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\contrib\admin\options.py", line 1984, in add_view
+    return self.changeform_view(request, None, form_url, extra_context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\contrib\admin\options.py", line 1843, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\contrib\admin\options.py", line 1894, in _changeform_view
+    self.save_model(request, new_object, form, not add)
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\contrib\admin\options.py", line 1314, in save_model
+    obj.save()
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\base.py", line 902, in save
+    self.save_base(
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\base.py", line 1008, in save_base
+    updated = self._save_table(
+              ^^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\base.py", line 1169, in _save_table
+    results = self._do_insert(
+              ^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\base.py", line 1210, in _do_insert
+    return manager._insert(
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\query.py", line 1868, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\sql\compiler.py", line 1882, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\mysql\base.py", line 76, in execute
+    return self.cursor.execute(query, args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 575, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 826, in _read_query_result
+    result.read()
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 1203, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 782, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\Swapnil\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+django.db.utils.OperationalError: (1364, "Field 'category_id' doesn't have a default value")
+ERROR 2025-12-20 12:48:31,968 basehttp "POST /admin/ecommerce/product/add/ HTTP/1.1" 500 299389
+DEBUG 2025-12-20 12:57:02,151 utils (0.016) 
+                SELECT VERSION(),
+                       @@sql_mode,
+                       @@default_storage_engine,
+                       @@sql_auto_is_null,
+                       @@lower_case_table_names,
+                       CONVERT_TZ('2001-01-01 01:00:00', 'UTC', 'UTC') IS NOT NULL
+            ; args=None; alias=default
+DEBUG 2025-12-20 12:57:02,158 utils (0.000) SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED; args=None; alias=default
+DEBUG 2025-12-20 12:57:02,161 utils (0.000) SELECT `django_session`.`session_key`, `django_session`.`session_data`, `django_session`.`expire_date` FROM `django_session` WHERE (`django_session`.`expire_date` > '2025-12-20 07:27:02.120842' AND `django_session`.`session_key` = 'smviv8hncdsmr8rdn6g4vfeg37iu4k5u') LIMIT 21; args=('2025-12-20 07:27:02.120842', 'smviv8hncdsmr8rdn6g4vfeg37iu4k5u'); alias=default
+DEBUG 2025-12-20 12:57:02,175 utils (0.000) SELECT `auth_user`.`id`, `auth_user`.`password`, `auth_user`.`last_login`, `auth_user`.`is_superuser`, `auth_user`.`username`, `auth_user`.`first_name`, `auth_user`.`last_name`, `auth_user`.`email`, `auth_user`.`is_staff`, `auth_user`.`is_active`, `auth_user`.`date_joined` FROM `auth_user` WHERE `auth_user`.`id` = 2 LIMIT 21; args=(2,); alias=default
+DEBUG 2025-12-20 12:57:02,230 utils (0.000) SELECT COUNT(*) AS `__count` FROM `cms_profile_setting`; args=(); alias=default
+DEBUG 2025-12-20 12:57:02,231 utils (0.000) SELECT COUNT(*) AS `__count` FROM `cms_profile_setting`; args=(); alias=default
+DEBUG 2025-12-20 12:57:02,373 utils (0.000) SELECT `main_subcategory`.`id`, `main_subcategory`.`category_id`, `main_subcategory`.`name`, `main_subcategory`.`slug`, `main_subcategory`.`image`, `main_subcategory`.`is_active`, `main_subcategory`.`order`, `main_subcategory`.`created`, `main_subcategory`.`updated`, `main_category`.`id`, `main_category`.`name`, `main_category`.`slug`, `main_category`.`image`, `main_category`.`is_active`, `main_category`.`order`, `main_category`.`created`, `main_category`.`updated` FROM `main_subcategory` INNER JOIN `main_category` ON (`main_subcategory`.`category_id` = `main_category`.`id`) WHERE `main_subcategory`.`is_active` = 1 ORDER BY `main_category`.`order` ASC, `main_category`.`name` ASC, `main_subcategory`.`order` ASC, `main_subcategory`.`name` ASC; args=(True,); alias=default
+DEBUG 2025-12-20 12:57:02,382 utils (0.000) SELECT `main_brand`.`id`, `main_brand`.`name`, `main_brand`.`slug`, `main_brand`.`image`, `main_brand`.`remark`, `main_brand`.`is_active`, `main_brand`.`order`, `main_brand`.`created`, `main_brand`.`updated` FROM `main_brand` ORDER BY `main_brand`.`order` ASC, `main_brand`.`name` ASC; args=(); alias=default
+INFO 2025-12-20 12:57:02,401 basehttp "GET /admin/ecommerce/product/add/ HTTP/1.1" 200 31424
+DEBUG 2025-12-20 12:57:02,457 utils (0.000) SELECT `django_session`.`session_key`, `django_session`.`session_data`, `django_session`.`expire_date` FROM `django_session` WHERE (`django_session`.`expire_date` > '2025-12-20 07:27:02.453491' AND `django_session`.`session_key` = 'smviv8hncdsmr8rdn6g4vfeg37iu4k5u') LIMIT 21; args=('2025-12-20 07:27:02.453491', 'smviv8hncdsmr8rdn6g4vfeg37iu4k5u'); alias=default
+DEBUG 2025-12-20 12:57:02,463 utils (0.016) SELECT `auth_user`.`id`, `auth_user`.`password`, `auth_user`.`last_login`, `auth_user`.`is_superuser`, `auth_user`.`username`, `auth_user`.`first_name`, `auth_user`.`last_name`, `auth_user`.`email`, `auth_user`.`is_staff`, `auth_user`.`is_active`, `auth_user`.`date_joined` FROM `auth_user` WHERE `auth_user`.`id` = 2 LIMIT 21; args=(2,); alias=default
+INFO 2025-12-20 12:57:02,463 basehttp "GET /static/ckeditor/ckeditor-init.js HTTP/1.1" 304 0
+INFO 2025-12-20 12:57:02,466 basehttp "GET /static/ckeditor/ckeditor/ckeditor.js HTTP/1.1" 304 0
+INFO 2025-12-20 12:57:02,469 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+DEBUG 2025-12-20 12:57:24,814 utils (0.000) SELECT `django_session`.`session_key`, `django_session`.`session_data`, `django_session`.`expire_date` FROM `django_session` WHERE (`django_session`.`expire_date` > '2025-12-20 07:27:24.812213' AND `django_session`.`session_key` = 'smviv8hncdsmr8rdn6g4vfeg37iu4k5u') LIMIT 21; args=('2025-12-20 07:27:24.812213', 'smviv8hncdsmr8rdn6g4vfeg37iu4k5u'); alias=default
+DEBUG 2025-12-20 12:57:24,816 utils (0.000) SELECT `auth_user`.`id`, `auth_user`.`password`, `auth_user`.`last_login`, `auth_user`.`is_superuser`, `auth_user`.`username`, `auth_user`.`first_name`, `auth_user`.`last_name`, `auth_user`.`email`, `auth_user`.`is_staff`, `auth_user`.`is_active`, `auth_user`.`date_joined` FROM `auth_user` WHERE `auth_user`.`id` = 2 LIMIT 21; args=(2,); alias=default
+DEBUG 2025-12-20 12:57:24,818 utils (0.000) BEGIN; args=None; alias=default
+DEBUG 2025-12-20 12:57:24,827 utils (0.000) SELECT `main_subcategory`.`id`, `main_subcategory`.`category_id`, `main_subcategory`.`name`, `main_subcategory`.`slug`, `main_subcategory`.`image`, `main_subcategory`.`is_active`, `main_subcategory`.`order`, `main_subcategory`.`created`, `main_subcategory`.`updated`, `main_category`.`id`, `main_category`.`name`, `main_category`.`slug`, `main_category`.`image`, `main_category`.`is_active`, `main_category`.`order`, `main_category`.`created`, `main_category`.`updated` FROM `main_subcategory` INNER JOIN `main_category` ON (`main_subcategory`.`category_id` = `main_category`.`id`) WHERE (`main_subcategory`.`is_active` = 1 AND `main_subcategory`.`id` = 1) LIMIT 21; args=(True, 1); alias=default
+DEBUG 2025-12-20 12:57:24,828 utils (0.000) SELECT `main_brand`.`id`, `main_brand`.`name`, `main_brand`.`slug`, `main_brand`.`image`, `main_brand`.`remark`, `main_brand`.`is_active`, `main_brand`.`order`, `main_brand`.`created`, `main_brand`.`updated` FROM `main_brand` WHERE `main_brand`.`id` = 1 LIMIT 21; args=(1,); alias=default
+DEBUG 2025-12-20 12:57:24,834 utils (0.000) SELECT 1 AS `a` FROM `main_subcategory` WHERE `main_subcategory`.`id` = 1 LIMIT 1; args=(1, 1); alias=default
+DEBUG 2025-12-20 12:57:24,837 utils (0.016) SELECT 1 AS `a` FROM `main_brand` WHERE `main_brand`.`id` = 1 LIMIT 1; args=(1, 1); alias=default
+DEBUG 2025-12-20 12:57:24,841 utils (0.000) SELECT 1 AS `a` FROM `main_product` WHERE `main_product`.`slug` = 'dsfkmhsdkj' LIMIT 1; args=(1, 'dsfkmhsdkj'); alias=default
+DEBUG 2025-12-20 12:57:24,845 utils (0.000) INSERT INTO `main_product` (`subcategory_id`, `brand_id`, `name`, `slug`, `short_description`, `description`, `price`, `offerprice`, `stock`, `quantity`, `unit`, `is_sku_code`, `color_code`, `popular`, `latest`, `featured`, `available`, `is_active`, `order`, `created`, `updated`) VALUES (1, 1, 'dsfkmhsdkj', 'dsfkmhsdkj', 'fjdskjflsd', '<p>dslkfjsdlkfds</p>', 11, 11, 11, '11', 'ml', 'fehdfjkds', '#000000', 1, 1, 1, 1, 1, 111, '2025-12-20 07:27:24.842633', '2025-12-20 07:27:24.842633'); args=[1, 1, 'dsfkmhsdkj', 'dsfkmhsdkj', 'fjdskjflsd', '<p>dslkfjsdlkfds</p>', Decimal('11'), Decimal('11'), 11, '11', 'ml', 'fehdfjkds', '#000000', True, True, True, True, True, 111, '2025-12-20 07:27:24.842633', '2025-12-20 07:27:24.842633']; alias=default
+DEBUG 2025-12-20 12:57:24,849 utils (0.000) INSERT INTO `django_admin_log` (`action_time`, `user_id`, `content_type_id`, `object_id`, `object_repr`, `action_flag`, `change_message`) VALUES ('2025-12-20 07:27:24.846850', 2, 9, '5', 'dsfkmhsdkj', 1, '[{\"added\": {}}]'); args=['2025-12-20 07:27:24.846850', 2, 9, '5', 'dsfkmhsdkj', 1, '[{"added": {}}]']; alias=default
+DEBUG 2025-12-20 12:57:24,856 utils (0.016) COMMIT; args=None; alias=default
+INFO 2025-12-20 12:57:24,858 basehttp "POST /admin/ecommerce/product/add/ HTTP/1.1" 302 0
+DEBUG 2025-12-20 12:57:24,863 utils (0.000) SELECT `django_session`.`session_key`, `django_session`.`session_data`, `django_session`.`expire_date` FROM `django_session` WHERE (`django_session`.`expire_date` > '2025-12-20 07:27:24.862542' AND `django_session`.`session_key` = 'smviv8hncdsmr8rdn6g4vfeg37iu4k5u') LIMIT 21; args=('2025-12-20 07:27:24.862542', 'smviv8hncdsmr8rdn6g4vfeg37iu4k5u'); alias=default
+DEBUG 2025-12-20 12:57:24,864 utils (0.000) SELECT `auth_user`.`id`, `auth_user`.`password`, `auth_user`.`last_login`, `auth_user`.`is_superuser`, `auth_user`.`username`, `auth_user`.`first_name`, `auth_user`.`last_name`, `auth_user`.`email`, `auth_user`.`is_staff`, `auth_user`.`is_active`, `auth_user`.`date_joined` FROM `auth_user` WHERE `auth_user`.`id` = 2 LIMIT 21; args=(2,); alias=default
+INFO 2025-12-20 12:57:24,865 admin === ProductAdmin changelist_view started ===
+INFO 2025-12-20 12:57:24,865 admin Request path: /admin/ecommerce/product/
+INFO 2025-12-20 12:57:24,866 admin Request GET params: <QueryDict: {}>
+INFO 2025-12-20 12:57:24,866 admin User: swapnil
+INFO 2025-12-20 12:57:24,866 admin get_queryset called
+DEBUG 2025-12-20 12:57:24,873 utils (0.015) SELECT COUNT(*) AS `__count` FROM `main_product`; args=(); alias=default
+INFO 2025-12-20 12:57:24,874 admin Initial queryset count: 5
+INFO 2025-12-20 12:57:24,875 admin get_queryset completed in 0.008s
+DEBUG 2025-12-20 12:57:24,878 utils (0.000) SELECT COUNT(*) AS `__count` FROM `main_product`; args=(); alias=default
+INFO 2025-12-20 12:57:24,878 admin Total products in queryset: 5 (count took 0.002s)
+INFO 2025-12-20 12:57:24,878 admin Database queries before rendering: 2
+DEBUG 2025-12-20 12:57:24,878 admin Queries executed so far:
+DEBUG 2025-12-20 12:57:24,878 admin   Query 1: SELECT COUNT(*) AS `__count` FROM `main_product`... (Time: 0.015s)
+DEBUG 2025-12-20 12:57:24,879 admin   Query 2: SELECT COUNT(*) AS `__count` FROM `main_product`... (Time: 0.000s)
+INFO 2025-12-20 12:57:24,879 admin About to call super().changelist_view() at 1766215644.879
+INFO 2025-12-20 12:57:24,879 admin get_queryset called
+DEBUG 2025-12-20 12:57:24,882 utils (0.000) SELECT COUNT(*) AS `__count` FROM `main_product`; args=(); alias=default
+INFO 2025-12-20 12:57:24,882 admin Initial queryset count: 5
+INFO 2025-12-20 12:57:24,883 admin get_queryset completed in 0.004s
+DEBUG 2025-12-20 12:57:24,885 utils (0.016) SELECT `main_subcategory`.`id`, `main_subcategory`.`category_id`, `main_subcategory`.`name`, `main_subcategory`.`slug`, `main_subcategory`.`image`, `main_subcategory`.`is_active`, `main_subcategory`.`order`, `main_subcategory`.`created`, `main_subcategory`.`updated` FROM `main_subcategory` INNER JOIN `main_category` ON (`main_subcategory`.`category_id` = `main_category`.`id`) ORDER BY `main_category`.`order` ASC, `main_category`.`name` ASC, `main_subcategory`.`order` ASC, `main_subcategory`.`name` ASC; args=(); alias=default
+DEBUG 2025-12-20 12:57:24,889 utils (0.000) SELECT `main_category`.`id`, `main_category`.`name`, `main_category`.`slug`, `main_category`.`image`, `main_category`.`is_active`, `main_category`.`order`, `main_category`.`created`, `main_category`.`updated` FROM `main_category` WHERE `main_category`.`id` = 4 LIMIT 21; args=(4,); alias=default
+DEBUG 2025-12-20 12:57:24,891 utils (0.000) SELECT `main_category`.`id`, `main_category`.`name`, `main_category`.`slug`, `main_category`.`image`, `main_category`.`is_active`, `main_category`.`order`, `main_category`.`created`, `main_category`.`updated` FROM `main_category` WHERE `main_category`.`id` = 5 LIMIT 21; args=(5,); alias=default
+DEBUG 2025-12-20 12:57:24,892 utils (0.000) SELECT `main_category`.`id`, `main_category`.`name`, `main_category`.`slug`, `main_category`.`image`, `main_category`.`is_active`, `main_category`.`order`, `main_category`.`created`, `main_category`.`updated` FROM `main_category` ORDER BY `main_category`.`order` ASC, `main_category`.`name` ASC; args=(); alias=default
+DEBUG 2025-12-20 12:57:24,893 utils (0.000) SELECT `main_brand`.`id`, `main_brand`.`name`, `main_brand`.`slug`, `main_brand`.`image`, `main_brand`.`remark`, `main_brand`.`is_active`, `main_brand`.`order`, `main_brand`.`created`, `main_brand`.`updated` FROM `main_brand` ORDER BY `main_brand`.`order` ASC, `main_brand`.`name` ASC; args=(); alias=default
+DEBUG 2025-12-20 12:57:24,896 utils (0.000) SELECT COUNT(*) AS `__count` FROM `main_product`; args=(); alias=default
+DEBUG 2025-12-20 12:57:24,905 utils (0.000) SELECT `main_product`.`id`, `main_product`.`subcategory_id`, `main_product`.`brand_id`, `main_product`.`name`, `main_product`.`slug`, `main_product`.`short_description`, `main_product`.`description`, `main_product`.`price`, `main_product`.`offerprice`, `main_product`.`stock`, `main_product`.`quantity`, `main_product`.`unit`, `main_product`.`is_sku_code`, `main_product`.`color_code`, `main_product`.`popular`, `main_product`.`latest`, `main_product`.`featured`, `main_product`.`available`, `main_product`.`is_active`, `main_product`.`order`, `main_product`.`created`, `main_product`.`updated`, `main_subcategory`.`id`, `main_subcategory`.`category_id`, `main_subcategory`.`name`, `main_subcategory`.`slug`, `main_subcategory`.`image`, `main_subcategory`.`is_active`, `main_subcategory`.`order`, `main_subcategory`.`created`, `main_subcategory`.`updated`, `main_category`.`id`, `main_category`.`name`, `main_category`.`slug`, `main_category`.`image`, `main_category`.`is_active`, `main_category`.`order`, `main_category`.`created`, `main_category`.`updated`, `main_brand`.`id`, `main_brand`.`name`, `main_brand`.`slug`, `main_brand`.`image`, `main_brand`.`remark`, `main_brand`.`is_active`, `main_brand`.`order`, `main_brand`.`created`, `main_brand`.`updated` FROM `main_product` INNER JOIN `main_subcategory` ON (`main_product`.`subcategory_id` = `main_subcategory`.`id`) INNER JOIN `main_category` ON (`main_subcategory`.`category_id` = `main_category`.`id`) LEFT OUTER JOIN `main_brand` ON (`main_product`.`brand_id` = `main_brand`.`id`) ORDER BY `main_product`.`id` DESC; args=(); alias=default
+DEBUG 2025-12-20 12:57:24,911 utils (0.000) SELECT COUNT(*) AS `__count` FROM `cms_profile_setting`; args=(); alias=default
+DEBUG 2025-12-20 12:57:24,911 utils (0.000) SELECT COUNT(*) AS `__count` FROM `cms_profile_setting`; args=(); alias=default
+INFO 2025-12-20 12:57:24,912 admin super().changelist_view() completed in 0.034s
+INFO 2025-12-20 12:57:24,913 admin Database queries after rendering: 12
+INFO 2025-12-20 12:57:24,913 admin Total queries executed: 10
+INFO 2025-12-20 12:57:24,913 admin Time taken: 0.05 seconds
+INFO 2025-12-20 12:57:24,913 admin === ProductAdmin changelist_view completed ===
+INFO 2025-12-20 12:57:24,944 basehttp "GET /admin/ecommerce/product/ HTTP/1.1" 200 28869
+DEBUG 2025-12-20 12:57:24,986 utils (0.000) SELECT `django_session`.`session_key`, `django_session`.`session_data`, `django_session`.`expire_date` FROM `django_session` WHERE (`django_session`.`expire_date` > '2025-12-20 07:27:24.982903' AND `django_session`.`session_key` = 'smviv8hncdsmr8rdn6g4vfeg37iu4k5u') LIMIT 21; args=('2025-12-20 07:27:24.982903', 'smviv8hncdsmr8rdn6g4vfeg37iu4k5u'); alias=default
+DEBUG 2025-12-20 12:57:24,992 utils (0.000) SELECT `auth_user`.`id`, `auth_user`.`password`, `auth_user`.`last_login`, `auth_user`.`is_superuser`, `auth_user`.`username`, `auth_user`.`first_name`, `auth_user`.`last_name`, `auth_user`.`email`, `auth_user`.`is_staff`, `auth_user`.`is_active`, `auth_user`.`date_joined` FROM `auth_user` WHERE `auth_user`.`id` = 2 LIMIT 21; args=(2,); alias=default
+INFO 2025-12-20 12:57:24,996 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+DEBUG 2025-12-20 12:57:32,790 utils (0.000) 
+                SELECT VERSION(),
+                       @@sql_mode,
+                       @@default_storage_engine,
+                       @@sql_auto_is_null,
+                       @@lower_case_table_names,
+                       CONVERT_TZ('2001-01-01 01:00:00', 'UTC', 'UTC') IS NOT NULL
+            ; args=None; alias=default
+DEBUG 2025-12-20 12:57:32,792 utils (0.000) SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED; args=None; alias=default
+DEBUG 2025-12-20 12:57:32,795 utils (0.000) SELECT COUNT(*) AS `__count` FROM `main_product` WHERE (`main_product`.`available` = 1 AND `main_product`.`is_active` = 1 AND `main_product`.`subcategory_id` IN (SELECT U0.`id` AS `id` FROM `main_subcategory` U0 WHERE (U0.`category_id` = 4 AND U0.`is_active` = 1))); args=(True, True, 4, True); alias=default
+DEBUG 2025-12-20 12:57:32,801 utils (0.000) SELECT `main_product`.`id`, `main_product`.`subcategory_id`, `main_product`.`brand_id`, `main_product`.`name`, `main_product`.`slug`, `main_product`.`short_description`, `main_product`.`description`, `main_product`.`price`, `main_product`.`offerprice`, `main_product`.`stock`, `main_product`.`quantity`, `main_product`.`unit`, `main_product`.`is_sku_code`, `main_product`.`color_code`, `main_product`.`popular`, `main_product`.`latest`, `main_product`.`featured`, `main_product`.`available`, `main_product`.`is_active`, `main_product`.`order`, `main_product`.`created`, `main_product`.`updated` FROM `main_product` WHERE (`main_product`.`available` = 1 AND `main_product`.`is_active` = 1 AND `main_product`.`subcategory_id` IN (SELECT U0.`id` AS `id` FROM `main_subcategory` U0 WHERE (U0.`category_id` = 4 AND U0.`is_active` = 1))) ORDER BY `main_product`.`id` DESC LIMIT 3; args=(True, True, 4, True); alias=default
+DEBUG 2025-12-20 12:57:32,814 utils (0.000) SELECT `main_productimage`.`id`, `main_productimage`.`product_id`, `main_productimage`.`media_type`, `main_productimage`.`alt_text`, `main_productimage`.`image` FROM `main_productimage` WHERE `main_productimage`.`product_id` = 5; args=(5,); alias=default
+DEBUG 2025-12-20 12:57:32,822 utils (0.015) SELECT `main_productvariation`.`id`, `main_productvariation`.`product_id`, `main_productvariation`.`name`, `main_productvariation`.`quantity`, `main_productvariation`.`unit`, `main_productvariation`.`is_sku_code`, `main_productvariation`.`color_code`, `main_productvariation`.`slug`, `main_productvariation`.`price_modifier`, `main_productvariation`.`offerprice`, `main_productvariation`.`stock` FROM `main_productvariation` WHERE `main_productvariation`.`product_id` = 5; args=(5,); alias=default
+DEBUG 2025-12-20 12:57:32,827 utils (0.000) SELECT `main_productdetailsection`.`id`, `main_productdetailsection`.`product_id`, `main_productdetailsection`.`title`, `main_productdetailsection`.`content` FROM `main_productdetailsection` WHERE `main_productdetailsection`.`product_id` = 5; args=(5,); alias=default
+DEBUG 2025-12-20 12:57:32,830 utils (0.000) SELECT `main_productimage`.`id`, `main_productimage`.`product_id`, `main_productimage`.`media_type`, `main_productimage`.`alt_text`, `main_productimage`.`image` FROM `main_productimage` WHERE `main_productimage`.`product_id` = 4; args=(4,); alias=default
+DEBUG 2025-12-20 12:57:32,866 utils (0.000) SELECT `main_productvariation`.`id`, `main_productvariation`.`product_id`, `main_productvariation`.`name`, `main_productvariation`.`quantity`, `main_productvariation`.`unit`, `main_productvariation`.`is_sku_code`, `main_productvariation`.`color_code`, `main_productvariation`.`slug`, `main_productvariation`.`price_modifier`, `main_productvariation`.`offerprice`, `main_productvariation`.`stock` FROM `main_productvariation` WHERE `main_productvariation`.`product_id` = 4; args=(4,); alias=default
+DEBUG 2025-12-20 12:57:32,876 utils (0.000) SELECT `main_productdetailsection`.`id`, `main_productdetailsection`.`product_id`, `main_productdetailsection`.`title`, `main_productdetailsection`.`content` FROM `main_productdetailsection` WHERE `main_productdetailsection`.`product_id` = 4; args=(4,); alias=default
+DEBUG 2025-12-20 12:57:32,879 utils (0.000) SELECT `main_productimage`.`id`, `main_productimage`.`product_id`, `main_productimage`.`media_type`, `main_productimage`.`alt_text`, `main_productimage`.`image` FROM `main_productimage` WHERE `main_productimage`.`product_id` = 1; args=(1,); alias=default
+DEBUG 2025-12-20 12:57:32,882 utils (0.000) SELECT `main_productvariation`.`id`, `main_productvariation`.`product_id`, `main_productvariation`.`name`, `main_productvariation`.`quantity`, `main_productvariation`.`unit`, `main_productvariation`.`is_sku_code`, `main_productvariation`.`color_code`, `main_productvariation`.`slug`, `main_productvariation`.`price_modifier`, `main_productvariation`.`offerprice`, `main_productvariation`.`stock` FROM `main_productvariation` WHERE `main_productvariation`.`product_id` = 1; args=(1,); alias=default
+DEBUG 2025-12-20 12:57:32,886 utils (0.016) SELECT `main_productdetailsection`.`id`, `main_productdetailsection`.`product_id`, `main_productdetailsection`.`title`, `main_productdetailsection`.`content` FROM `main_productdetailsection` WHERE `main_productdetailsection`.`product_id` = 1; args=(1,); alias=default
+INFO 2025-12-20 12:57:32,891 basehttp "GET /api/products/4/?page=1&limit=10 HTTP/1.1" 200 3599
+DEBUG 2025-12-20 13:05:51,453 utils (0.000) 
+                SELECT VERSION(),
+                       @@sql_mode,
+                       @@default_storage_engine,
+                       @@sql_auto_is_null,
+                       @@lower_case_table_names,
+                       CONVERT_TZ('2001-01-01 01:00:00', 'UTC', 'UTC') IS NOT NULL
+            ; args=None; alias=default
+DEBUG 2025-12-20 13:05:51,454 utils (0.000) SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED; args=None; alias=default
+DEBUG 2025-12-20 13:05:51,456 utils (0.000) SELECT `main_category`.`id`, `main_category`.`name`, `main_category`.`slug`, `main_category`.`image`, `main_category`.`is_active`, `main_category`.`order`, `main_category`.`created`, `main_category`.`updated` FROM `main_category` WHERE `main_category`.`is_active` = 1 ORDER BY `main_category`.`order` ASC, `main_category`.`name` ASC; args=(True,); alias=default
+DEBUG 2025-12-20 13:05:51,459 utils (0.000) SELECT `main_subcategory`.`id`, `main_subcategory`.`category_id`, `main_subcategory`.`name`, `main_subcategory`.`slug`, `main_subcategory`.`image`, `main_subcategory`.`is_active`, `main_subcategory`.`order`, `main_subcategory`.`created`, `main_subcategory`.`updated` FROM `main_subcategory` WHERE (`main_subcategory`.`category_id` = 4 AND `main_subcategory`.`is_active` = 1) ORDER BY `main_subcategory`.`order` ASC, `main_subcategory`.`name` ASC; args=(4, True); alias=default
+DEBUG 2025-12-20 13:05:51,464 utils (0.016) SELECT `main_subcategory`.`id`, `main_subcategory`.`category_id`, `main_subcategory`.`name`, `main_subcategory`.`slug`, `main_subcategory`.`image`, `main_subcategory`.`is_active`, `main_subcategory`.`order`, `main_subcategory`.`created`, `main_subcategory`.`updated` FROM `main_subcategory` WHERE (`main_subcategory`.`category_id` = 3 AND `main_subcategory`.`is_active` = 1) ORDER BY `main_subcategory`.`order` ASC, `main_subcategory`.`name` ASC; args=(3, True); alias=default
+DEBUG 2025-12-20 13:05:51,468 utils (0.000) SELECT `main_subcategory`.`id`, `main_subcategory`.`category_id`, `main_subcategory`.`name`, `main_subcategory`.`slug`, `main_subcategory`.`image`, `main_subcategory`.`is_active`, `main_subcategory`.`order`, `main_subcategory`.`created`, `main_subcategory`.`updated` FROM `main_subcategory` WHERE (`main_subcategory`.`category_id` = 5 AND `main_subcategory`.`is_active` = 1) ORDER BY `main_subcategory`.`order` ASC, `main_subcategory`.`name` ASC; args=(5, True); alias=default
+DEBUG 2025-12-20 13:05:51,475 utils (0.000) SELECT `main_subcategory`.`id`, `main_subcategory`.`category_id`, `main_subcategory`.`name`, `main_subcategory`.`slug`, `main_subcategory`.`image`, `main_subcategory`.`is_active`, `main_subcategory`.`order`, `main_subcategory`.`created`, `main_subcategory`.`updated` FROM `main_subcategory` WHERE (`main_subcategory`.`category_id` = 1 AND `main_subcategory`.`is_active` = 1) ORDER BY `main_subcategory`.`order` ASC, `main_subcategory`.`name` ASC; args=(1, True); alias=default
+DEBUG 2025-12-20 13:05:51,484 utils (0.000) SELECT `main_subcategory`.`id`, `main_subcategory`.`category_id`, `main_subcategory`.`name`, `main_subcategory`.`slug`, `main_subcategory`.`image`, `main_subcategory`.`is_active`, `main_subcategory`.`order`, `main_subcategory`.`created`, `main_subcategory`.`updated` FROM `main_subcategory` WHERE (`main_subcategory`.`category_id` = 2 AND `main_subcategory`.`is_active` = 1) ORDER BY `main_subcategory`.`order` ASC, `main_subcategory`.`name` ASC; args=(2, True); alias=default
+INFO 2025-12-20 13:05:51,489 basehttp "GET /api/categories/ HTTP/1.1" 200 1210
