@@ -6,51 +6,112 @@
 <div class="rts-product-details-section section-gap">
     <div class="container">
         <div class="details-product-area mb--70">
-            <div class="product-thumb-area">
+            <div class="product-thumb-area" style="position: relative;">
                 <div class="cursor"></div>
-                <div class="thumb-wrapper one filterd-items figure">
-                    <div class="product-thumb zoom" onmousemove="zoom(event)"
-                        style="background-image: url('/static/images/products/product-details.jpg')"><img
-                            src="/static/images/products/product-details.jpg" alt="product-thumb">
+                <div class="product-thumb-filter-group" style="position: absolute; left: 0; top: 0; display: flex; flex-direction: column; gap: 10px; z-index: 10; margin-left: 0 !important;">
+                    {% if product_images %}
+                        {% for image in product_images|slice:":3" %}
+                            <div class="thumb-filter filter-btn {% if forloop.first %}active{% endif %}" data-show="{% if forloop.first %}.one{% elif forloop.counter == 2 %}.two{% else %}.three{% endif %}">
+                                <img src="{{ image.image.url }}" alt="{{ image.alt_text|default:product.name }}" style="width: 80px; height: 80px; object-fit: cover;">
+                            </div>
+                        {% endfor %}
+                        {% if product_video %}
+                            <div class="thumb-filter filter-btn" data-show=".video-wrapper">
+                                <div style="width: 80px; height: 80px; background: #000; display: flex; align-items: center; justify-content: center; position: relative;">
+                                    <i class="fas fa-play" style="color: #fff; font-size: 24px;"></i>
+                                    <span style="position: absolute; bottom: 5px; right: 5px; background: rgba(0,0,0,0.7); color: #fff; padding: 2px 5px; font-size: 10px; border-radius: 3px;">VIDEO</span>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="thumb-filter filter-btn active" data-show=".one"><img
+                                src="/static/images/products/product-filt1.jpg" alt="product-thumb-filter" style="width: 80px; height: 80px; object-fit: cover;"></div>
+                        <div class="thumb-filter filter-btn" data-show=".two"><img
+                                src="/static/images/products/product-filt2.jpg" alt="product-thumb-filter" style="width: 80px; height: 80px; object-fit: cover;"></div>
+                        <div class="thumb-filter filter-btn" data-show=".three"><img
+                                src="/static/images/products/product-filt3.jpg" alt="product-thumb-filter" style="width: 80px; height: 80px; object-fit: cover;"></div>
+                    {% endif %}
+                </div>
+                {% if product_images %}
+                    {% for img in product_images|slice:":3" %}
+                        <div class="thumb-wrapper {% if forloop.first %}one filterd-items figure{% elif forloop.counter == 2 %}two filterd-items hide{% else %}three filterd-items hide{% endif %}" style="margin-left: 100px;">
+                            <div class="product-thumb zoom" onmousemove="zoom(event)"
+                                style="background-image: url('{{ img.image.url }}')"><img
+                                    src="{{ img.image.url }}" alt="{{ img.alt_text|default:product.name }}">
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {% if product_video %}
+                        <div class="thumb-wrapper video-wrapper filterd-items hide" style="margin-left: 100px;">
+                            <div class="product-thumb" style="position: relative;">
+                                <video controls style="width: 100%; height: 100%; object-fit: contain;">
+                                    <source src="{{ product_video.image.url }}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if product_images|length < 3 and not product_video %}
+                        {% for i in "x"|ljust:"3" %}
+                            {% if forloop.counter > product_images|length %}
+                                <div class="thumb-wrapper {% if forloop.counter == 2 %}two filterd-items hide{% elif forloop.counter == 3 %}three filterd-items hide{% endif %}" style="margin-left: 100px;">
+                                    <div class="product-thumb zoom" onmousemove="zoom(event)"
+                                        style="background-image: url('/static/images/products/product-details.jpg')"><img
+                                            src="/static/images/products/product-details.jpg" alt="{{ product.name }}">
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% else %}
+                    <div class="thumb-wrapper one filterd-items figure" style="margin-left: 100px;">
+                        <div class="product-thumb zoom" onmousemove="zoom(event)"
+                            style="background-image: url('/static/images/products/product-details.jpg')"><img
+                                src="/static/images/products/product-details.jpg" alt="{{ product.name }}">
+                        </div>
                     </div>
-                </div>
-                <div class="thumb-wrapper two filterd-items hide">
-                    <div class="product-thumb zoom" onmousemove="zoom(event)"
-                        style="background-image: url('/static/images/products/product-filt2.jpg')"><img
-                            src="/static/images/products/product-filt2.jpg" alt="product-thumb">
+                    <div class="thumb-wrapper two filterd-items hide" style="margin-left: 100px;">
+                        <div class="product-thumb zoom" onmousemove="zoom(event)"
+                            style="background-image: url('/static/images/products/product-filt2.jpg')"><img
+                                src="/static/images/products/product-filt2.jpg" alt="{{ product.name }}">
+                        </div>
                     </div>
-                </div>
-                <div class="thumb-wrapper three filterd-items hide">
-                    <div class="product-thumb zoom" onmousemove="zoom(event)"
-                        style="background-image: url('/static/images/products/product-filt3.jpg')"><img
-                            src="/static/images/products/product-filt3.jpg" alt="product-thumb">
+                    <div class="thumb-wrapper three filterd-items hide" style="margin-left: 100px;">
+                        <div class="product-thumb zoom" onmousemove="zoom(event)"
+                            style="background-image: url('/static/images/products/product-filt3.jpg')"><img
+                                src="/static/images/products/product-filt3.jpg" alt="{{ product.name }}">
+                        </div>
                     </div>
-                </div>
-                <div class="product-thumb-filter-group">
-                    <div class="thumb-filter filter-btn active" data-show=".one"><img
-                            src="/static/images/products/product-filt1.jpg" alt="product-thumb-filter"></div>
-                    <div class="thumb-filter filter-btn" data-show=".two"><img
-                            src="/static/images/products/product-filt2.jpg" alt="product-thumb-filter"></div>
-                    <div class="thumb-filter filter-btn" data-show=".three"><img
-                            src="/static/images/products/product-filt3.jpg" alt="product-thumb-filter"></div>
-                </div>
+                {% endif %}
             </div>
             <div class="contents">
                 <div class="product-status">
-                    <span class="product-catagory">Dress</span>
+                    <span class="product-catagory">{% if product.subcategory %}{{ product.subcategory.name }}{% else %}Product{% endif %}</span>
                     <div class="rating-stars-group">
                         <div class="rating-star"><i class="fas fa-star"></i></div>
                         <div class="rating-star"><i class="fas fa-star"></i></div>
+                        <div class="rating-star"><i class="fas fa-star"></i></div>
+                        <div class="rating-star"><i class="fas fa-star"></i></div>
                         <div class="rating-star"><i class="fas fa-star-half-alt"></i></div>
-                        <span>10 Reviews</span>
+                        <span>0 Reviews</span>
                     </div>
                 </div>
-                <h2 class="product-title">Wide Cotton Tunic Dress <span class="stock">In Stock</span></h2>
-                <span class="product-price"><span class="old-price">$9.35</span> $7.25</span>
+                <h2 class="product-title">{{ product.name }} <span class="stock">{% if product.available and product.stock > 0 %}In Stock{% else %}Out of Stock{% endif %}</span></h2>
+                <span class="product-price">
+                    {% if product.offerprice and product.offerprice > 0 %}
+                        <span class="old-price">₹{{ product.price }}</span> ₹{{ product.offerprice }}
+                    {% else %}
+                        ₹{{ product.price }}
+                    {% endif %}
+                </span>
                 <p>
-                    Priyoshop has brought to you the Hijab 3 Pieces Combo Pack PS23. It is a
-                    completely modern design and you feel comfortable to put on this hijab.
-                    Buy it at the best price.
+                    {% if product.short_description %}
+                        {{ product.short_description }}
+                    {% elif product.description %}
+                        {{ product.description|truncatewords:30 }}
+                    {% else %}
+                        {{ product.name }} - Available now at the best price.
+                    {% endif %}
                 </p>
                 <div class="product-bottom-action">
                     <div class="cart-edit">
@@ -65,9 +126,11 @@
                     <a href="{% url 'wishlist' %}" class="wishlist-btn action-item"><i class="rt-heart"></i></a>
                 </div>
                 <div class="product-uniques">
-                    <span class="sku product-unipue"><span>SKU: </span> BO1D0MX8SJ</span>
-                    <span class="catagorys product-unipue"><span>Categories: </span> T-Shirts, Tops, Mens</span>
-                    <span class="tags product-unipue"><span>Tags: </span> fashion, t-shirts, Men</span>
+                    <span class="sku product-unipue"><span>SKU: </span> {% if product.is_sku_code %}{{ product.is_sku_code }}{% else %}N/A{% endif %}</span>
+                    <span class="catagorys product-unipue"><span>Categories: </span> {% if product.subcategory %}{{ product.subcategory.category.name }}{% if product.subcategory.name %}, {{ product.subcategory.name }}{% endif %}{% else %}N/A{% endif %}</span>
+                    {% if product.brand %}
+                    <span class="tags product-unipue"><span>Brand: </span> {{ product.brand.name }}</span>
+                    {% endif %}
                 </div>
                 <div class="share-social">
                     <span>Share:</span>
@@ -83,66 +146,41 @@
         </div>
         <div class="product-full-details-area">
             <div class="details-filter-bar2">
-                <button class="details-filter filter-btn active" data-show=".dls-one">Description</button>
-                <button class="details-filter filter-btn" data-show=".dls-two">Additional information</button>
-                <button class="details-filter filter-btn" data-show=".dls-three">Reviews (0)</button>
+                <button class="details-filter filter-btn active" data-show=".dls-one">Product Description</button>
+                {% for section in sections %}
+                    <button class="details-filter filter-btn" data-show=".dls-section-{{ forloop.counter }}">{{ section.title }}</button>
+                {% endfor %}
+                <button class="details-filter filter-btn" data-show=".dls-reviews">Reviews (0)</button>
             </div>
             <div class="full-details dls-one filterd-items">
                 <div class="full-details-inner">
-                    <p class="mb--30">In marketing a product is an object or system made available for consumer use
-                        it is anything that can be offered to a market to satisfy the desire or need of a customer.
-                        In retailing, products are
-                        merchandise, and in manufacturing, products are bought as raw materials and then sold as
-                        finished goods. A service is also regarded to as a type of product. Commodities are usually
-                        raw material
-                        and agricultural products, but a commodity can also be anything widely available in the open
-                        market. In project management, products are the formal definition of the project
-                        deliverables that
-                        to delivering the objectives of the project.</p>
-                    <p>A product can be classified as tangible or intangible. A tangible product is a physical
-                        object that can be perceived by touch such as a building, vehicle, gadget, or clothing. An
-                        intangible product is
-                        can only be perceived indirectly such as an insurance policy. Services can be broadly
-                        classified under intangible products which can be durable or non durable. A product line is
-                        "a group of
-                        closely related, either because they function in a similar manner, are sold to the same
-                        customer groups, are marketed through the same types of outlets, or fall within given price
-                        ranges."Many
-                        range of product lines which may be unique to a single organisation or may be common across
-                        the business's industry. In 2002 the US Census compiled revenue figures for the finance and
-                        various product lines such as "accident, health and medical insurance premiums" and "income
-                        from secured consumer loans.</p>
+                    {% if product.description %}
+                        <div class="mb--30">{{ product.description|safe }}</div>
+                    {% else %}
+                        <p class="mb--30">{{ product.name }} - Premium quality product available now.</p>
+                    {% endif %}
                 </div>
             </div>
-            <div class="full-details dls-two filterd-items hide">
-                <div class="full-details-inner">
-                    <p class="mb--30">In marketing a product is an object or system made available for consumer use
-                        it is anything that can be offered to a market to satisfy the desire or need of a customer.
-                        In retailing, products are
-                        merchandise, and in manufacturing, products are bought as raw materials and then sold as
-                        finished goods. A service is also regarded to as a type of product. Commodities are usually
-                        raw material
-                        and agricultural products, but a commodity can also be anything widely available in the open
-                        market. In project management, products are the formal definition of the project
-                        deliverables that
-                        to delivering the objectives of the project.</p>
-                    <p>A product can be classified as tangible or intangible. A tangible product is a physical
-                        object that can be perceived by touch such as a building, vehicle, gadget, or clothing. An
-                        intangible product is
-                        can only be perceived indirectly such as an insurance policy. Services can be broadly
-                        classified under intangible products which can be durable or non durable. A product line is
-                        "a group of
-                        closely related, either because they function in a similar manner.</p>
+            {% for section in sections %}
+                <div class="full-details dls-section-{{ forloop.counter }} filterd-items hide">
+                    <div class="full-details-inner">
+                        {% if section.title %}
+                            <h3 class="mb--20" style="font-size: 24px; font-weight: 600; color: #333;">{{ section.title }}</h3>
+                        {% endif %}
+                        {% if section.content %}
+                            <div class="mb--30">{{ section.content|safe }}</div>
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
-            <div class="full-details dls-three filterd-items hide">
+            {% endfor %}
+            <div class="full-details dls-reviews filterd-items hide">
                 <div class="full-details-inner">
                     <p>There are no reveiws yet.</p>
                     <div class="row">
                         <div class="col-lg-12 col-md-12 mr-10">
                             <div class="reveiw-form">
                                 <h2 class="section-title">
-                                    Be the first to reveiw <strong> <a href="{% url 'productDetails' %}">"Wide Cotton Tunic Dress"</a></strong></h2>
+                                    Be the first to reveiw <strong> <a href="{% url 'product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}">"{{ product.name }}"</a></strong></h2>
                                     <h4 class="sect-title">Your email address will not be published. Required fields are marked* </h4>
                                     <div class="reveiw-form-main mb-10">
                                         <div class="contact-form">
@@ -197,188 +235,118 @@
 <!-- ..::Product-details Section End Here::.. -->
 
 <!-- ..::Related Product Section Start Here::.. -->
-<div class="rts-featured-product-section1 related-product related-product1">
+<div class="rts-hand-picked-products-section">
     <div class="container">
-        <div class="rts-featured-product-section-inner">
-            <div class="section-header section-header3 section-header6">
-                <div class="wrapper">
-                    <h2 class="title">RELATED PRODUCT</h2>
+        <div class="section-header section-header3 text-center">
+            <div class="wrapper">
+                <div class="sub-content">
+                    <img class="line-1" src="/static/images/banner/wvbo-icon.png" alt="">
+                    <span class="sub-text">Latest Products</span>
+                    <img class="line-2" src="/static/images/banner/wvbo-icon.png" alt="">
                 </div>
+                <h2 class="title">RELATED PRODUCT</h2>
             </div>
-            <div class="row">
-                <div class="col-xl-3 col-md-4 col-sm-6 col-12">
-                    <div class="product-item element-item1">
-                        <a href="{% url 'productDetails' %}" class="product-image image-hover-variations">
-                            <div class="image-vari1 image-vari"><img
-                                    src="/static/images/hand-picked/slider-img13-1.webp" alt="product-image">
-                            </div>
-                            <div class="image-vari2 image-vari"><img
-                                    src="/static/images/hand-picked/slider-img13.webp" alt="product-image">
-                            </div>
-                        </a>
-                        <div class="bottom-content">
-                            <div class="star-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                            <a href="{% url 'productDetails' %}" class="product-name">Girl's Sport Bra</a>
-                            <div class="action-wrap">
-                                <span class="price">$31.00</span>
-                            </div>
-                        </div>
-                        <div class="quick-action-button">
-                            <div class="cta-single cta-plus">
-                                <a href="#"><i class="rt-plus"></i></a>
-                            </div>
-                            <div class="cta-single cta-quickview">
-                                <a href="#"><i class="far fa-eye"></i></a>
-                            </div>
-                            <div class="cta-single cta-wishlist">
-                                <a href="#"><i class="far fa-heart"></i></a>
-                            </div>
-                            <div class="cta-single cta-addtocart">
-                                <a href="#"><i class="rt-basket-shopping"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-md-4 col-sm-6 col-12">
-                    <div class="product-item element-item1">
-                        <a href="{% url 'productDetails' %}" class="product-image image-hover-variations">
-                            <div class="image-vari1 image-vari"><img
-                                    src="/static/images/hand-picked/slider-img14.webp" alt="product-image">
-                            </div>
-                            <div class="image-vari2 image-vari"><img
-                                    src="/static/images/hand-picked/slider-img14-1.webp" alt="product-image">
-                            </div>
-                        </a>
-                        <div class="bottom-content">
-                            <div class="star-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                            <a href="{% url 'productDetails' %}" class="product-name">Girl's Sport Bra</a>
-                            <div class="action-wrap">
-                                <span class="price">$31.00</span>
-                            </div>
-                        </div>
-                        <div class="quick-action-button">
-                            <div class="cta-single cta-plus">
-                                <a href="#"><i class="rt-plus"></i></a>
-                            </div>
-                            <div class="cta-single cta-quickview">
-                                <a href="#"><i class="far fa-eye"></i></a>
-                            </div>
-                            <div class="cta-single cta-wishlist">
-                                <a href="#"><i class="far fa-heart"></i></a>
-                            </div>
-                            <div class="cta-single cta-addtocart">
-                                <a href="#"><i class="rt-basket-shopping"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-md-4 col-sm-6 col-12">
-                    <div class="product-item element-item2">
-                        <a href="{% url 'productDetails' %}" class="product-image image-slider-variations">
-                            <div class="swiper productSlide">
-                                <div class="swiper-wrapper">
-                                    <div class="swiper-slide">
-                                        <div class="image-vari1 image-vari"><img
-                                                src="/static/images/hand-picked/slider-img12-1.webp"
-                                                alt="product-image">
+        </div>
+        <div class="slider-div">
+            <div class="swiper rts-sixSlide-over">
+                <div class="swiper-wrapper">
+                    {% if related_products %}
+                        {% for related_product in related_products %}
+                            <div class="swiper-slide">
+                                <div class="product-item element-item1">
+                                    <a href="{% url 'product_detail' related_product.subcategory.category.slug related_product.subcategory.slug related_product.slug %}" class="product-image image-hover-variations">
+                                        {% if related_product.images.all %}
+                                            {% with images=related_product.images.all %}
+                                                <div class="image-vari1 image-vari">
+                                                    <img src="{{ images.0.image.url }}" alt="{{ related_product.name }}">
+                                                </div>
+                                                {% if images|length > 1 %}
+                                                    <div class="image-vari2 image-vari">
+                                                        <img src="{{ images.1.image.url }}" alt="{{ related_product.name }}">
+                                                    </div>
+                                                {% else %}
+                                                    <div class="image-vari2 image-vari">
+                                                        <img src="{{ images.0.image.url }}" alt="{{ related_product.name }}">
+                                                    </div>
+                                                {% endif %}
+                                            {% endwith %}
+                                        {% else %}
+                                            <div class="image-vari1 image-vari">
+                                                <img src="/static/images/products/product-details.jpg" alt="{{ related_product.name }}">
+                                            </div>
+                                            <div class="image-vari2 image-vari">
+                                                <img src="/static/images/products/product-details.jpg" alt="{{ related_product.name }}">
+                                            </div>
+                                        {% endif %}
+                                    </a>
+                                    <div class="bottom-content">
+                                        <a href="{% url 'product_detail' related_product.subcategory.category.slug related_product.subcategory.slug related_product.slug %}" class="product-name">{{ related_product.name }}</a>
+                                        <div class="action-wrap">
+                                            {% if related_product.offerprice and related_product.offerprice < related_product.price %}
+                                                <span class="price">₹{{ related_product.offerprice }}</span>
+                                                <span class="old-price" style="text-decoration: line-through; color: #777; margin-left: 10px; font-size: 14px;">₹{{ related_product.price }}</span>
+                                            {% else %}
+                                                <span class="price">₹{{ related_product.price }}</span>
+                                            {% endif %}
+                                        </div>
+                                        <div class="product-card-buttons" style="margin-top: 15px; display: flex; gap: 10px;">
+                                            <a href="{% url 'product_detail' related_product.subcategory.category.slug related_product.subcategory.slug related_product.slug %}" class="btn-view-details" style="flex: 1; padding: 10px 15px; background: rgba(230, 230, 250, 0.8); color: #333; text-align: center; border-radius: 5px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease;">View Details</a>
+                                            <a href="{% url 'add_to_cart' related_product.slug %}" class="btn-add-to-cart" style="flex: 1; padding: 10px 15px; background: #8833b8; color: #fff; text-align: center; border-radius: 5px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease;">Add to Cart</a>
                                         </div>
                                     </div>
-                                    <div class="swiper-slide">
-                                        <div class="image-vari2 image-vari"><img
-                                                src="/static/images/hand-picked/slider-img11_1.webp"
-                                                alt="product-image">
+                                    <div class="quick-action-button">
+                                        <div class="cta-single cta-plus">
+                                            <a href="#"><i class="rt-plus"></i></a>
+                                        </div>
+                                        <div class="cta-single cta-quickview">
+                                            <a href="{% url 'product_detail' related_product.subcategory.category.slug related_product.subcategory.slug related_product.slug %}" class="cta-quickview-link"><i class="far fa-eye"></i></a>
+                                        </div>
+                                        <div class="cta-single cta-wishlist">
+                                            <a href="{% url 'wishlist' %}"><i class="far fa-heart"></i></a>
+                                        </div>
+                                        <div class="cta-single cta-addtocart">
+                                            <a href="{% url 'cart' %}"><i class="rt-basket-shopping"></i></a>
+                                        </div>
+                                    </div>
+                                    {% if related_product.offerprice and related_product.offerprice < related_product.price %}
+                                        <div class="product-features">
+                                            <div class="discount-tag product-tag">SALE</div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="swiper-slide">
+                                <div class="product-item element-item1">
+                                    <a href="{% url 'shop' %}" class="product-image image-hover-variations">
+                                        <div class="image-vari1 image-vari"><img src="/static/images/hand-picked/slider-img8.webp" alt="product-image"></div>
+                                        <div class="image-vari2 image-vari"><img src="/static/images/hand-picked/slider-img8.webp" alt="product-image"></div>
+                                    </a>
+                                    <div class="bottom-content">
+                                        <a href="{% url 'shop' %}" class="product-name">No Related Products</a>
+                                        <div class="action-wrap">
+                                            <span class="price">Coming Soon</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="slider-buttons">
-                                <div class="button-prev slider-btn"><i class="rt-arrow-left-long"></i></div>
-                                <div class="button-next slider-btn"><i class="rt-arrow-right-long"></i></div>
-                            </div>
-                        </a>
-                        <div class="bottom-content">
-                            <div class="star-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star-half-alt"></i>
-                            </div>
-                            <a href="{% url 'productDetails' %}" class="product-name">Maidenform Bra</a>
-                            <div class="action-wrap">
-                                <span class="price">$31.00</span>
+                        {% endfor %}
+                    {% else %}
+                        <div class="swiper-slide">
+                            <div class="product-item element-item1">
+                                <a href="{% url 'shop' %}" class="product-image image-hover-variations">
+                                    <div class="image-vari1 image-vari"><img src="/static/images/hand-picked/slider-img8.webp" alt="product-image"></div>
+                                    <div class="image-vari2 image-vari"><img src="/static/images/hand-picked/slider-img8.webp" alt="product-image"></div>
+                                </a>
+                                <div class="bottom-content">
+                                    <a href="{% url 'shop' %}" class="product-name">No Related Products</a>
+                                    <div class="action-wrap">
+                                        <span class="price">Coming Soon</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="quick-action-button">
-                            <div class="cta-single cta-plus">
-                                <a href="#"><i class="rt-plus"></i></a>
-                            </div>
-                            <div class="cta-single cta-quickview">
-                                <a href="#"><i class="far fa-eye"></i></a>
-                            </div>
-                            <div class="cta-single cta-wishlist">
-                                <a href="#"><i class="far fa-heart"></i></a>
-                            </div>
-                            <div class="cta-single cta-addtocart">
-                                <a href="#"><i class="rt-basket-shopping"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-md-4 col-sm-6 col-12">
-                    <div class="product-item element-item1">
-                        <a href="{% url 'productDetails' %}" class="product-image image-hover-variations">
-                            <div class="image-vari1 image-vari"><img
-                                    src="/static/images/hand-picked/slider-img12.webp" alt="product-image">
-                            </div>
-                            <div class="image-vari2 image-vari"><img
-                                    src="/static/images/hand-picked/slider-img12-3.webp" alt="product-image">
-                            </div>
-                        </a>
-                        <div class="bottom-content">
-                            <div class="star-rating">
-                                <i class="far fa-star"></i>
-                                <i class="far fa-star"></i>
-                                <i class="far fa-star"></i>
-                                <i class="far fa-star"></i>
-                                <i class="far fa-star"></i>
-                            </div>
-                            <a href="{% url 'productDetails' %}" class="product-name">Hanes Women's Bra</a>
-                            <div class="action-wrap">
-                                <span class="price">$31.00</span>
-                            </div>
-                        </div>
-                        <div class="quick-action-button">
-                            <div class="cta-single cta-plus">
-                                <a href="#"><i class="rt-plus"></i></a>
-                            </div>
-                            <div class="cta-single cta-quickview">
-                                <a href="#"><i class="far fa-eye"></i></a>
-                            </div>
-                            <div class="cta-single cta-wishlist">
-                                <a href="#"><i class="far fa-heart"></i></a>
-                            </div>
-                            <div class="cta-single cta-addtocart">
-                                <a href="#"><i class="rt-basket-shopping"></i></a>
-                            </div>
-                        </div>
-                        <div class="product-features">
-                            <div class="discount-tag product-tag">-38%</div>
-                            <div class="new-tag product-tag">HOT</div>
-                        </div>
-                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

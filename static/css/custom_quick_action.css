@@ -1,0 +1,161 @@
+/* Custom styling for quick-action-button */
+.product-item .quick-action-button {
+    background: rgba(230, 230, 250, 0.8) !important; /* Light lavender with 80% opacity */
+}
+
+/* Make all product cards same size */
+.product-item {
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    transition: all 0.3s ease !important;
+    border: 2px solid transparent !important;
+    background: #fff !important;
+}
+
+/* Product image container - fixed height */
+.product-item .product-image {
+    height: 280px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+    background: #f8f8f8 !important;
+}
+
+.product-item .product-image img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+}
+
+/* Bottom content - flex grow to fill space */
+.product-item .bottom-content {
+    flex-grow: 1 !important;
+    padding: 15px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    min-height: 150px !important;
+}
+
+/* Ensure product name doesn't break layout */
+.product-item .product-name {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    margin-bottom: 10px !important;
+    min-height: 48px !important;
+}
+
+/* Ensure buttons container has consistent height */
+.product-card-buttons {
+    margin-top: auto !important;
+    flex-shrink: 0 !important;
+}
+
+/* Hover highlight effect */
+.product-item:hover {
+    border-color: rgba(230, 230, 250, 0.6) !important;
+    box-shadow: 0 4px 12px rgba(230, 230, 250, 0.3) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Ensure row uses flexbox for equal heights */
+.rts-featured-product-section1 .row,
+.rts-hand-picked-products-section .row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: stretch !important;
+}
+
+/* Ensure all cards in row have same height and add bottom margin */
+.row:has(.product-item) .col-xl-3,
+.row:has(.product-item) .col-md-4,
+.row:has(.product-item) .col-sm-6,
+.row:has(.product-item) .col-12 {
+    display: flex !important;
+    flex-direction: column !important;
+    margin-bottom: 10px !important;
+    padding-bottom: 0 !important;
+    align-items: stretch !important;
+}
+
+/* Fallback for browsers that don't support :has() */
+.rts-featured-product-section1 .row .col-xl-3,
+.rts-featured-product-section1 .row .col-md-4,
+.rts-featured-product-section1 .row .col-sm-6,
+.rts-featured-product-section1 .row .col-12,
+.rts-hand-picked-products-section .row .col-xl-3,
+.rts-hand-picked-products-section .row .col-md-4,
+.rts-hand-picked-products-section .row .col-sm-6,
+.rts-hand-picked-products-section .row .col-12 {
+    display: flex !important;
+    flex-direction: column !important;
+    margin-bottom: 10px !important;
+    padding-bottom: 0 !important;
+    align-items: stretch !important;
+}
+
+.row .col-xl-3 > .product-item,
+.row .col-md-4 > .product-item,
+.row .col-sm-6 > .product-item,
+.row .col-12 > .product-item {
+    width: 100% !important;
+    margin-bottom: 0 !important;
+    flex: 1 !important;
+    min-height: 100% !important;
+}
+
+/* Product card buttons styling */
+.product-card-buttons {
+    margin-top: 15px !important;
+    display: flex !important;
+    gap: 10px !important;
+}
+
+.btn-view-details {
+    flex: 1 !important;
+    padding: 10px 15px !important;
+    background: rgba(230, 230, 250, 0.8) !important;
+    color: #333 !important;
+    text-align: center !important;
+    border-radius: 5px !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    transition: all 0.3s ease !important;
+    border: 1px solid rgba(230, 230, 250, 1) !important;
+}
+
+.btn-view-details:hover {
+    background: rgba(230, 230, 250, 1) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 2px 8px rgba(230, 230, 250, 0.4) !important;
+}
+
+.btn-add-to-cart {
+    flex: 1 !important;
+    padding: 10px 15px !important;
+    background: #8833b8 !important;
+    color: #fff !important;
+    text-align: center !important;
+    border-radius: 5px !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    transition: all 0.3s ease !important;
+    border: 1px solid #8833b8 !important;
+}
+
+.btn-add-to-cart:hover {
+    background: #6b2691 !important;
+    border-color: #6b2691 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 2px 8px rgba(136, 51, 184, 0.4) !important;
+}
+

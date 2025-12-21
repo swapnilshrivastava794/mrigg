@@ -638,6 +638,84 @@
     }
   });
 
+  // Banner Offer 1 Slider
+  if (document.querySelector(".bannerSlideOffer1")) {
+    var swiperOffer1 = new Swiper(".bannerSlideOffer1", {
+      slidesPerView: 1,
+      spaceBetween: 0,
+      slidesPerGroup: 1,
+      speed: 700,
+      effect: 'fade',
+      loop: true,
+      loopFillGroupWithBlank: true,
+      autoplay: {
+        delay: 3000,
+        disableOnInteraction: false
+      },
+      centeredSlides: false,
+      breakpoints: {
+        1500: {
+          slidesPerView: 1,
+        },
+        991: {
+          slidesPerView: 1,
+        },
+        767: {
+          slidesPerView: 1,
+        },
+        575: {
+          slidesPerView: 1,
+        },
+        0: {
+          slidesPerView: 1,
+        }
+      },
+      navigation: {
+        nextEl: ".bannerSlideOffer1 .slider-btn-offer1-next",
+        prevEl: ".bannerSlideOffer1 .slider-btn-offer1-prev",
+      }
+    });
+  }
+
+  // Banner Offer 2 Slider
+  if (document.querySelector(".bannerSlideOffer2")) {
+    var swiperOffer2 = new Swiper(".bannerSlideOffer2", {
+      slidesPerView: 1,
+      spaceBetween: 0,
+      slidesPerGroup: 1,
+      speed: 700,
+      effect: 'fade',
+      loop: true,
+      loopFillGroupWithBlank: true,
+      autoplay: {
+        delay: 3000,
+        disableOnInteraction: false
+      },
+      centeredSlides: false,
+      breakpoints: {
+        1500: {
+          slidesPerView: 1,
+        },
+        991: {
+          slidesPerView: 1,
+        },
+        767: {
+          slidesPerView: 1,
+        },
+        575: {
+          slidesPerView: 1,
+        },
+        0: {
+          slidesPerView: 1,
+        }
+      },
+      navigation: {
+        nextEl: ".bannerSlideOffer2 .slider-btn-offer2-next",
+        prevEl: ".bannerSlideOffer2 .slider-btn-offer2-prev",
+      }
+    });
+  }
+
 
   var swiper = new Swiper(".oneSlide", {
     slidesPerView: 1,
@@ -1429,28 +1507,6 @@
     $(".anywere-home").removeClass("bgshow")
   });
 
-  // Product details popup
-  $(".product-details-popup-btn").on('click', function () {
-    $(".product-details-popup-wrapper").addClass("popup")
-    $(".anywere").addClass("bgshow")
-  });
-  $(".product-bottom-action .view-btn").on('click', function () {
-    $(".product-details-popup-wrapper").addClass("popup")
-    $(".anywere").addClass("bgshow")
-  });
-  $(".product-details-popup-wrapper .cart-edit").on('click', function () {
-    $(".product-details-popup-wrapper").addClass("popup")
-    $(".anywere-home").addClass("bgshow")
-  });
-
-  $(".product-details-close-btn").on('click', function () {
-    $(".product-details-popup-wrapper").removeClass("popup")
-    $(".anywere").removeClass("bgshow")
-  });
-  $(".anywere").on('click', function () {
-    $(".product-details-popup-wrapper").removeClass("popup")
-    $(".anywere").removeClass("bgshow")
-  });
 
 
 })(jQuery);

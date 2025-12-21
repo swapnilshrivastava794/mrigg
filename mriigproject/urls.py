@@ -25,7 +25,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('', views.home, name='home'),
-    path('product/<slug:slug>/', views.product_detail, name='product_detail'),
     # path('login/', auth_views.LoginView.as_view(template_name='main/login.html'), name='login'),
     path('login/', views.custom_login, name='login'),
     # path('logout/', LogoutView.as_view(next_page='home'), name='logout'),
@@ -96,7 +95,8 @@ urlpatterns = [
     path('sidebar-right', shopViews.sidebarRight, name='sidebarRight'),
     path('variable-products', shopViews.variableProducts, name='variableProducts'),
     
-    # SEO-friendly category URLs - must be after all specific paths
+    # SEO-friendly category URLs - product detail must come before category URLs
+    path('<slug:category_slug>/<slug:subcategory_slug>/<slug:product_slug>/', views.product_detail, name='product_detail'),
     path('<slug:category_slug>/<slug:subcategory_slug>/', shopViews.shop, name='category-subcategory'),
     path('<slug:category_slug>/', shopViews.shop, name='category-only'),
    

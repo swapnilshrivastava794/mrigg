@@ -84,54 +84,41 @@
                     </div>
                     <div class="rts-menu">
                         <nav class="menus menu-toggle">
+                            
                             <ul class="nav__menu">
-                                <li class="has-dropdown">
-                                    <a class="menu-item {% if subTitle == 'Home' %}
-                                                                                 active1
-                                                                              {% endif %}" href="/">Home </a>
-                                   
-                                </li>
+                               
                                 <li class="has-dropdown"><a class="menu-item {% if subTitle == 'Shop' %}
                                                                                     active1
-                                                                             {% endif %}" href="#">Shop <i class="rt-plus"></i></a>
+                                                                             {% endif %}" href="#">Categories<i class="rt-plus"></i></a>
                                     <ul class="dropdown-ul mega-dropdown">
-                                        <li class="mega-dropdown-li">
-                                            <ul class="mega-dropdown-ul">
-                                                <li class="dropdown-li"><a class="dropdown-link2" href="{% url 'shop' %}">Shop</a>
+                                        {% if all_categories %}
+                                            {% for category in all_categories %}
+                                                <li class="mega-dropdown-li {% if forloop.last %}last-child{% endif %}">
+                                                    <ul class="mega-dropdown-ul">
+                                                        <li class="dropdown-li">
+                                                            <a class="dropdown-link2" href="{% url 'category-only' category.slug %}">
+                                                                <strong>{{ category.name }}</strong>
+                                                            </a>
+                                                        </li>
+                                                        {% if category.subcategories.all %}
+                                                            {% for subcategory in category.subcategories.all %}
+                                                                <li class="dropdown-li">
+                                                                    <a class="dropdown-link2" href="{% url 'category-subcategory' category.slug subcategory.slug %}">
+                                                                        {{ subcategory.name }}
+                                                                    </a>
+                                                                </li>
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </ul>
                                                 </li>
-                                                <li class="dropdown-li"><a class="dropdown-link2" href="{% url 'sidebarLeft' %}">Left Sidebar Shop</a>
-                                                </li>
-                                                <li class="dropdown-li"><a class="dropdown-link2" href="{% url 'sidebarRight' %}">Right Sidebar Shop</a>
-                                                </li>
-                                                <li class="dropdown-li"><a class="dropdown-link2" href="{% url 'fullWidthShop' %}">Full Width Shop</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="mega-dropdown-li">
-                                            <ul class="mega-dropdown-ul">
-                                                <li class="dropdown-li"><a class="dropdown-link2" href="{% url 'productDetails' %}">Single Product Layout One</a>
-                                                </li>
-                                                <li class="dropdown-li"><a class="dropdown-link2" href="{% url 'productDetails2' %}">Single Product Layout Two</a>
-                                                </li>
-                                                <li class="dropdown-li"><a class="dropdown-link2" href="{% url 'variableProducts' %}">Variable
-                                                        Product</a>
-                                                </li>
-                                                <li class="dropdown-li"><a class="dropdown-link2" href="{% url 'groupedProducts' %}">Grouped
-                                                        Product</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="mega-dropdown-li last-child">
-                                            <ul class="mega-dropdown-ul">
-                                                <li class="dropdown-li"><a class="dropdown-link2" href="{% url 'cart' %}">Cart</a>
-                                                </li>
-
-                                                <li class="dropdown-li"><a class="dropdown-link2" href="{% url 'checkOut' %}">Checkout</a>
-                                                </li>
-                                                <li class="dropdown-li"><a class="dropdown-link2" href="{% url 'account' %}">My Account</a>
-                                                </li>
-                                            </ul>
-                                        </li>
+                                            {% endfor %}
+                                        {% else %}
+                                            <li class="mega-dropdown-li">
+                                                <ul class="mega-dropdown-ul">
+                                                    <li class="dropdown-li"><a class="dropdown-link2" href="{% url 'shop' %}">Shop</a></li>
+                                                </ul>
+                                            </li>
+                                        {% endif %}
                                     </ul>
                                 </li>
                                 <li class="has-dropdown"><a class="menu-item menu-item {% if subTitle == 'Pages' %}
@@ -339,55 +326,38 @@
         <!-- side-mobile-menu start -->
         <nav class="side-mobile-menu side-mobile-menu1">
             <ul id="mobile-menu-active">
+                
                 <li class="has-dropdown firstlvl">
-                    <a class="mm-link" href="/">Home <i class="rt-angle-down"></i></a>
-                    
-                </li>
-                <li class="has-dropdown firstlvl">
-                    <a class="mm-link" href="{% url 'shop' %}">Shop <i class="rt-angle-down"></i></a>
+                    <a class="mm-link" href="{% url 'shop' %}">Categories <i class="rt-angle-down"></i></a>
                     <ul class="sub-menu mega-dropdown-mobile">
-                        <li class="mega-dropdown-li">
-                            <ul class="mega-dropdown-ul mm-show">
-                                <li class="dropdown-li"><a class="dropdown-link" href="{% url 'shop' %}">Shop</a>
+                        {% if all_categories %}
+                            {% for category in all_categories %}
+                                <li class="mega-dropdown-li">
+                                    <ul class="mega-dropdown-ul mm-show">
+                                        <li class="dropdown-li">
+                                            <a class="dropdown-link" href="{% url 'category-only' category.slug %}">
+                                                <strong>{{ category.name }}</strong>
+                                            </a>
+                                        </li>
+                                        {% if category.subcategories.all %}
+                                            {% for subcategory in category.subcategories.all %}
+                                                <li class="dropdown-li">
+                                                    <a class="dropdown-link" href="{% url 'category-subcategory' category.slug subcategory.slug %}">
+                                                        {{ subcategory.name }}
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </ul>
                                 </li>
-                                <li class="dropdown-li"><a class="dropdown-link" href="{% url 'sidebarLeft' %}">Left Sidebar
-                                        Shop</a>
-                                </li>
-                                <li class="dropdown-li"><a class="dropdown-link" href="{% url 'sidebarRight' %}">Right Sidebar
-                                        Shop</a>
-                                </li>
-                                <li class="dropdown-li"><a class="dropdown-link" href="{% url 'fullWidthShop' %}">Full
-                                        Width Shop</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="mega-dropdown-li">
-                            <ul class="mega-dropdown-ul mm-show">
-                                <li class="dropdown-li"><a class="dropdown-link" href="{% url 'productDetails' %}">Single Product
-                                        Layout
-                                        One</a>
-                                </li>
-                                <li class="dropdown-li"><a class="dropdown-link" href="{% url 'productDetails2' %}">Single Product Layout
-                                        Two</a>
-                                </li>
-                                <li class="dropdown-li"><a class="dropdown-link" href="{% url 'variableProducts' %}">Variable Product</a>
-                                </li>
-                                <li class="dropdown-li"><a class="dropdown-link" href="{% url 'groupedProducts' %}">Grouped Product</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="mega-dropdown-li">
-                            <ul class="mega-dropdown-ul mm-show">
-                                <li class="dropdown-li"><a class="dropdown-link" href="{% url 'cart' %}">Cart
-                                    </a>
-                                </li>
-                                <li class="dropdown-li"><a class="dropdown-link" href="{% url 'checkOut' %}">Checkout</a>
-                                </li>
-                                <li class="dropdown-li"><a class="dropdown-link" href="{% url 'account' %}">My
-                                        Account</a>
-                                </li>
-                            </ul>
-                        </li>
+                            {% endfor %}
+                        {% else %}
+                            <li class="mega-dropdown-li">
+                                <ul class="mega-dropdown-ul mm-show">
+                                    <li class="dropdown-li"><a class="dropdown-link" href="{% url 'shop' %}">Shop</a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
                     </ul>
                 </li>
                 <li class="has-dropdown firstlvl">

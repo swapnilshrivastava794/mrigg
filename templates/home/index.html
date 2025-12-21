@@ -67,7 +67,7 @@
             <div class="wrapper">
                 <div class="sub-content">
                     <img class="line-1" src="/static/images/banner/wvbo-icon.png" alt="">
-                    <span class="sub-text">Featured</span>
+                    <span class="sub-text">Popular Products</span>
                     <img class="line-2" src="/static/images/banner/wvbo-icon.png" alt="">
                 </div>
                 <h2 class="title">HAND-PICKED PRODUCT</h2>
@@ -76,10 +76,10 @@
         <div class="slider-div">
             <div class="swiper rts-sixSlide-over">
                 <div class="swiper-wrapper">
-                    {% for product in fl %}
+                    {% for product in pl %}
                         <div class="swiper-slide">
                             <div class="product-item element-item1">
-                                <a href="{% url 'product_detail' product.slug %}" class="product-image image-hover-variations">
+                                <a href="{% url 'product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" class="product-image image-hover-variations">
                                     {% if product.images.all %}
                                         {% with images=product.images.all %}
                                             <div class="image-vari1 image-vari">
@@ -95,17 +95,11 @@
                                                 </div>
                                             {% endif %}
                                         {% endwith %}
-                                    {% else %}
-                                        <div class="image-vari1 image-vari">
-                                            <img src="/static/images/hand-picked/slider-img8.webp" alt="{{ product.name }}">
-                                        </div>
-                                        <div class="image-vari2 image-vari">
-                                            <img src="/static/images/hand-picked/slider-img8.webp" alt="{{ product.name }}">
-                                        </div>
+                                  
                                     {% endif %}
                                 </a>
                                 <div class="bottom-content">
-                                    <a href="{% url 'product_detail' product.slug %}" class="product-name">{{ product.name }}</a>
+                                    <a href="{% url 'product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" class="product-name">{{ product.name }}</a>
                                     <div class="action-wrap">
                                         {% if product.offerprice and product.offerprice < product.price %}
                                             <span class="price">₹{{ product.offerprice }}</span>
@@ -114,13 +108,17 @@
                                             <span class="price">₹{{ product.price }}</span>
                                         {% endif %}
                                     </div>
+                                    <div class="product-card-buttons" style="margin-top: 15px; display: flex; gap: 10px;">
+                                        <a href="{% url 'product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" class="btn-view-details" style="flex: 1; padding: 10px 15px; background: rgba(230, 230, 250, 0.8); color: #333; text-align: center; border-radius: 5px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease;">View Details</a>
+                                        <a href="{% url 'add_to_cart' product.slug %}" class="btn-add-to-cart" style="flex: 1; padding: 10px 15px; background: #8833b8; color: #fff; text-align: center; border-radius: 5px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease;">Add to Cart</a>
+                                    </div>
                                 </div>
                                 <div class="quick-action-button">
                                     <div class="cta-single cta-plus">
                                         <a href="#"><i class="rt-plus"></i></a>
                                     </div>
                                     <div class="cta-single cta-quickview">
-                                        <button class="product-details-popup-btn"><i class="far fa-eye"></i></button>
+                                        <a href="{% url 'product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" class="cta-quickview-link"><i class="far fa-eye"></i></a>
                                     </div>
                                     <div class="cta-single cta-wishlist">
                                         <a href="{% url 'wishlist' %}"><i class="far fa-heart"></i></a>
@@ -137,7 +135,7 @@
                             </div>
                         </div>
                     {% empty %}
-                        {# Fallback if no featured products #}
+                        {# Fallback if no popular products #}
                         <div class="swiper-slide">
                             <div class="product-item element-item1">
                                 <a href="{% url 'shop' %}" class="product-image image-hover-variations">
@@ -145,7 +143,7 @@
                                     <div class="image-vari2 image-vari"><img src="/static/images/hand-picked/slider-img8.webp" alt="product-image"></div>
                                 </a>
                                 <div class="bottom-content">
-                                    <a href="{% url 'shop' %}" class="product-name">No Featured Products</a>
+                                    <a href="{% url 'shop' %}" class="product-name">No Popular Products</a>
                                     <div class="action-wrap">
                                         <span class="price">Coming Soon</span>
                                     </div>
@@ -209,6 +207,201 @@
                 <div class="wrapper">
                     <div class="sub-content">
                         <img class="line-1" src="/static/images/banner/wvbo-icon.png" alt="">
+                        <span class="sub-text">Featured1</span>
+                        <img class="line-2" src="/static/images/banner/wvbo-icon.png" alt="">
+                    </div>
+                    <h2 class="title">LATEST PRODUCT</h2>
+                </div>
+            </div>
+            <div class="row">
+                {% for product in lts %}
+                    <div class="col-xl-3 col-md-4 col-sm-6 col-12">
+                        {% if forloop.counter == 3 %}
+                            {# 3rd product uses carousel slider #}
+                            <div class="product-item element-item2">
+                                <a href="{% url 'product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" class="product-image image-slider-variations">
+                                    {% if product.images.all %}
+                                        <div class="swiper productSlide">
+                                            <div class="swiper-wrapper">
+                                                {% for image in product.images.all|slice:":4" %}
+                                                    <div class="swiper-slide">
+                                                        <div class="image-vari{% if forloop.first %}1{% else %}2{% endif %} image-vari">
+                                                            <img src="{{ image.image.url }}" alt="{{ product.name }}">
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="swiper productSlide">
+                                            <div class="swiper-wrapper">
+                                                <div class="swiper-slide">
+                                                    <div class="image-vari1 image-vari">
+                                                        <img src="/static/images/hand-picked/slider-img8.webp" alt="{{ product.name }}">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    <div class="slider-buttons">
+                                        <div class="button-prev slider-btn"><i class="rt-arrow-left-long"></i></div>
+                                        <div class="button-next slider-btn"><i class="rt-arrow-right-long"></i></div>
+                                    </div>
+                                </a>
+                                <div class="bottom-content">
+                                    <div class="star-rating">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                    <a href="{% url 'product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" class="product-name">{{ product.name }}</a>
+                                    <div class="action-wrap">
+                                        {% if product.offerprice and product.offerprice < product.price %}
+                                            <span class="price">₹{{ product.offerprice }}</span>
+                                            <span class="old-price" style="text-decoration: line-through; color: #777; margin-left: 10px; font-size: 14px;">₹{{ product.price }}</span>
+                                        {% else %}
+                                            <span class="price">₹{{ product.price }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="product-card-buttons" style="margin-top: 15px; display: flex; gap: 10px;">
+                                        <a href="{% url 'product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" class="btn-view-details" style="flex: 1; padding: 10px 15px; background: rgba(230, 230, 250, 0.8); color: #333; text-align: center; border-radius: 5px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease;">View Details</a>
+                                        <a href="{% url 'add_to_cart' product.slug %}" class="btn-add-to-cart" style="flex: 1; padding: 10px 15px; background: #8833b8; color: #fff; text-align: center; border-radius: 5px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease;">Add to Cart</a>
+                                    </div>
+                                </div>
+                                <div class="quick-action-button">
+                                    <div class="cta-single cta-plus">
+                                        <a href="#"><i class="rt-plus"></i></a>
+                                    </div>
+                                    <div class="cta-single cta-quickview">
+                                        <a href="{% url 'product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" class="cta-quickview-link"><i class="far fa-eye"></i></a>
+                                    </div>
+                                    <div class="cta-single cta-wishlist">
+                                        <a href="{% url 'wishlist' %}"><i class="far fa-heart"></i></a>
+                                    </div>
+                                    <div class="cta-single cta-addtocart">
+                                        <a href="{% url 'cart' %}"><i class="rt-basket-shopping"></i></a>
+                                    </div>
+                                </div>
+                                {% if product.offerprice and product.offerprice < product.price %}
+                                    <div class="product-features">
+                                        <div class="discount-tag product-tag">SALE</div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            {# Other products use hover effect #}
+                            <div class="product-item element-item1">
+                                <a href="{% url 'product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" class="product-image image-hover-variations">
+                                    {% if product.images.all %}
+                                        {% with images=product.images.all %}
+                                            <div class="image-vari1 image-vari">
+                                                <img src="{{ images.0.image.url }}" alt="{{ product.name }}">
+                                            </div>
+                                            {% if images|length > 1 %}
+                                                <div class="image-vari2 image-vari">
+                                                    <img src="{{ images.1.image.url }}" alt="{{ product.name }}">
+                                                </div>
+                                            {% else %}
+                                                <div class="image-vari2 image-vari">
+                                                    <img src="{{ images.0.image.url }}" alt="{{ product.name }}">
+                                                </div>
+                                            {% endif %}
+                                        {% endwith %}
+                                    {% else %}
+                                        <div class="image-vari1 image-vari">
+                                            <img src="/static/images/hand-picked/slider-img8.webp" alt="{{ product.name }}">
+                                        </div>
+                                        <div class="image-vari2 image-vari">
+                                            <img src="/static/images/hand-picked/slider-img8.webp" alt="{{ product.name }}">
+                                        </div>
+                                    {% endif %}
+                                </a>
+                                <div class="bottom-content">
+                                    <div class="star-rating">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                    <a href="{% url 'product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" class="product-name">{{ product.name }}</a>
+                                    <div class="action-wrap">
+                                        {% if product.offerprice and product.offerprice < product.price %}
+                                            <span class="price">₹{{ product.offerprice }}</span>
+                                            <span class="old-price" style="text-decoration: line-through; color: #777; margin-left: 10px; font-size: 14px;">₹{{ product.price }}</span>
+                                        {% else %}
+                                            <span class="price">₹{{ product.price }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="product-card-buttons" style="margin-top: 15px; display: flex; gap: 10px;">
+                                        <a href="{% url 'product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" class="btn-view-details" style="flex: 1; padding: 10px 15px; background: rgba(230, 230, 250, 0.8); color: #333; text-align: center; border-radius: 5px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease;">View Details</a>
+                                        <a href="{% url 'add_to_cart' product.slug %}" class="btn-add-to-cart" style="flex: 1; padding: 10px 15px; background: #8833b8; color: #fff; text-align: center; border-radius: 5px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease;">Add to Cart</a>
+                                    </div>
+                                </div>
+                                <div class="quick-action-button">
+                                    <div class="cta-single cta-plus">
+                                        <a href="#"><i class="rt-plus"></i></a>
+                                    </div>
+                                    <div class="cta-single cta-quickview">
+                                        <a href="{% url 'product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" class="cta-quickview-link"><i class="far fa-eye"></i></a>
+                                    </div>
+                                    <div class="cta-single cta-wishlist">
+                                        <a href="{% url 'wishlist' %}"><i class="far fa-heart"></i></a>
+                                    </div>
+                                    <div class="cta-single cta-addtocart">
+                                        <a href="{% url 'cart' %}"><i class="rt-basket-shopping"></i></a>
+                                    </div>
+                                </div>
+                                {% if product.offerprice and product.offerprice < product.price %}
+                                    <div class="product-features">
+                                        <div class="discount-tag product-tag">SALE</div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% empty %}
+                    {# Fallback if no latest products #}
+                    <div class="col-xl-3 col-md-4 col-sm-6 col-12">
+                        <div class="product-item element-item1">
+                            <a href="{% url 'shop' %}" class="product-image image-hover-variations">
+                                <div class="image-vari1 image-vari"><img src="/static/images/hand-picked/slider-img8.webp" alt="product-image"></div>
+                                <div class="image-vari2 image-vari"><img src="/static/images/hand-picked/slider-img8.webp" alt="product-image"></div>
+                            </a>
+                            <div class="bottom-content">
+                                <div class="star-rating">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <a href="{% url 'shop' %}" class="product-name">No Latest Products</a>
+                                <div class="action-wrap">
+                                    <span class="price">Coming Soon</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ..::Featured Product Section End Here::.. -->
+
+
+
+<!-- ..::Featured Product Section Start Here::.. -->
+<div class="rts-featured-product-section1">
+    <div class="container">
+        <div class="rts-featured-product-section-inner">
+            <div class="section-header section-header3 text-center">
+                <div class="wrapper">
+                    <div class="sub-content">
+                        <img class="line-1" src="/static/images/banner/wvbo-icon.png" alt="">
                         <span class="sub-text">Featured</span>
                         <img class="line-2" src="/static/images/banner/wvbo-icon.png" alt="">
                     </div>
@@ -216,175 +409,184 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-xl-3 col-md-4 col-sm-6 col-12">
-                    <div class="product-item element-item1">
-                        <a href="{% url 'productDetails' %}" class="product-image image-hover-variations">
-                            <div class="image-vari1 image-vari"><img src="/static/images/hand-picked/slider-img13-1.webp" alt="product-image">
-                            </div>
-                            <div class="image-vari2 image-vari"><img src="/static/images/hand-picked/slider-img13.webp" alt="product-image">
-                            </div>
-                        </a>
-                        <div class="bottom-content">
-                            <div class="star-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                            <a href="{% url 'productDetails' %}" class="product-name">Girl's Sport Bra</a>
-                            <div class="action-wrap">
-                                <span class="price">$31.00</span>
-                            </div>
-                        </div>
-                        <div class="quick-action-button">
-                            <div class="cta-single cta-plus">
-                                <a href="#"><i class="rt-plus"></i></a>
-                            </div>
-                            <div class="cta-single cta-quickview">
-                                <button class="product-details-popup-btn"><i class="far fa-eye"></i></button>
-                            </div>
-                            <div class="cta-single cta-wishlist">
-                                <a href="{% url 'wishlist' %}"><i class="far fa-heart"></i></a>
-                            </div>
-                            <div class="cta-single cta-addtocart">
-                                <a href="{% url 'cart' %}"><i class="rt-basket-shopping"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-md-4 col-sm-6 col-12">
-                    <div class="product-item element-item1">
-                        <a href="{% url 'productDetails' %}" class="product-image image-hover-variations">
-                            <div class="image-vari1 image-vari"><img src="/static/images/hand-picked/slider-img14.webp" alt="product-image">
-                            </div>
-                            <div class="image-vari2 image-vari"><img src="/static/images/hand-picked/slider-img14-1.webp" alt="product-image">
-                            </div>
-                        </a>
-                        <div class="bottom-content">
-                            <div class="star-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                            <a href="{% url 'productDetails' %}" class="product-name">Girl's Sport Bra</a>
-                            <div class="action-wrap">
-                                <span class="price">$31.00</span>
-                            </div>
-                        </div>
-                        <div class="quick-action-button">
-                            <div class="cta-single cta-plus">
-                                <a href="#"><i class="rt-plus"></i></a>
-                            </div>
-                            <div class="cta-single cta-quickview">
-                                <button class="product-details-popup-btn"><i class="far fa-eye"></i></button>
-                            </div>
-                            <div class="cta-single cta-wishlist">
-                                <a href="{% url 'wishlist' %}"><i class="far fa-heart"></i></a>
-                            </div>
-                            <div class="cta-single cta-addtocart">
-                                <a href="{% url 'cart' %}"><i class="rt-basket-shopping"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-md-4 col-sm-6 col-12">
-                    <div class="product-item element-item2">
-                        <a href="{% url 'productDetails' %}" class="product-image image-slider-variations">
-                            <div class="swiper productSlide">
-                                <div class="swiper-wrapper">
-                                    <div class="swiper-slide">
-                                        <div class="image-vari1 image-vari"><img src="/static/images/hand-picked/slider-img12-1.webp" alt="product-image">
+                {% for product in fl %}
+                    <div class="col-xl-3 col-md-4 col-sm-6 col-12">
+                        {% if forloop.counter == 3 %}
+                            {# 3rd product uses carousel slider #}
+                            <div class="product-item element-item2">
+                                <a href="{% url 'product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" class="product-image image-slider-variations">
+                                    {% if product.images.all %}
+                                        <div class="swiper productSlide">
+                                            <div class="swiper-wrapper">
+                                                {% for image in product.images.all|slice:":4" %}
+                                                    <div class="swiper-slide">
+                                                        <div class="image-vari{% if forloop.first %}1{% else %}2{% endif %} image-vari">
+                                                            <img src="{{ image.image.url }}" alt="{{ product.name }}">
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
                                         </div>
+                                    {% else %}
+                                        <div class="swiper productSlide">
+                                            <div class="swiper-wrapper">
+                                                <div class="swiper-slide">
+                                                    <div class="image-vari1 image-vari">
+                                                        <img src="/static/images/hand-picked/slider-img8.webp" alt="{{ product.name }}">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    <div class="slider-buttons">
+                                        <div class="button-prev slider-btn"><i class="rt-arrow-left-long"></i></div>
+                                        <div class="button-next slider-btn"><i class="rt-arrow-right-long"></i></div>
                                     </div>
-                                    <div class="swiper-slide">
-                                        <div class="image-vari2 image-vari"><img src="/static/images/hand-picked/slider-img11_1.webp" alt="product-image">
-                                        </div>
+                                </a>
+                                <div class="bottom-content">
+                                    <div class="star-rating">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                    <a href="{% url 'product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" class="product-name">{{ product.name }}</a>
+                                    <div class="action-wrap">
+                                        {% if product.offerprice and product.offerprice < product.price %}
+                                            <span class="price">₹{{ product.offerprice }}</span>
+                                            <span class="old-price" style="text-decoration: line-through; color: #777; margin-left: 10px; font-size: 14px;">₹{{ product.price }}</span>
+                                        {% else %}
+                                            <span class="price">₹{{ product.price }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="product-card-buttons" style="margin-top: 15px; display: flex; gap: 10px;">
+                                        <a href="{% url 'product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" class="btn-view-details" style="flex: 1; padding: 10px 15px; background: rgba(230, 230, 250, 0.8); color: #333; text-align: center; border-radius: 5px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease;">View Details</a>
+                                        <a href="{% url 'add_to_cart' product.slug %}" class="btn-add-to-cart" style="flex: 1; padding: 10px 15px; background: #8833b8; color: #fff; text-align: center; border-radius: 5px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease;">Add to Cart</a>
                                     </div>
                                 </div>
+                                <div class="quick-action-button">
+                                    <div class="cta-single cta-plus">
+                                        <a href="#"><i class="rt-plus"></i></a>
+                                    </div>
+                                    <div class="cta-single cta-quickview">
+                                        <a href="{% url 'product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" class="cta-quickview-link"><i class="far fa-eye"></i></a>
+                                    </div>
+                                    <div class="cta-single cta-wishlist">
+                                        <a href="{% url 'wishlist' %}"><i class="far fa-heart"></i></a>
+                                    </div>
+                                    <div class="cta-single cta-addtocart">
+                                        <a href="{% url 'cart' %}"><i class="rt-basket-shopping"></i></a>
+                                    </div>
+                                </div>
+                                {% if product.offerprice and product.offerprice < product.price %}
+                                    <div class="product-features">
+                                        <div class="discount-tag product-tag">SALE</div>
+                                    </div>
+                                {% endif %}
                             </div>
-                            <div class="slider-buttons">
-                                <div class="button-prev slider-btn"><i class="rt-arrow-left-long"></i></div>
-                                <div class="button-next slider-btn"><i class="rt-arrow-right-long"></i></div>
+                        {% else %}
+                            {# Other products use hover effect #}
+                            <div class="product-item element-item1">
+                                <a href="{% url 'product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" class="product-image image-hover-variations">
+                                    {% if product.images.all %}
+                                        {% with images=product.images.all %}
+                                            <div class="image-vari1 image-vari">
+                                                <img src="{{ images.0.image.url }}" alt="{{ product.name }}">
+                                            </div>
+                                            {% if images|length > 1 %}
+                                                <div class="image-vari2 image-vari">
+                                                    <img src="{{ images.1.image.url }}" alt="{{ product.name }}">
+                                                </div>
+                                            {% else %}
+                                                <div class="image-vari2 image-vari">
+                                                    <img src="{{ images.0.image.url }}" alt="{{ product.name }}">
+                                                </div>
+                                            {% endif %}
+                                        {% endwith %}
+                                    {% else %}
+                                        <div class="image-vari1 image-vari">
+                                            <img src="/static/images/hand-picked/slider-img8.webp" alt="{{ product.name }}">
+                                        </div>
+                                        <div class="image-vari2 image-vari">
+                                            <img src="/static/images/hand-picked/slider-img8.webp" alt="{{ product.name }}">
+                                        </div>
+                                    {% endif %}
+                                </a>
+                                <div class="bottom-content">
+                                    <div class="star-rating">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                    <a href="{% url 'product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" class="product-name">{{ product.name }}</a>
+                                    <div class="action-wrap">
+                                        {% if product.offerprice and product.offerprice < product.price %}
+                                            <span class="price">₹{{ product.offerprice }}</span>
+                                            <span class="old-price" style="text-decoration: line-through; color: #777; margin-left: 10px; font-size: 14px;">₹{{ product.price }}</span>
+                                        {% else %}
+                                            <span class="price">₹{{ product.price }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="product-card-buttons" style="margin-top: 15px; display: flex; gap: 10px;">
+                                        <a href="{% url 'product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" class="btn-view-details" style="flex: 1; padding: 10px 15px; background: rgba(230, 230, 250, 0.8); color: #333; text-align: center; border-radius: 5px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease;">View Details</a>
+                                        <a href="{% url 'add_to_cart' product.slug %}" class="btn-add-to-cart" style="flex: 1; padding: 10px 15px; background: #8833b8; color: #fff; text-align: center; border-radius: 5px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease;">Add to Cart</a>
+                                    </div>
+                                </div>
+                                <div class="quick-action-button">
+                                    <div class="cta-single cta-plus">
+                                        <a href="#"><i class="rt-plus"></i></a>
+                                    </div>
+                                    <div class="cta-single cta-quickview">
+                                        <a href="{% url 'product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" class="cta-quickview-link"><i class="far fa-eye"></i></a>
+                                    </div>
+                                    <div class="cta-single cta-wishlist">
+                                        <a href="{% url 'wishlist' %}"><i class="far fa-heart"></i></a>
+                                    </div>
+                                    <div class="cta-single cta-addtocart">
+                                        <a href="{% url 'cart' %}"><i class="rt-basket-shopping"></i></a>
+                                    </div>
+                                </div>
+                                {% if product.offerprice and product.offerprice < product.price %}
+                                    <div class="product-features">
+                                        <div class="discount-tag product-tag">SALE</div>
+                                    </div>
+                                {% endif %}
                             </div>
-                        </a>
-                        <div class="bottom-content">
-                            <div class="star-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star-half-alt"></i>
-                            </div>
-                            <a href="{% url 'productDetails' %}" class="product-name">Maidenform Bra</a>
-                            <div class="action-wrap">
-                                <span class="price">$31.00</span>
-                            </div>
-                        </div>
-                        <div class="quick-action-button">
-                            <div class="cta-single cta-plus">
-                                <a href="#"><i class="rt-plus"></i></a>
-                            </div>
-                            <div class="cta-single cta-quickview">
-                                <button class="product-details-popup-btn"><i class="far fa-eye"></i></button>
-                            </div>
-                            <div class="cta-single cta-wishlist">
-                                <a href="{% url 'wishlist' %}"><i class="far fa-heart"></i></a>
-                            </div>
-                            <div class="cta-single cta-addtocart">
-                                <a href="{% url 'cart' %}"><i class="rt-basket-shopping"></i></a>
+                        {% endif %}
+                    </div>
+                {% empty %}
+                    {# Fallback if no featured products #}
+                    <div class="col-xl-3 col-md-4 col-sm-6 col-12">
+                        <div class="product-item element-item1">
+                            <a href="{% url 'shop' %}" class="product-image image-hover-variations">
+                                <div class="image-vari1 image-vari"><img src="/static/images/hand-picked/slider-img8.webp" alt="product-image"></div>
+                                <div class="image-vari2 image-vari"><img src="/static/images/hand-picked/slider-img8.webp" alt="product-image"></div>
+                            </a>
+                            <div class="bottom-content">
+                                <div class="star-rating">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <a href="{% url 'shop' %}" class="product-name">No Featured Products</a>
+                                <div class="action-wrap">
+                                    <span class="price">Coming Soon</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-xl-3 col-md-4 col-sm-6 col-12">
-                    <div class="product-item element-item1">
-                        <a href="{% url 'productDetails' %}" class="product-image image-hover-variations">
-                            <div class="image-vari1 image-vari"><img src="/static/images/hand-picked/slider-img12.webp" alt="product-image">
-                            </div>
-                            <div class="image-vari2 image-vari"><img src="/static/images/hand-picked/slider-img12-3.webp" alt="product-image">
-                            </div>
-                        </a>
-                        <div class="bottom-content">
-                            <div class="star-rating">
-                                <i class="far fa-star"></i>
-                                <i class="far fa-star"></i>
-                                <i class="far fa-star"></i>
-                                <i class="far fa-star"></i>
-                                <i class="far fa-star"></i>
-                            </div>
-                            <a href="{% url 'productDetails' %}" class="product-name">Hanes Women's Bra</a>
-                            <div class="action-wrap">
-                                <span class="price">$31.00</span>
-                            </div>
-                        </div>
-                        <div class="quick-action-button">
-                            <div class="cta-single cta-plus">
-                                <a href="#"><i class="rt-plus"></i></a>
-                            </div>
-                            <div class="cta-single cta-quickview">
-                                <button class="product-details-popup-btn"><i class="far fa-eye"></i></button>
-                            </div>
-                            <div class="cta-single cta-wishlist">
-                                <a href="{% url 'wishlist' %}"><i class="far fa-heart"></i></a>
-                            </div>
-                            <div class="cta-single cta-addtocart">
-                                <a href="{% url 'cart' %}"><i class="rt-basket-shopping"></i></a>
-                            </div>
-                        </div>
-                        <div class="product-features">
-                            <div class="discount-tag product-tag">-38%</div>
-                            <div class="new-tag product-tag">HOT</div>
-                        </div>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </div>
 </div>
 <!-- ..::Featured Product Section End Here::.. -->
+
 
 <!-- ..::Posters Section Start Here::.. -->
 <div class="rts-posters-section1">
@@ -470,7 +672,7 @@
                 <div class="wrapper">
                     <div class="sub-content">
                         <img class="line-1" src="/static/images/banner/wvbo-icon.png" alt="">
-                        <span class="sub-text">Featured</span>
+                        <span class="sub-text">Featured2</span>
                         <img class="line-2" src="/static/images/banner/wvbo-icon.png" alt="">
                     </div>
                     <h2 class="title">FEATURED PRODUCT</h2>
@@ -586,80 +788,5 @@
 </div> -->
 <!-- ..::Newsletter Popup End Here::.. -->
 
-<!-- ..::Product-details Section Start Here::.. -->
-<div class="product-details-popup-wrapper">
-    <div class="rts-product-details-section rts-product-details-section2 product-details-popup-section">
-        <div class="product-details-popup">
-            <button class="product-details-close-btn"><i class="fal fa-times"></i></button>
-            <div class="details-product-area">
-                <div class="product-thumb-area">
-                    <div class="cursor"></div>
-                    <div class="thumb-wrapper one filterd-items figure">
-                        <div class="product-thumb zoom" onmousemove="zoom(event)" style="background-image: url('/static/images/products/product-details.jpg')"><img src="/static/images/products/product-details.jpg" alt="product-thumb">
-                        </div>
-                    </div>
-                    <div class="thumb-wrapper two filterd-items hide">
-                        <div class="product-thumb zoom" onmousemove="zoom(event)" style="background-image: url('/static/images/products/product-filt2.jpg')"><img src="/static/images/products/product-filt2.jpg" alt="product-thumb">
-                        </div>
-                    </div>
-                    <div class="thumb-wrapper three filterd-items hide">
-                        <div class="product-thumb zoom" onmousemove="zoom(event)" style="background-image: url('/static/images/products/product-filt3.jpg')"><img src="/static/images/products/product-filt3.jpg" alt="product-thumb">
-                        </div>
-                    </div>
-                    <div class="product-thumb-filter-group">
-                        <div class="thumb-filter filter-btn active" data-show=".one"><img src="/static/images/products/product-filt1.jpg" alt="product-thumb-filter"></div>
-                        <div class="thumb-filter filter-btn" data-show=".two"><img src="/static/images/products/product-filt2.jpg" alt="product-thumb-filter"></div>
-                        <div class="thumb-filter filter-btn" data-show=".three"><img src="/static/images/products/product-filt3.jpg" alt="product-thumb-filter"></div>
-                    </div>
-                </div>
-                <div class="contents">
-                    <div class="product-status">
-                        <span class="product-catagory">Dress</span>
-                        <div class="rating-stars-group">
-                            <div class="rating-star"><i class="fas fa-star"></i></div>
-                            <div class="rating-star"><i class="fas fa-star"></i></div>
-                            <div class="rating-star"><i class="fas fa-star-half-alt"></i></div>
-                            <span>10 Reviews</span>
-                        </div>
-                    </div>
-                    <h2 class="product-title">Wide Cotton Tunic Dress <span class="stock">In Stock</span></h2>
-                    <span class="product-price"><span class="old-price">$9.35</span> $7.25</span>
-                    <p>
-                        Priyoshop has brought to you the Hijab 3 Pieces Combo Pack PS23. It is a
-                        completely modern design and you feel comfortable to put on this hijab.
-                        Buy it at the best price.
-                    </p>
-                    <div class="product-bottom-action">
-                        <div class="cart-edit">
-                            <div class="quantity-edit action-item">
-                                <button class="button"><i class="fal fa-minus minus"></i></button>
-                                <input type="text" class="input" value="01" />
-                                <button class="button plus">+<i class="fal fa-plus plus"></i></button>
-                            </div>
-                        </div>
-                        <a href="{% url 'cart' %}" class="addto-cart-btn action-item"><i class="rt-basket-shopping"></i>
-                            Add To
-                            Cart</a>
-                        <a href="{% url 'wishlist' %}" class="wishlist-btn action-item"><i class="rt-heart"></i></a>
-                    </div>
-                    <div class="product-uniques">
-                        <span class="sku product-unipue"><span>SKU: </span> BO1D0MX8SJ</span>
-                        <span class="catagorys product-unipue"><span>Categories: </span> T-Shirts, Tops, Mens</span>
-                        <span class="tags product-unipue"><span>Tags: </span> fashion, t-shirts, Men</span>
-                    </div>
-                    <div class="share-social">
-                        <span>Share:</span>
-                        <a class="platform" href="http://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                        <a class="platform" href="http://twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
-                        <a class="platform" href="http://behance.com" target="_blank"><i class="fab fa-behance"></i></a>
-                        <a class="platform" href="http://youtube.com" target="_blank"><i class="fab fa-youtube"></i></a>
-                        <a class="platform" href="http://linkedin.com" target="_blank"><i class="fab fa-linkedin"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- ..::Product-details Section End Here::.. -->
 
 {% endblock content %}

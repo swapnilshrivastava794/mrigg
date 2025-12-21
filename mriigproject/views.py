@@ -163,18 +163,35 @@ def contactus(request):
         'categories': categories,
         'products': products
     })
-def product_detail(request, slug):
+def product_detail(request, category_slug, subcategory_slug, product_slug):
     categories = Category.objects.filter(is_active=True).order_by('order')[:6]
-    product = get_object_or_404(Product.objects.prefetch_related('images', 'sections'), slug=slug)
-    related_products = Product.objects.filter(subcategory=product.subcategory).exclude(id=product.id)[:5]  # limit to 5
-    sections = product.sections.all()
+    # Verify that the product belongs to the specified category and subcategory
+    product = get_object_or_404(
+        Product.objects.prefetch_related('images', 'sections').select_related('subcategory__category', 'brand'),
+        slug=product_slug,
+        subcategory__slug=subcategory_slug,
+        subcategory__category__slug=category_slug,
+        is_active=True
+    )
+    # Filter images and video separately
+    product_images = product.images.filter(media_type='image')
+    product_video = product.images.filter(media_type='video').first()  # Get first video if available
+    # Get latest products from same subcategory for carousel (same as HAND-PICKED PRODUCT section)
+    related_products = Product.objects.filter(subcategory=product.subcategory, is_active=True).exclude(id=product.id).prefetch_related('images').order_by('-id')[:20]  # limit to 20, latest first
+    sections = product.sections.all().order_by('id')  # Order sections by id
 
-    return render(request, 'jb/main/product-detail.html', {
+    return render(request, 'shop/productDetails.html', {
         'product': product,
+        'product_images': product_images,
+        'product_video': product_video,
         'related_products': related_products,
         'sections': sections,
         'categories': categories,  # pass sections to template
         'footer': True,  # Show footer
+        'title': 'Product Details',
+        'subTitle': 'Shop',
+        'subTitle2': 'Product',
+        'script': '<script src="/static/js/vendors/zoom.js"></script>',
     })
 
 # def register(request):
