@@ -2,12 +2,16 @@ from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
 
 from .views import (
+    CheckoutView,
+    MyOrdersView,
+    OrderDetailView,
     ProductSearchListView,
     RegisterView,
     CustomTokenObtainPairView,
     ProfileView,
     UpdateProfileView,
     RequestOTPView,
+    UserAddressListView,
     VerifyOTPChangePasswordView,
     LogoutView,
     ResendOTPView,
@@ -70,4 +74,11 @@ urlpatterns = [
 
 ),
     path("products/search/", ProductSearchListView.as_view(), name="product-search"),
+
+    path('addresses/', UserAddressListView.as_view(), name='address-list'),
+
+    path('checkout/', CheckoutView.as_view(), name='checkout'),
+
+    path('orders/', MyOrdersView.as_view(), name='my-orders'),
+    path('orders/<int:order_id>/', OrderDetailView.as_view(), name='order-detail'),
 ]
