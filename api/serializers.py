@@ -480,5 +480,16 @@ class OrderSerializer(serializers.ModelSerializer):
             item.price * item.quantity
             for item in obj.items.all()
         )
+    
+class PaymentSuccessSerializer(serializers.Serializer):
+    order_id = serializers.IntegerField()
+
+    def validate_order_id(self, value):
+        user = self.context['request'].user
+
+        if not Order.objects.filter(id=value, user=user).exists():
+            raise serializers.ValidationError("Invalid order ID")
+
+        return value
 
 

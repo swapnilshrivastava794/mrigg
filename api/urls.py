@@ -5,12 +5,15 @@ from .views import (
     CheckoutView,
     MyOrdersView,
     OrderDetailView,
+    PaymentSuccessAPIView,
     ProductSearchListView,
     RegisterView,
     CustomTokenObtainPairView,
     ProfileView,
     UpdateProfileView,
     RequestOTPView,
+    UserAddressAPIView,
+    UserAddressDetailAPIView,
     UserAddressListView,
     VerifyOTPChangePasswordView,
     LogoutView,
@@ -76,9 +79,13 @@ urlpatterns = [
     path("products/search/", ProductSearchListView.as_view(), name="product-search"),
 
     path('addresses/', UserAddressListView.as_view(), name='address-list'),
+    path("user/addresses/", UserAddressAPIView.as_view()),
+    path("user/addresses/<int:pk>/", UserAddressDetailAPIView.as_view()),
 
     path('checkout/', CheckoutView.as_view(), name='checkout'),
 
     path('orders/', MyOrdersView.as_view(), name='my-orders'),
     path('orders/<int:order_id>/', OrderDetailView.as_view(), name='order-detail'),
+
+    path("payment-success/", PaymentSuccessAPIView.as_view(), name="payment-success"),
 ]
