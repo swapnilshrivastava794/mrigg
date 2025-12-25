@@ -480,8 +480,8 @@ class ProductVariation(models.Model):
             from django.utils.text import slugify
             base_slug = slugify(self.name)
             
-            # Update slug if empty or doesn't match name
-            if not self.slug or self.slug != base_slug:
+            # Update slug if empty, None, or doesn't match name
+            if not self.slug or (isinstance(self.slug, str) and self.slug.strip() == '') or self.slug != base_slug:
                 self.slug = base_slug
                 
                 # Ensure uniqueness within the product
@@ -493,6 +493,9 @@ class ProductVariation(models.Model):
                     ).exclude(id=self.id if self.id else None).exists():
                         self.slug = f"{original_slug}-{counter}"
                         counter += 1
+                        # Prevent infinite loop
+                        if counter > 1000:
+                            break
         
         # Call parent save
         super().save(*args, **kwargs)

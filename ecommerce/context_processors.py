@@ -1,11 +1,16 @@
 from django.db.models import Prefetch
-from ecommerce.models import CustomUser, Category, SubCategory
+from ecommerce.models import CustomUser, Category, SubCategory, Brand
 
 
 def cart_item_count(request):
     cart = request.session.get('cart', {})
     total_items = sum(cart.values())
-    return {'cart_item_count': total_items}
+    wishlist = request.session.get('wishlist', [])
+    wishlist_count = len(wishlist)
+    return {
+        'cart_item_count': total_items,
+        'wishlist_count': wishlist_count
+    }
 
 
 def custom_user_context(request):
@@ -31,7 +36,12 @@ def categories_context(request):
             queryset=SubCategory.objects.filter(is_active=True).order_by('order')
         )
     ).order_by('order')
+    
+    # Get all active brands for menu dropdown
+    all_brands = Brand.objects.filter(is_active=True).order_by('order', 'name')
+    
     return {
         'categories': categories,
-        'all_categories': all_categories
+        'all_categories': all_categories,
+        'all_brands': all_brands
     }

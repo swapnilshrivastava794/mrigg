@@ -280,10 +280,30 @@ def register(request):
 
 
 def add_to_cart(request, slug):
-    product = get_object_or_404(Product, slug=slug)
+    product = get_object_or_404(Product, slug=slug, is_active=True)
 
     cart = request.session.get('cart', {})
-    quantity = int(request.POST.get('quantity', 1))
+    # Get quantity from POST or GET, default to 1
+    if request.method == 'POST':
+        quantity = int(request.POST.get('quantity', 1))
+    else:
+        quantity = int(request.GET.get('quantity', 1))
+
+    # Check stock availability
+    current_quantity = cart.get(str(product.id), 0)
+    if current_quantity + quantity > product.stock:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            from django.http import JsonResponse
+            return JsonResponse({
+                'success': False,
+                'message': f'Only {product.stock} items available in stock.',
+                'cart_count': sum(cart.values())
+            }, status=400)
+        messages.error(request, f'Only {product.stock} items available in stock.')
+        referer = request.META.get('HTTP_REFERER')
+        if referer:
+            return redirect(referer)
+        return redirect('shop')
 
     # Store product ID as key
     if str(product.id) in cart:
@@ -292,33 +312,75 @@ def add_to_cart(request, slug):
         cart[str(product.id)] = quantity
 
     request.session['cart'] = cart
+    request.session.modified = True
+    
+    # Handle AJAX requests
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        from django.http import JsonResponse
+        cart_count = sum(cart.values())
+        return JsonResponse({
+            'success': True,
+            'message': f'{product.name} added to cart successfully.',
+            'cart_count': cart_count,
+            'product_name': product.name
+        })
+    
     messages.success(request, f"{product.name} added to cart.")
-    return redirect('product_detail', slug=product.slug)
+    
+    # Redirect back to the referring page or shop page
+    referer = request.META.get('HTTP_REFERER')
+    if referer:
+        return redirect(referer)
+    # Fallback to product detail if no referer
+    if hasattr(product, 'subcategory') and product.subcategory:
+        return redirect('product_detail', 
+                       category_slug=product.subcategory.category.slug,
+                       subcategory_slug=product.subcategory.slug,
+                       product_slug=product.slug)
+    return redirect('shop')
 
 
 def view_cart(request):
     categories = Category.objects.filter(is_active=True).order_by('order')[:6]
     cart = request.session.get('cart', {})
-    products = Product.objects.filter(id__in=cart.keys())
+    # Filter out empty cart
+    if not cart:
+        return render(request, 'shop/cart.html', {
+            'cart_items': [],
+            'total_price': 0,
+            'categories': categories,
+            'title': 'Cart',
+            'subTitle': 'Shop',
+            'subTitle2': 'Cart',
+        })
+    products = Product.objects.filter(id__in=cart.keys()).prefetch_related('images')
 
     cart_items = []
     total_price = 0
 
     for product in products:
         quantity = cart[str(product.id)]
-        subtotal = product.price * quantity
+        # Use offerprice if available, otherwise use price
+        effective_price = product.offerprice if product.offerprice and product.offerprice > 0 else product.price
+        subtotal = effective_price * quantity
+        # Get first product image
+        product_image = product.images.filter(media_type='image').first()
         cart_items.append({
             'product': product,
             'quantity': quantity,
             'subtotal': subtotal,
+            'effective_price': effective_price,
+            'product_image': product_image,
         })
         total_price += subtotal
 
-    return render(request, 'main/cart.html', {
+    return render(request, 'shop/cart.html', {
         'cart_items': cart_items,
         'total_price': total_price,
         'categories': categories,
-        
+        'title': 'Cart',
+        'subTitle': 'Shop',
+        'subTitle2': 'Cart',
     })
 
 
@@ -398,23 +460,95 @@ def order_confirmation(request, order_id):
 
 
 def remove_from_cart(request, product_id):
+    from django.http import JsonResponse
+    
     cart = request.session.get('cart', {})
     if str(product_id) in cart:
         del cart[str(product_id)]
         request.session['cart'] = cart
+        request.session.modified = True
+        cart_count = sum(cart.values())
+        
+        # Handle AJAX requests
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({
+                'success': True,
+                'message': 'Item removed from cart.',
+                'cart_count': cart_count
+            })
+        
         messages.success(request, "Item removed from cart.")
+    else:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({
+                'success': False,
+                'message': 'Item not found in cart.',
+                'cart_count': sum(cart.values())
+            })
+    
     return redirect('view_cart')
 
 
 def update_cart_quantity(request, product_id):
+    from django.http import JsonResponse
+    from ecommerce.models import Product
+    
     if request.method == "POST":
         new_quantity = int(request.POST.get('quantity', 1))
         cart = request.session.get('cart', {})
+        
+        # Check stock availability
+        try:
+            product = Product.objects.get(id=product_id)
+            if new_quantity > product.stock:
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'success': False,
+                        'message': f'Only {product.stock} items available in stock.',
+                        'cart_count': sum(cart.values())
+                    }, status=400)
+                messages.error(request, f'Only {product.stock} items available in stock.')
+                return redirect('view_cart')
+        except Product.DoesNotExist:
+            pass
+        
         if new_quantity > 0:
             cart[str(product_id)] = new_quantity
         else:
-            del cart[str(product_id)]
+            if str(product_id) in cart:
+                del cart[str(product_id)]
+        
         request.session['cart'] = cart
+        request.session.modified = True
+        cart_count = sum(cart.values())
+        
+        # Calculate updated subtotal
+        try:
+            product = Product.objects.get(id=product_id)
+            effective_price = product.offerprice if product.offerprice and product.offerprice > 0 else product.price
+            subtotal = effective_price * new_quantity if new_quantity > 0 else 0
+        except Product.DoesNotExist:
+            subtotal = 0
+        
+        # Calculate total price
+        products = Product.objects.filter(id__in=cart.keys())
+        total_price = 0
+        for prod in products:
+            qty = cart.get(str(prod.id), 0)
+            eff_price = prod.offerprice if prod.offerprice and prod.offerprice > 0 else prod.price
+            total_price += eff_price * qty
+        
+        # Handle AJAX requests
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({
+                'success': True,
+                'message': 'Cart updated successfully.',
+                'cart_count': cart_count,
+                'subtotal': float(subtotal),
+                'total_price': float(total_price),
+                'quantity': new_quantity
+            })
+        
         messages.success(request, "Cart updated.")
     return redirect('view_cart')
 
@@ -423,6 +557,60 @@ def cart_item_count(request):
     cart = request.session.get('cart', {})
     total_items = sum(cart.values())
     return {'cart_item_count': total_items}
+
+
+# ==================== Wishlist Functions ====================
+def add_to_wishlist(request, slug):
+    product = get_object_or_404(Product, slug=slug, is_active=True)
+    
+    wishlist = request.session.get('wishlist', [])
+    
+    # Add product ID to wishlist if not already there
+    if str(product.id) not in wishlist:
+        wishlist.append(str(product.id))
+        request.session['wishlist'] = wishlist
+        request.session.modified = True
+        messages.success(request, f"{product.name} added to wishlist.")
+    else:
+        messages.info(request, f"{product.name} is already in your wishlist.")
+    
+    # Redirect back to the referring page
+    referer = request.META.get('HTTP_REFERER')
+    if referer:
+        return redirect(referer)
+    return redirect('shop')
+
+
+def remove_from_wishlist(request, product_id):
+    wishlist = request.session.get('wishlist', [])
+    if str(product_id) in wishlist:
+        wishlist.remove(str(product_id))
+        request.session['wishlist'] = wishlist
+        request.session.modified = True
+        messages.success(request, "Item removed from wishlist.")
+    return redirect('view_wishlist')
+
+
+def view_wishlist(request):
+    categories = Category.objects.filter(is_active=True).order_by('order')[:6]
+    wishlist = request.session.get('wishlist', [])
+    
+    if wishlist:
+        products = Product.objects.filter(
+            id__in=[int(id) for id in wishlist],
+            is_active=True
+        ).select_related('subcategory', 'subcategory__category', 'brand').prefetch_related('images')
+    else:
+        products = Product.objects.none()
+    
+    return render(request, 'home/wishlist.html', {
+        'categories': categories,
+        'products': products,
+        'wishlist': wishlist,
+        'title': 'Wishlist',
+        'subTitle': 'Shop',
+        'subTitle2': 'Wishlist',
+    })
 
 
 def custom_logout(request):

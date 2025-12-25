@@ -1,7 +1,392 @@
 {% extends '../layout/layout.html' %}
+{% load static %}
 
 {% block script %}
-        <script src="/static/js/vendors/zoom.js"></script> 
+        <script src="/static/js/vendors/zoom.js"></script>
+        <script>
+        // Get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            if (!cookieValue) {
+                const csrfInput = document.querySelector('input[name="csrfmiddlewaretoken"]');
+                if (csrfInput) {
+                    cookieValue = csrfInput.value;
+                }
+            }
+            return cookieValue;
+        }
+
+        // Show notification
+        function showNotification(message, type) {
+            const existing = document.querySelector('.cart-notification');
+            if (existing) {
+                existing.remove();
+            }
+
+            const notification = document.createElement('div');
+            notification.className = 'cart-notification';
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#9370DB' : '#dc3545'};
+                color: white;
+                padding: 15px 20px;
+                border-radius: 5px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                z-index: 9999;
+                font-size: 14px;
+                font-weight: 500;
+                max-width: 300px;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(function() {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Update cart totals
+        function updateCartTotals(subtotal, totalPrice, productId) {
+            // Update subtotal for this item
+            const row = document.querySelector(`#cart-item-${productId}`);
+            if (row) {
+                const subtotalElement = row.querySelector('.subtotal-price');
+                if (subtotalElement) {
+                    subtotalElement.textContent = '₹' + subtotal.toFixed(2);
+                }
+            }
+            
+            // Update total price
+            const totalPriceElements = document.querySelectorAll('.total-price, .subtotal-price');
+            totalPriceElements.forEach(function(el) {
+                if (el.closest('.total-area, .subtotal-area')) {
+                    el.textContent = '₹' + totalPrice.toFixed(2);
+                }
+            });
+        }
+
+        // Update cart count in header
+        function updateCartCount(count) {
+            const cartDots = document.querySelectorAll('.cart-dot, .icon-dot');
+            cartDots.forEach(function(dot) {
+                if (dot.closest('.cart-icon')) {
+                    dot.textContent = count;
+                }
+            });
+        }
+
+        // Remove item from cart via AJAX
+        function removeFromCart(productId, link) {
+            const url = link.getAttribute('href');
+            if (!confirm('Are you sure you want to remove this item?')) {
+                return;
+            }
+
+            const originalText = link.innerHTML;
+            const row = document.querySelector(`#cart-item-${productId}`);
+            const rowSubtotal = row ? parseFloat(row.querySelector('.subtotal-price').textContent.replace('₹', '')) : 0;
+            
+            link.style.opacity = '0.6';
+            link.style.pointerEvents = 'none';
+            link.textContent = 'Removing...';
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                if (data.success) {
+                    // Remove the row with animation
+                    if (row) {
+                        row.style.transition = 'opacity 0.3s, transform 0.3s';
+                        row.style.opacity = '0';
+                        row.style.transform = 'translateX(-20px)';
+                        setTimeout(function() {
+                            row.remove();
+                            
+                            // Check if cart is empty
+                            const tbody = document.querySelector('tbody');
+                            if (!tbody || tbody.children.length === 0) {
+                                // Show empty cart message
+                                const table = document.querySelector('table');
+                                if (table) {
+                                    table.style.display = 'none';
+                                }
+                                const emptyCart = document.querySelector('.empty-cart');
+                                if (!emptyCart) {
+                                    const cartArea = document.querySelector('.cart-table-area');
+                                const emptyDiv = document.createElement('div');
+                                emptyDiv.className = 'empty-cart';
+                                emptyDiv.style.cssText = 'text-align: center; padding: 40px;';
+                                const shopUrl = '{% url "shop" %}';
+                                emptyDiv.innerHTML = '<p style="font-size: 18px; margin-bottom: 20px;">Your cart is empty.</p><a href="' + shopUrl + '" class="continue-shopping"><i class="fal fa-long-arrow-left"></i> Continue Shopping</a>';
+                                cartArea.appendChild(emptyDiv);
+                                }
+                            }
+                        }, 300);
+                    }
+                    
+                    // Update cart count
+                    updateCartCount(data.cart_count);
+                    
+                    // Update total price (subtract removed item's subtotal)
+                    const totalPriceElements = document.querySelectorAll('.total-price, .subtotal-price');
+                    totalPriceElements.forEach(function(el) {
+                        if (el.closest('.total-area, .subtotal-area')) {
+                            const currentTotal = parseFloat(el.textContent.replace('₹', '').replace(',', ''));
+                            const newTotal = Math.max(0, currentTotal - rowSubtotal);
+                            el.textContent = '₹' + newTotal.toFixed(2);
+                        }
+                    });
+                    
+                    showNotification(data.message, 'success');
+                } else {
+                    showNotification(data.message, 'error');
+                    link.style.opacity = '1';
+                    link.style.pointerEvents = 'auto';
+                    link.innerHTML = originalText;
+                }
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+                showNotification('An error occurred. Please try again.', 'error');
+                link.style.opacity = '1';
+                link.style.pointerEvents = 'auto';
+                link.innerHTML = originalText;
+            });
+        }
+
+        // Update quantity via AJAX
+        function updateQuantity(productId, quantity) {
+            const url = '/update-cart/' + productId + '/';
+            const input = document.querySelector(`input.quantity-input[data-product-id="${productId}"], .quantity-input[data-product-id="${productId}"]`);
+            
+            if (!input) {
+                console.error('Input not found for product ID:', productId);
+                return;
+            }
+
+            // Update input value immediately for visual feedback
+            input.value = quantity;
+            
+            const originalValue = input.value;
+            input.disabled = true;
+            input.style.opacity = '0.6';
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: 'quantity=' + quantity
+            })
+            .then(function(response) {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(function(data) {
+                if (data.success) {
+                    // Ensure input value is set correctly
+                    input.value = data.quantity || quantity;
+                    // Update subtotal and total
+                    updateCartTotals(data.subtotal, data.total_price, productId);
+                    updateCartCount(data.cart_count);
+                    showNotification(data.message, 'success');
+                } else {
+                    showNotification(data.message, 'error');
+                    input.value = originalValue;
+                }
+                input.disabled = false;
+                input.style.opacity = '1';
+            })
+            .catch(function(error) {
+                console.error('Error updating quantity:', error);
+                showNotification('An error occurred. Please try again.', 'error');
+                input.value = originalValue;
+                input.disabled = false;
+                input.style.opacity = '1';
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle quantity update buttons - use event delegation
+            document.body.addEventListener('click', function(e) {
+                // Check if clicked element or its parent is a minus/plus button
+                let btn = null;
+                let clickedElement = e.target;
+                
+                // If clicked on icon, get the button parent
+                if (clickedElement.tagName === 'I' || clickedElement.classList.contains('fa-minus') || clickedElement.classList.contains('fa-plus')) {
+                    btn = clickedElement.closest('button');
+                } else {
+                    btn = clickedElement.closest('.minus-btn, .plus-btn, button.minus-btn, button.plus-btn');
+                }
+                
+                // Also check if the clicked element itself is a button
+                if (!btn && (clickedElement.classList.contains('minus-btn') || clickedElement.classList.contains('plus-btn'))) {
+                    btn = clickedElement;
+                }
+                
+                if (!btn) return;
+                
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const productId = btn.getAttribute('data-product-id');
+                if (!productId) {
+                    console.error('Product ID not found on button');
+                    return;
+                }
+                
+                // Find the input field for this product - look in the same row first
+                const row = btn.closest('tr');
+                let input = null;
+                if (row) {
+                    input = row.querySelector('input.quantity-input[data-product-id="' + productId + '"]');
+                }
+                if (!input) {
+                    input = document.querySelector('input.quantity-input[data-product-id="' + productId + '"]');
+                }
+                
+                if (!input) {
+                    console.error('Input not found for product ID:', productId);
+                    return;
+                }
+                
+                let quantity = parseInt(input.value) || 1;
+                const maxStock = parseInt(input.getAttribute('max')) || 999;
+                
+                // Determine if it's minus or plus button
+                const isMinus = btn.classList.contains('minus-btn') || 
+                              (clickedElement.classList.contains('fa-minus')) ||
+                              (clickedElement.closest && clickedElement.closest('.minus-btn'));
+                              
+                const isPlus = btn.classList.contains('plus-btn') || 
+                              (clickedElement.classList.contains('fa-plus')) ||
+                              (clickedElement.closest && clickedElement.closest('.plus-btn'));
+                
+                console.log('Button clicked:', {
+                    productId: productId, 
+                    isMinus: isMinus, 
+                    isPlus: isPlus, 
+                    currentQuantity: quantity,
+                    btnClasses: btn.className,
+                    clickedElement: clickedElement.tagName,
+                    clickedClasses: clickedElement.className
+                });
+                
+                if (isMinus) {
+                    if (quantity > 1) {
+                        quantity--;
+                        // Update input value immediately for visual feedback
+                        input.value = quantity;
+                        console.log('Decreased quantity to:', quantity);
+                        updateQuantity(productId, quantity);
+                    }
+                } else if (isPlus) {
+                    if (quantity < maxStock) {
+                        quantity++;
+                        // Update input value immediately for visual feedback
+                        input.value = quantity;
+                        console.log('Increased quantity to:', quantity);
+                        updateQuantity(productId, quantity);
+                    } else {
+                        showNotification('Maximum stock available: ' + maxStock, 'error');
+                    }
+                }
+            });
+            
+            // Also add direct event listeners to buttons as backup
+            document.querySelectorAll('button.minus-btn, button.plus-btn').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const productId = this.getAttribute('data-product-id');
+                    if (!productId) return;
+                    
+                    // Find input in the same row
+                    const row = this.closest('tr');
+                    const input = row ? row.querySelector('input.quantity-input[data-product-id="' + productId + '"]') : null;
+                    if (!input) return;
+                    
+                    let quantity = parseInt(input.value) || 1;
+                    const maxStock = parseInt(input.getAttribute('max')) || 999;
+                    
+                    if (this.classList.contains('minus-btn')) {
+                        if (quantity > 1) {
+                            quantity--;
+                            input.value = quantity;
+                            updateQuantity(productId, quantity);
+                        }
+                    } else if (this.classList.contains('plus-btn')) {
+                        if (quantity < maxStock) {
+                            quantity++;
+                            input.value = quantity;
+                            updateQuantity(productId, quantity);
+                        } else {
+                            showNotification('Maximum stock available: ' + maxStock, 'error');
+                        }
+                    }
+                });
+            });
+            
+            // Handle manual quantity input change
+            document.querySelectorAll('.quantity-input').forEach(function(input) {
+                input.addEventListener('change', function() {
+                    const productId = this.getAttribute('data-product-id');
+                    const quantity = parseInt(this.value) || 1;
+                    const maxStock = parseInt(this.getAttribute('max')) || 999;
+                    
+                    if (quantity < 1) {
+                        this.value = 1;
+                        updateQuantity(productId, 1);
+                    } else if (quantity > maxStock) {
+                        this.value = maxStock;
+                        showNotification('Maximum stock available: ' + maxStock, 'error');
+                        updateQuantity(productId, maxStock);
+                    } else {
+                        updateQuantity(productId, quantity);
+                    }
+                });
+            });
+
+            // Handle remove buttons
+            document.querySelectorAll('.remove-btn').forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const href = this.getAttribute('href');
+                    const match = href.match(/remove-from-cart\/(\d+)\//);
+                    if (match) {
+                        removeFromCart(match[1], this);
+                    }
+                });
+            });
+        });
+        </script>
 {% endblock %} 
 
 {% block content %}
@@ -13,92 +398,79 @@
         <div class="row justify-content-between">
             <div class="col-xl-7">
                 <div class="cart-table-area">
+                    {% if cart_items %}
                     <table class="table table-bordered table-hover">
                         <thead class="thead-dark">
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Subtotal</th>
+                                <th>Action</th>
+                            </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td><div class="product-thumb"><img src="/static/images/products/inner/cart/1.jpg" alt="product-thumb"></div></td>
+                            {% for item in cart_items %}
+                            <tr id="cart-item-{{ item.product.id }}">
+                                <td>
+                                    <div class="product-thumb">
+                                        {% if item.product_image %}
+                                            <img src="{{ item.product_image.image.url }}" alt="{{ item.product.name }}">
+                                        {% else %}
+                                            <img src="{% static 'images/products/inner/cart/1.jpg' %}" alt="{{ item.product.name }}">
+                                        {% endif %}
+                                    </div>
+                                </td>
                                 <td>
                                     <div class="product-title-area">
-                                        <span class="pretitle">Nighty</span>
-                                        <h4 class="product-title">Shimmer Sheer Tights</h4>
+                                        {% if item.product.brand %}
+                                            <span class="pretitle">{{ item.product.brand.name }}</span>
+                                        {% endif %}
+                                        <h4 class="product-title">
+                                            <a href="{% url 'product_detail' category_slug=item.product.subcategory.category.slug subcategory_slug=item.product.subcategory.slug product_slug=item.product.slug %}">
+                                                {{ item.product.name }}
+                                            </a>
+                                        </h4>
                                     </div>
                                 </td>
-                                <td><span class="product-price">$69.00</span></td>
+                                <td>
+                                    <span class="product-price">
+                                        {% if item.product.offerprice and item.product.offerprice > 0 %}
+                                            <span class="offer-price">₹{{ item.effective_price|floatformat:2 }}</span>
+                                            <span class="original-price" style="text-decoration: line-through; color: #999; margin-left: 5px;">₹{{ item.product.price|floatformat:2 }}</span>
+                                        {% else %}
+                                            ₹{{ item.effective_price|floatformat:2 }}
+                                        {% endif %}
+                                    </span>
+                                </td>
                                 <td>
                                     <div class="cart-edit">
-                                        <div class="quantity-edit">
-                                            <button class="button"><i class="fal fa-minus minus"></i></button>
-                                            <input type="text" class="input" value="3" />
-                                            <button class="button plus">+<i class="fal fa-plus plus"></i></button>
-                                        </div>
+                                        <form method="POST" action="{% url 'update_cart_quantity' product_id=item.product.id %}" class="quantity-form">
+                                            {% csrf_token %}
+                                            <div class="quantity-edit">
+                                                <button type="button" class="button minus-btn" data-product-id="{{ item.product.id }}"><i class="fal fa-minus"></i></button>
+                                                <input type="number" name="quantity" class="input quantity-input" value="{{ item.quantity }}" min="1" max="{{ item.product.stock }}" data-product-id="{{ item.product.id }}" />
+                                                <button type="button" class="button plus-btn" data-product-id="{{ item.product.id }}"><i class="fal fa-plus"></i></button>
+                                            </div>
+                                        </form>
                                     </div>
                                 </td>
-                                <td class="last-td"><button class="remove-btn">Remove</button></td>
+                                <td>
+                                    <span class="subtotal-price">₹{{ item.subtotal|floatformat:2 }}</span>
+                                </td>
+                                <td class="last-td">
+                                    <a href="{% url 'remove_from_cart' product_id=item.product.id %}" class="remove-btn">Remove</a>
+                                </td>
                             </tr>
-                            <tr>
-                                <td><div class="product-thumb"><img src="/static/images/products/inner/cart/2.jpg" alt="product-thumb"></div></td>
-                                <td>
-                                    <div class="product-title-area">
-                                        <span class="pretitle">Nighty</span>
-                                        <h4 class="product-title">Shimmer Sheer Tights</h4>
-                                    </div>
-                                </td>
-                                <td><span class="product-price">$69.00</span></td>
-                                <td>
-                                    <div class="cart-edit">
-                                        <div class="quantity-edit">
-                                            <button class="button"><i class="fal fa-minus minus"></i></button>
-                                            <input type="text" class="input" value="3" />
-                                            <button class="button plus">+<i class="fal fa-plus plus"></i></button>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="last-td"><button class="remove-btn">Remove</button></td>
-                            </tr>
-                            <tr>
-                                <td><div class="product-thumb"><img src="/static/images/products/inner/cart/3.jpg" alt="product-thumb"></div></td>
-                                <td>
-                                    <div class="product-title-area">
-                                        <span class="pretitle">Nighty</span>
-                                        <h4 class="product-title">Shimmer Sheer Tights</h4>
-                                    </div>
-                                </td>
-                                <td><span class="product-price">$69.00</span></td>
-                                <td>
-                                    <div class="cart-edit">
-                                        <div class="quantity-edit">
-                                            <button class="button"><i class="fal fa-minus minus"></i></button>
-                                            <input type="text" class="input" value="3" />
-                                            <button class="button plus">+<i class="fal fa-plus plus"></i></button>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="last-td"><button class="remove-btn">Remove</button></td>
-                            </tr>
-                            <tr>
-                                <td><div class="product-thumb"><img src="/static/images/products/inner/cart/4.jpg" alt="product-thumb"></div></td>
-                                <td>
-                                    <div class="product-title-area">
-                                        <span class="pretitle">Nighty</span>
-                                        <h4 class="product-title">Shimmer Sheer Tights</h4>
-                                    </div>
-                                </td>
-                                <td><span class="product-price">$69.00</span></td>
-                                <td>
-                                    <div class="cart-edit">
-                                        <div class="quantity-edit">
-                                            <button class="button"><i class="fal fa-minus minus"></i></button>
-                                            <input type="text" class="input" value="3" />
-                                            <button class="button plus">+<i class="fal fa-plus plus"></i></button>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="last-td"><button class="remove-btn">Remove</button></td>
-                            </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
+                    {% else %}
+                    <div class="empty-cart">
+                        <p>Your cart is empty.</p>
+                        <a href="{% url 'shop' %}" class="continue-shopping"><i class="fal fa-long-arrow-left"></i> Continue Shopping</a>
+                    </div>
+                    {% endif %}
                     <div class="coupon-apply">
                         <span class="coupon-text">Coupon Code:</span>
                         <div class="apply-input">
@@ -113,7 +485,7 @@
                     <div class="checkout-box-inner">
                         <div class="subtotal-area">
                             <span class="title">Subtotal</span>
-                            <span class="subtotal-price">$364.00</span>
+                            <span class="subtotal-price">₹{{ total_price|floatformat:2 }}</span>
                         </div>
                         <div class="shipping-check">
                             <span class="title">Shipping</span>
@@ -136,10 +508,12 @@
                         </div>
                         <div class="total-area">
                             <span class="title">Total</span>
-                            <span class="total-price">$364.00</span>
+                            <span class="total-price">₹{{ total_price|floatformat:2 }}</span>
                         </div>
                     </div>
+                    {% if cart_items %}
                     <a href="{% url 'checkOut' %}" class="procced-btn">Procced To Checkout</a>
+                    {% endif %}
                     <a href="{% url 'shop' %}" class="continue-shopping"><i class="fal fa-long-arrow-left"></i> Continue Shopping</a>
                 </div>
             </div>

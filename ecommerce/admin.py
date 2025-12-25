@@ -423,43 +423,101 @@ class ProductVariationAdminForm(forms.ModelForm):
     price_modifier = forms.DecimalField(required=False, max_digits=10, decimal_places=2, label='Price +/-')
     offerprice = forms.DecimalField(required=False, max_digits=10, decimal_places=2, label='Offer Price (INR)')
     stock = forms.IntegerField(required=False, label='Stock')
+    slug = forms.SlugField(
+        required=False,
+        max_length=200,
+        label='Slug',
+        help_text='Auto-generated from name. You can edit it manually if needed.',
+        widget=forms.TextInput(attrs={'style': 'background-color: #f8f9fa;'})
+    )
     
     class Meta:
         model = ProductVariation
         fields = '__all__'
     
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Auto-populate slug from name if name exists and slug is empty
+        if self.instance and self.instance.pk:
+            # Existing instance - populate slug if empty
+            if not self.instance.slug and self.instance.name:
+                from django.utils.text import slugify
+                self.instance.slug = slugify(self.instance.name)
+                self.initial['slug'] = self.instance.slug
+        elif self.data and 'name' in self.data and self.data.get('name'):
+            # New instance - generate slug from name
+            from django.utils.text import slugify
+            name = self.data.get('name')
+            if name:
+                slug_value = slugify(name)
+                self.initial['slug'] = slug_value
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        # Ensure slug is generated from name if it's empty
+        name = cleaned_data.get('name')
+        slug = cleaned_data.get('slug')
+        
+        if name and (not slug or (isinstance(slug, str) and slug.strip() == '')):
+            from django.utils.text import slugify
+            cleaned_data['slug'] = slugify(name)
+        
+        return cleaned_data
+    
     def save(self, commit=True):
         instance = super().save(commit=False)
         
-        # Generate slug from name if name exists
+        # Ensure product is saved first
+        if instance.product and not instance.product.pk:
+            instance.product.save()
+        
+        # ALWAYS generate slug from name if name exists (even if slug is already set)
         if instance.name:
             from django.utils.text import slugify
             base_slug = slugify(instance.name)
-            instance.slug = base_slug
             
-            # Ensure uniqueness within the product
+            # Only update if slug is empty or doesn't match the name-based slug
+            # This allows manual edits but auto-generates if empty
+            if not instance.slug or (instance.slug and instance.slug.strip() == ''):
+                instance.slug = base_slug
+            elif instance.slug != base_slug:
+                # If slug exists but doesn't match name, update it (name was changed)
+                instance.slug = base_slug
+            
+            # Ensure uniqueness within the product (only if product exists)
             if instance.product and instance.product.pk:
                 counter = 1
                 original_slug = instance.slug
+                # Check for duplicates excluding current instance
                 while ProductVariation.objects.filter(
-                    product=instance.product, slug=instance.slug
+                    product=instance.product, 
+                    slug=instance.slug
                 ).exclude(id=instance.id if instance.id else None).exists():
                     instance.slug = f"{original_slug}-{counter}"
                     counter += 1
+                    # Prevent infinite loop
+                    if counter > 1000:
+                        break
         
         if commit:
+            # Save the instance - this will call the model's save() method
+            # but our slug is already set, so it should work
             instance.save()
         return instance
 
 @admin.register(ProductVariation)
 class ProductVariationAdmin(admin.ModelAdmin):
     form = ProductVariationAdminForm
-    list_display = ('get_product_name', 'name', 'quantity', 'unit', 'is_sku_code', 'price_modifier', 'offerprice', 'stock', 'color_code')
+    list_display = ('get_product_name', 'name', 'quantity', 'unit', 'is_sku_code', 'price_modifier', 'offerprice', 'stock', 'color_code', 'slug')
     list_filter = ('product', 'unit', 'product__subcategory', 'product__brand')
-    search_fields = ('product__name', 'name', 'quantity', 'is_sku_code')
+    search_fields = ('product__name', 'name', 'quantity', 'is_sku_code', 'slug')
     list_editable = ('price_modifier', 'offerprice', 'stock')
     list_per_page = 50
     autocomplete_fields = ('product',)  # Use autocomplete for better UX - requires search_fields in ProductAdmin
+    readonly_fields = ()  # Slug will be handled by form widget
+    
+    class Media:
+        js = ('admin/js/product_variation_admin.js',)
     
     def get_initial(self, request):
         """Pre-select product from query string"""
@@ -479,7 +537,8 @@ class ProductVariationAdmin(admin.ModelAdmin):
             'description': 'Select the product this variation belongs to. Use autocomplete to search by product name.'
         }),
         ('Variation Details', {
-            'fields': ('name', 'quantity', 'unit', 'slug')
+            'fields': ('name', 'quantity', 'unit', 'slug'),
+            'description': 'Slug is auto-generated from name. Leave blank to auto-generate.'
         }),
         ('SKU & Color', {
             'fields': ('is_sku_code', 'color_code')

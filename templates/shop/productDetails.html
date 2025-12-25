@@ -116,14 +116,14 @@
                 <div class="product-bottom-action">
                     <div class="cart-edit">
                         <div class="quantity-edit action-item">
-                            <button class="button"><i class="fal fa-minus minus"></i></button>
-                            <input type="text" class="input" value="01" />
-                            <button class="button plus">+<i class="fal fa-plus plus"></i></button>
+                            <button type="button" class="button minus"><i class="fal fa-minus"></i></button>
+                            <input type="number" class="input" value="1" min="1" max="{{ product.stock }}" />
+                            <button type="button" class="button plus"><i class="fal fa-plus"></i></button>
                         </div>
                     </div>
-                    <a href="{% url 'cart' %}" class="addto-cart-btn action-item"><i class="rt-basket-shopping"></i> Add To
+                    <a href="{% url 'add_to_cart' product.slug %}" class="addto-cart-btn action-item"><i class="rt-basket-shopping"></i> Add To
                         Cart</a>
-                    <a href="{% url 'wishlist' %}" class="wishlist-btn action-item"><i class="rt-heart"></i></a>
+                    <a href="{% url 'view_wishlist' %}" class="wishlist-btn action-item"><i class="rt-heart"></i></a>
                 </div>
                 <div class="product-uniques">
                     <span class="sku product-unipue"><span>SKU: </span> {% if product.is_sku_code %}{{ product.is_sku_code }}{% else %}N/A{% endif %}</span>

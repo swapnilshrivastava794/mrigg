@@ -1,11 +1,30 @@
 from django.shortcuts import render
+from ecommerce.models import Category, SubCategory
 
 def allCategory(request):     
+      # Get all active categories with their active subcategories
+      categories = Category.objects.filter(
+          is_active=True
+      ).prefetch_related(
+          'subcategories'
+      ).order_by('order', 'name')
+      
+      # For each category, get active subcategories (limit to 4 for display)
+      categories_with_subcats = []
+      for category in categories:
+          subcategories = category.subcategories.filter(is_active=True).order_by('order', 'name')[:4]
+          categories_with_subcats.append({
+              'category': category,
+              'subcategories': subcategories,
+              'subcategory_count': category.subcategories.filter(is_active=True).count()
+          })
+      
       data = {
-       'title':'All Catagory',
+       'title':'All Category',
        'subTitle':'Home',
-       'subTitle2':'All Catagory',
+       'subTitle2':'All Category',
        'css':'<link rel="stylesheet" type="text/css" href="/static/css/variables/variable6.css"/>',
+       'categories_with_subcats': categories_with_subcats,
       }
       return render(request, "home/allCategory.html", data)
 

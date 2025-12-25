@@ -121,33 +121,69 @@
                                         {% endif %}
                                     </ul>
                                 </li>
-                                <li class="has-dropdown"><a class="menu-item menu-item {% if subTitle == 'Pages' %}
-                                                                                          active1
-                                                                                       {% endif %} " href="#">Pages <i class="rt-plus"></i></a>
+                                <li class="has-dropdown"><a class="menu-item menu-item {% if subTitle == 'Shop' %}
+                                    active1
+                                 {% endif %} " href="#">Brands <i class="rt-plus"></i></a>
                                     <ul class="dropdown-ul">
-                                        <li class="dropdown-li"><a class="dropdown-link" href="{% url 'about' %}">About</a>
-                                        </li>
-                                        <li class="dropdown-li"><a class="dropdown-link" href="{% url 'faq' %}">FAQ's</a>
-                                        </li>
-                                        <li class="dropdown-li"><a class="dropdown-link" href="{% url 'errorPage' %}">Error
-                                                404</a>
-                                        </li>
+                                        {% if all_brands %}
+                                            {% for brand in all_brands %}
+                                            <li class="dropdown-li">
+                                                <a class="dropdown-link" href="{% url 'shop' %}?brand={{ brand.slug }}">
+                                                    {{ brand.name }}
+                                                </a>
+                                            </li>
+                                            {% endfor %}
+                                        {% else %}
+                                            <li class="dropdown-li">
+                                                <a class="dropdown-link" href="{% url 'shop' %}">No brands available</a>
+                                            </li>
+                                        {% endif %}
                                     </ul>
                                 </li>
+                        <li class="has-dropdown"><a class="menu-item menu-item {% if subTitle == 'Pages' %}
+                        active1
+                        {% endif %} " href="#">Offers <i class="rt-plus"></i></a>
+                        <ul class="dropdown-ul">
+                            <li class="dropdown-li">
+                                <a class="dropdown-link" href="#">Whats New</a>
+                            </li>
+                        <li class="dropdown-li">
+                            <a class="dropdown-link" href="#">Whats Hot</a>
+                        </li>
+                        <li class="dropdown-li">
+                            <a class="dropdown-link" href="#">My Sunday</a>
+                        </li>
+                        <li class="dropdown-li">
+                            <a class="dropdown-link" href="#">Combo</a>
+                        </li>
+                        <!-- <li class="dropdown-li"><a class="dropdown-link" href="{% url 'about' %}">About</a>
+                        </li>
+                        <li class="dropdown-li"><a class="dropdown-link" href="{% url 'faq' %}">FAQ's</a>
+                        </li>
+                        <li class="dropdown-li"><a class="dropdown-link" href="{% url 'errorPage' %}">Error
+                        404</a>
+                        </li> -->
+                        </ul>
+                        </li>
 
-                                <li class="has-dropdown"><a class="menu-item menu-item {% if subTitle == 'Blog' %}
-                                                                                            active1
-                                                                                        {% endif %}" href="#">Blog <i class="rt-plus"></i></a>
-                                    <ul class="dropdown-ul">
-                                        <li class="dropdown-li"><a class="dropdown-link" href="{% url 'news' %}">Blog</a>
-                                        </li>
-                                        <li class="dropdown-li"><a class="dropdown-link" href="{% url 'newsGrid' %}">Blog Grid</a></li>
-                                        <li class="dropdown-li"><a class="dropdown-link" href="{% url 'newsDetails' %}">Blog Details</a></li>
-                                    </ul>
-                                </li>
-                                <li><a class="menu-item menu-item {% if subTitle == 'Contact' %}
-                                                                    active1
-                                                                  {% endif %} " href="{% url 'contact' %}">Contact</a></li>
+
+                <li class="has-dropdown">
+                    <a class="menu-item menu-item {% if subTitle == 'Blog' %}
+                active1
+                {% endif %}" href="#">Beauty Advice <i class="rt-plus"></i></a>
+                <!-- <ul class="dropdown-ul">
+                <li class="dropdown-li"><a class="dropdown-link" href="{% url 'news' %}">Blog</a>
+                </li>
+                <li class="dropdown-li"><a class="dropdown-link" href="{% url 'newsGrid' %}">Blog Grid</a></li>
+                <li class="dropdown-li"><a class="dropdown-link" href="{% url 'newsDetails' %}">Blog Details</a></li>
+                </ul> -->
+                </li>
+                <li><a class="menu-item menu-item {% if subTitle == 'Contact' %}
+                    active1
+                    {% endif %} " href="{% url 'contact' %}">Trending Fashion</a></li>
+                <!-- <li><a class="menu-item menu-item {% if subTitle == 'Contact' %}
+                active1
+                {% endif %} " href="{% url 'contact' %}">Contact</a></li> -->
                             </ul>
                         </nav>
                     </div>
@@ -181,9 +217,12 @@
                             </div>
                         </div>
                         <a href="{% url 'login' %}" class="account"><i class="rt-user-2"></i></a>
+                        <a href="{% url 'view_wishlist' %}" class="wishlist action-item" title="Wishlist">
+                            <div class="favourite-icon icon"><i class="rt-heart"></i><span class="wishlist-dot icon-dot">{{ wishlist_count|default:0 }}</span></div>
+                        </a>
                         <div class="cart action-item">
                             <div class="cart-nav">
-                                <div class="cart-icon icon"><a href="#0"><i aria-hidden="true" class="fas fa-shopping-basket"></i></a><span class="wishlist-dot icon-dot">3</span></div>
+                                <div class="cart-icon icon"><a href="{% url 'view_cart' %}"><i aria-hidden="true" class="fas fa-shopping-basket"></i></a><span class="cart-dot icon-dot">{{ cart_item_count|default:0 }}</span></div>
                             </div>
                         </div>
                     </div>
@@ -208,7 +247,7 @@
                         </div>
                         <div class="item-wrapper">
                             <span class="product-qnty">3 ×</span>
-                            <span class="product-price">$198.00</span>
+                            <span class="product-price">INR 198.00</span>
                         </div>
                     </div>
                 </div>
@@ -235,7 +274,7 @@
                         </div>
                         <div class="item-wrapper">
                             <span class="product-qnty">2 ×</span>
-                            <span class="product-price">$88.00</span>
+                            <span class="product-price">INR 88.00</span>
                         </div>
                     </div>
                 </div>
@@ -262,7 +301,7 @@
                         </div>
                         <div class="item-wrapper">
                             <span class="product-qnty">1 ×</span>
-                            <span class="product-price">$289.00</span>
+                            <span class="product-price">INR 289.00</span>
                         </div>
                     </div>
                 </div>
@@ -280,9 +319,9 @@
             </div>
         </div>
         <div class="cart-bottom-area">
-            <span class="spend-shipping"><i class="fal fa-truck"></i> SPENT <span class="amount">$199.00</span> MORE
+            <span class="spend-shipping"><i class="fal fa-truck"></i> SPENT <span class="amount">INR 199.00</span> MORE
                 FOR FREE SHIPPING</span>
-            <span class="total-price">TOTAL: <span class="price">$556</span></span>
+            <span class="total-price">TOTAL: <span class="price">INR 556</span></span>
             <a href="{% url 'checkOut' %}" class="checkout-btn cart-btn">PROCEED TO CHECKOUT</a>
             <a href="{% url 'cart' %}" class="view-btn cart-btn">VIEW CART</a>
         </div>
@@ -361,6 +400,18 @@
                     </ul>
                 </li>
                 <li class="has-dropdown firstlvl">
+                    <a class="mm-link" href="#">Brands <i class="rt-angle-down"></i></a>
+                    <ul class="sub-menu">
+                        {% if all_brands %}
+                            {% for brand in all_brands %}
+                            <li><a href="{% url 'shop' %}?brand={{ brand.slug }}">{{ brand.name }}</a></li>
+                            {% endfor %}
+                        {% else %}
+                            <li><a href="{% url 'shop' %}">No brands available</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
+                <li class="has-dropdown firstlvl">
                     <a class="mm-link" href="/">Pages <i class="rt-angle-down"></i></a>
                     <ul class="sub-menu">
                         <li><a href="{% url 'about' %}">About</a></li>
@@ -404,16 +455,16 @@
                     </div>
                 </div>
             </div>
-            <div class="cart action-item">
+            <a href="{% url 'view_cart' %}" class="cart action-item">
                 <div class="cart-nav">
-                    <div class="cart-icon icon"><i class="rt-cart"></i><span class="wishlist-dot icon-dot">3</span>
+                    <div class="cart-icon icon"><i class="rt-cart"></i><span class="wishlist-dot icon-dot">{{ cart_item_count|default:0 }}</span>
                     </div>
                 </div>
-            </div>
-            <div class="wishlist action-item">
-                <div class="favourite-icon icon"><i class="rt-heart"></i><span class="cart-dot icon-dot">0</span>
+            </a>
+            <a href="{% url 'view_wishlist' %}" class="wishlist action-item" title="Wishlist">
+                <div class="favourite-icon icon"><i class="rt-heart"></i><span class="cart-dot icon-dot">{{ wishlist_count|default:0 }}</span>
                 </div>
-            </div>
+            </a>
             <a href="{% url 'login' %}" class="account"><i class="rt-user-2"></i></a>
         </div>
         <!-- side-mobile-menu end -->

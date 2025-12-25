@@ -40,6 +40,11 @@ urlpatterns = [
     path('order-confirmation/<int:order_id>/', views.order_confirmation, name='order_confirmation'),
     path('remove-from-cart/<int:product_id>/', views.remove_from_cart, name='remove_from_cart'),
     path('update-cart/<int:product_id>/', views.update_cart_quantity, name='update_cart_quantity'),
+    # Wishlist URLs
+    path('add-to-wishlist/<slug:slug>/', views.add_to_wishlist, name='add_to_wishlist'),
+    path('remove-from-wishlist/<int:product_id>/', views.remove_from_wishlist, name='remove_from_wishlist'),
+    path('wishlist/', views.view_wishlist, name='view_wishlist'),
+    path('wishlist', views.view_wishlist, name='wishlist'),  # Alias for backward compatibility
 #static path----
     path('about-us', views.aboutus, name='about-us'),
     path('our-product', views.ourproduct, name='our-product'),
@@ -69,7 +74,7 @@ urlpatterns = [
     path('shop-five-column', homeViews.shopFiveColumn, name='shopFiveColumn'),
     path('simple-products', homeViews.simpleProducts, name='simpleProducts'),
     path('thankYou', homeViews.thankYou, name='thankYou'),
-    path('wishlist', homeViews.wishlist, name='wishlist'),
+    path('wishlist-old', homeViews.wishlist, name='wishlist-old'),  # Keep old for backward compatibility
 
     # blog
     path('contact', blogViews.contact, name='contact'),
