@@ -616,6 +616,40 @@ class OrderItem(models.Model):
         return f'{self.quantity} of {self.product.name}'
 
 
+class UserAddress(models.Model):
+    id = models.BigAutoField(primary_key=True)
+
+    user = models.ForeignKey(
+        CustomUser,
+        related_name='addresses',
+        on_delete=models.CASCADE
+    )
+
+    full_name = models.CharField(max_length=100)
+    phone = models.CharField(max_length=15)
+
+    address_line1 = models.CharField(max_length=255)
+    address_line2 = models.CharField(max_length=255, null=True, blank=True)
+
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    zip_code = models.CharField(max_length=10)
+    country = models.CharField(max_length=100)
+
+    is_default = models.BooleanField(default=False)
+
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'main_useraddress'
+        ordering = ['-is_default', '-updated']
+
+    def __str__(self):
+        return f"{self.full_name} - {self.city}"
+
+
+
 
 class ContactMessage(models.Model):
     id = models.BigAutoField(primary_key=True)

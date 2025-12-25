@@ -14,7 +14,7 @@ from pathlib import Path
 import os
 import mimetypes
 
-#AUTH_USER_MODEL = 'ecommerce.CustomUser'
+AUTH_USER_MODEL = 'ecommerce.CustomUser'
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.

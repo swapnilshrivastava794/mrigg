@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.generics import ListAPIView
-from ecommerce.models import Category,Product
+from ecommerce.models import Category, Order,Product, UserAddress
 from cms.models import slider
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
@@ -19,7 +19,7 @@ from rest_framework.response import Response
 
 
 
-from .serializers import RegisterSerializer, CustomTokenObtainPairSerializer,UpdateProfileSerializer,RequestOTPSerializer, VerifyOTPChangePasswordSerializer,CategorySerializer,SliderSerializer,ProductSerializer,ProductSearchListSerializer
+from .serializers import PaymentSuccessSerializer, RegisterSerializer, CustomTokenObtainPairSerializer,UpdateProfileSerializer,RequestOTPSerializer, VerifyOTPChangePasswordSerializer,CategorySerializer,SliderSerializer,ProductSerializer,ProductSearchListSerializer,UserAddressSerializer,OrderSerializer,OrderCreateSerializer,UserAddressSerializer
 import random
 from django.core.mail import send_mail
 from rest_framework import status
@@ -372,3 +372,145 @@ class ProductSearchListView(ListAPIView):
             Q(subcategory__name__icontains=query) |
             Q(subcategory__category__name__icontains=query)
         ).order_by("-created")
+    
+
+# ordrrelated api
+class UserAddressListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        addresses = UserAddress.objects.filter(user=request.user)
+        serializer = UserAddressSerializer(addresses, many=True)
+        return Response(serializer.data)
+    
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
+class UserAddressAPIView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    # 📌 GET → List addresses
+    def get(self, request):
+        addresses = UserAddress.objects.filter(user=request.user)
+        serializer = UserAddressSerializer(addresses, many=True)
+        return Response(serializer.data)
+
+    # 📌 POST → Create address
+    def post(self, request):
+        serializer = UserAddressSerializer(data=request.data)
+        if serializer.is_valid():
+            if serializer.validated_data.get("is_default"):
+                UserAddress.objects.filter(
+                    user=request.user, is_default=True
+                ).update(is_default=False)
+
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class UserAddressDetailAPIView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self, user, pk):
+        return UserAddress.objects.get(pk=pk, user=user)
+
+    # 📌 PUT → Update address
+    def put(self, request, pk):
+        address = self.get_object(request.user, pk)
+        serializer = UserAddressSerializer(address, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            if serializer.validated_data.get("is_default"):
+                UserAddress.objects.filter(
+                    user=request.user, is_default=True
+                ).update(is_default=False)
+
+            serializer.save()
+            return Response(serializer.data)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # 📌 DELETE → Delete address
+    def delete(self, request, pk):
+        address = self.get_object(request.user, pk)
+        address.delete()
+        return Response({"message": "Address deleted"}, status=status.HTTP_204_NO_CONTENT)
+
+    
+class CheckoutView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = OrderCreateSerializer(
+            data=request.data,
+            context={'request': request}
+        )
+
+        if serializer.is_valid():
+            order = serializer.save()
+            return Response(
+                {
+                    "message": "Order created successfully",
+                    "order_id": order.id
+                },
+                status=status.HTTP_201_CREATED
+            )
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class MyOrdersView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        orders = Order.objects.filter(user=request.user).order_by('-created')
+        serializer = OrderSerializer(orders, many=True)
+        return Response(serializer.data)
+
+
+class OrderDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, order_id):
+        try:
+            order = Order.objects.get(id=order_id, user=request.user)
+        except Order.DoesNotExist:
+            return Response(
+                {"error": "Order not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = OrderSerializer(order)
+        return Response(serializer.data)
+    
+
+
+    
+
+class PaymentSuccessAPIView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = PaymentSuccessSerializer(
+            data=request.data,
+            context={'request': request}
+        )
+        serializer.is_valid(raise_exception=True)
+
+        order_id = serializer.validated_data['order_id']
+
+        Order.objects.filter(
+            id=order_id,
+            user=request.user,
+            paid=False
+        ).update(paid=True)
+
+        return Response(
+            {"message": "Payment successful. Order confirmed."},
+            status=status.HTTP_200_OK
+        )
+

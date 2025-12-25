@@ -6,11 +6,14 @@ from django.utils import timezone
 from datetime import timedelta
 from ecommerce.models import (
     Category,
+    Order,
+    OrderItem,
     SubCategory,
     Product,
     ProductImage,
     ProductVariation,
     ProductDetailSection,
+    UserAddress,
 )
 
 from cms.models import slider
@@ -379,3 +382,114 @@ class ProductSearchListSerializer(serializers.ModelSerializer):
 
     def get_has_variants(self, obj):
         return obj.variations.exists()
+
+
+class UserAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserAddress
+        fields = [
+            'id',
+            'full_name',
+            'phone',
+            'address_line1',
+            'address_line2',
+            'city',
+            'state',
+            'zip_code',
+            'country',
+            'is_default'
+        ]
+
+
+class CheckoutSerializer(serializers.Serializer):
+    address_id = serializers.IntegerField()
+    items = serializers.ListField(
+        child=serializers.DictField()
+    )
+
+    def validate_address_id(self, value):
+        user = self.context['request'].user
+        if not UserAddress.objects.filter(id=value, user=user).exists():
+            raise serializers.ValidationError("Invalid address")
+        return value
+    
+class OrderCreateSerializer(serializers.Serializer):
+    address_id = serializers.IntegerField()
+    items = serializers.ListField()
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        address = UserAddress.objects.get(
+            id=validated_data['address_id'],
+            user=user
+        )
+
+        # 🔒 Address snapshot
+        order = Order.objects.create(
+            user=user,
+            first_name=address.full_name,
+            last_name="",
+            email=user.email,
+            address=f"{address.address_line1}, {address.address_line2 or ''}",
+            postal_code=address.zip_code,
+            city=address.city
+        )
+
+        # 🔒 Cart → OrderItem
+        for item in validated_data['items']:
+            product = Product.objects.get(id=item['product_id'])
+            OrderItem.objects.create(
+                order=order,
+                product=product,
+                price=product.price,
+                quantity=item['quantity']
+            )
+
+        return order
+
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    product_name = serializers.ReadOnlyField(source='product.name')
+
+    class Meta:
+        model = OrderItem
+        fields = [
+            'product_name',
+            'price',
+            'quantity'
+        ]
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    items = OrderItemSerializer(many=True)
+    total_amount = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Order
+        fields = [
+            'id',
+            'created',
+            'paid',
+            'city',
+            'items',
+            'total_amount'
+        ]
+
+    def get_total_amount(self, obj):
+        return sum(
+            item.price * item.quantity
+            for item in obj.items.all()
+        )
+    
+class PaymentSuccessSerializer(serializers.Serializer):
+    order_id = serializers.IntegerField()
+
+    def validate_order_id(self, value):
+        user = self.context['request'].user
+
+        if not Order.objects.filter(id=value, user=user).exists():
+            raise serializers.ValidationError("Invalid order ID")
+
+        return value
+
+
