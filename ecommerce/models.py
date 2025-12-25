@@ -23,13 +23,72 @@ except ImportError:
 
 
 
+# class CustomUser(AbstractUser):
+#     id = models.BigAutoField(primary_key=True)
+#     email = models.EmailField(unique=True)
+#     mobile = models.CharField(max_length=15, unique=True)
+
+#     first_name = models.CharField(max_length=150, null=True, blank=True)  # Override
+#     last_name = models.CharField(max_length=150, null=True, blank=True)   # Override
+
+#     role = models.CharField(
+#         max_length=20,
+#         choices=[
+#             ('customer', 'Customer'),
+#             ('admin', 'Admin'),
+#             ('support', 'Support Staff'),
+#         ],
+#         default='customer'
+#     )
+
+#     date_of_birth = models.DateField(null=True, blank=True)
+#     gender = models.CharField(
+#         max_length=10,
+#         choices=[('male', 'Male'), ('female', 'Female'), ('other', 'Other')],
+#         null=True,
+#         blank=True
+#     )
+
+#     address_line1 = models.CharField(max_length=255, null=True, blank=True)
+#     address_line2 = models.CharField(max_length=255, null=True, blank=True)
+#     city = models.CharField(max_length=100, null=True, blank=True)
+#     state = models.CharField(max_length=100, null=True, blank=True)
+#     zip_code = models.CharField(max_length=10, null=True, blank=True)
+#     country = models.CharField(max_length=100, null=True, blank=True)
+
+#     profile_image = models.ImageField(upload_to='profiles/', null=True, blank=True)
+
+#     groups = models.ManyToManyField(
+#         Group,
+#         related_name='customuser_set',  # avoid clash with auth.User
+#         blank=True
+#     )
+#     user_permissions = models.ManyToManyField(
+#         Permission,
+#         related_name='customuser_set',  # avoid clash with auth.User
+#         blank=True
+#     )
+
+#     USERNAME_FIELD = 'email'
+#     REQUIRED_FIELDS = ['username']  # username is still required by AbstractUser
+
+#     class Meta:
+#         db_table = 'main_customuser'  # Use existing table name
+
+#     def __str__(self):
+#         return self.email
+
+
 class CustomUser(AbstractUser):
     id = models.BigAutoField(primary_key=True)
+
+    # 🔐 AUTH
     email = models.EmailField(unique=True)
     mobile = models.CharField(max_length=15, unique=True)
 
-    first_name = models.CharField(max_length=150, null=True, blank=True)  # Override
-    last_name = models.CharField(max_length=150, null=True, blank=True)   # Override
+    # 👤 BASIC INFO (OPTIONAL FOR SIGNUP)
+    first_name = models.CharField(max_length=150, null=True, blank=True)
+    last_name = models.CharField(max_length=150, null=True, blank=True)
 
     role = models.CharField(
         max_length=20,
@@ -41,14 +100,20 @@ class CustomUser(AbstractUser):
         default='customer'
     )
 
+    # 👤 OPTIONAL PROFILE INFO
     date_of_birth = models.DateField(null=True, blank=True)
     gender = models.CharField(
         max_length=10,
-        choices=[('male', 'Male'), ('female', 'Female'), ('other', 'Other')],
+        choices=[
+            ('male', 'Male'),
+            ('female', 'Female'),
+            ('other', 'Other')
+        ],
         null=True,
         blank=True
     )
 
+    # 🏠 OPTIONAL ADDRESS INFO (NOT REQUIRED AT SIGNUP)
     address_line1 = models.CharField(max_length=255, null=True, blank=True)
     address_line2 = models.CharField(max_length=255, null=True, blank=True)
     city = models.CharField(max_length=100, null=True, blank=True)
@@ -56,24 +121,31 @@ class CustomUser(AbstractUser):
     zip_code = models.CharField(max_length=10, null=True, blank=True)
     country = models.CharField(max_length=100, null=True, blank=True)
 
-    profile_image = models.ImageField(upload_to='profiles/', null=True, blank=True)
+    # 🖼️ PROFILE IMAGE
+    profile_image = models.ImageField(
+        upload_to='profiles/',
+        null=True,
+        blank=True
+    )
 
+    # 🔐 PERMISSIONS (Django Admin safe)
     groups = models.ManyToManyField(
         Group,
-        related_name='customuser_set',  # avoid clash with auth.User
+        related_name='customuser_set',
         blank=True
     )
     user_permissions = models.ManyToManyField(
         Permission,
-        related_name='customuser_set',  # avoid clash with auth.User
+        related_name='customuser_set',
         blank=True
     )
 
+    # 🔑 LOGIN CONFIG
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']  # username is still required by AbstractUser
+    REQUIRED_FIELDS = ['username']  # admin compatibility
 
     class Meta:
-        db_table = 'main_customuser'  # Use existing table name
+        db_table = 'main_customuser'
 
     def __str__(self):
         return self.email
@@ -584,6 +656,15 @@ class ProductImage(models.Model):
     
 
 class Order(models.Model):
+    ORDER_STATUS = (
+        ('created', 'Created'),
+        ('paid', 'Paid'),
+        ('processing', 'Processing'),
+        ('out_for_delivery', 'Out for Delivery'),
+        ('shipped', 'Shipped'),
+        ('delivered', 'Delivered'),
+        ('cancelled', 'Cancelled'),
+    )
     id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True)
     first_name = models.CharField(max_length=50)
@@ -595,6 +676,12 @@ class Order(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     paid = models.BooleanField(default=False)
+
+    status = models.CharField(
+        max_length=20,
+        choices=ORDER_STATUS,
+        default='created'
+    )
 
     class Meta:
         db_table = 'main_order'  # Use existing table name

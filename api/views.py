@@ -13,6 +13,8 @@ from django.core.paginator import Paginator, EmptyPage
 from django.db.models import Q
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
 
 
 
@@ -77,6 +79,7 @@ class ProfileView(generics.RetrieveAPIView):
 
 
 class UpdateProfileView(generics.UpdateAPIView):
+     authentication_classes = [JWTAuthentication]   # 🔥 THIS WAS MISSING
      permission_classes = [IsAuthenticated]
      serializer_class = UpdateProfileSerializer
 
@@ -463,28 +466,75 @@ class CheckoutView(APIView):
 
 
 class MyOrdersView(APIView):
+    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        orders = Order.objects.filter(user=request.user).order_by('-created')
+        user = request.user
+        status_param = request.GET.get('status')   # delivered, shipped, cancelled
+        search = request.GET.get('search')         # nike, puma, sony
+
+        orders = Order.objects.filter(user=user)
+
+        # 🔹 STATUS FILTER (Tabs ke liye)
+        if status_param and status_param != 'all':
+            orders = orders.filter(status=status_param)
+
+        # 🔹 SEARCH (product name OR order id)
+        if search:
+            orders = orders.filter(
+                Q(items__product__name__icontains=search) |
+                Q(id__icontains=search)
+            ).distinct()
+
+        orders = orders.order_by('-created')
+
         serializer = OrderSerializer(orders, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 
 class OrderDetailView(APIView):
+    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request, order_id):
-        try:
-            order = Order.objects.get(id=order_id, user=request.user)
-        except Order.DoesNotExist:
-            return Response(
-                {"error": "Order not found"},
-                status=status.HTTP_404_NOT_FOUND
-            )
+        order = get_object_or_404(
+            Order,
+            id=order_id,
+            user=request.user
+        )
 
         serializer = OrderSerializer(order)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class CancelOrderAPIView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, order_id):
+        order = get_object_or_404(
+            Order,
+            id=order_id,
+            user=request.user
+        )
+
+        # 🔒 CANCEL RULE
+        if order.status not in ['created', 'paid']:
+            return Response(
+                {"error": "Order cannot be cancelled at this stage"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        order.status = 'cancelled'
+        order.save()
+
+        return Response(
+            {"message": "Order cancelled successfully"},
+            status=status.HTTP_200_OK
+        )
+
     
 
 
@@ -507,7 +557,10 @@ class PaymentSuccessAPIView(APIView):
             id=order_id,
             user=request.user,
             paid=False
-        ).update(paid=True)
+        ).update(
+            paid=True,
+            status='paid'
+        )
 
         return Response(
             {"message": "Payment successful. Order confirmed."},

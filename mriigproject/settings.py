@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 import mimetypes
+from datetime import timedelta
 
 AUTH_USER_MODEL = 'ecommerce.CustomUser'
 
@@ -30,7 +31,7 @@ SECRET_KEY = 'django-insecure-=z9lp(k@r2!-j)=0oa9t(v$ycks3i&((l$aa*2j=omw))#ksuj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.100.18','192.168.1.4']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.100.18','192.168.1.4','192.168.29.97']
 #ALLOWED_HOSTS = ['mriigg.com', 'www.mriigg.com']
 
 # Application definition
@@ -251,6 +252,21 @@ LOGGING = {
         },
     },
 }
+
+
+
+
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=6),   # 👈 increase
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
 
 # Create logs directory if it doesn't exist
 LOGS_DIR = BASE_DIR / 'logs'

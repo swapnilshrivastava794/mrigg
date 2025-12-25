@@ -469,6 +469,7 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'created',
+            'status',
             'paid',
             'city',
             'items',

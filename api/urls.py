@@ -2,6 +2,7 @@ from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
 
 from .views import (
+    CancelOrderAPIView,
     CheckoutView,
     MyOrdersView,
     OrderDetailView,
@@ -86,6 +87,8 @@ urlpatterns = [
 
     path('orders/', MyOrdersView.as_view(), name='my-orders'),
     path('orders/<int:order_id>/', OrderDetailView.as_view(), name='order-detail'),
+    path('orders/<int:order_id>/cancel/', CancelOrderAPIView.as_view(), name='cancel-order'),
+
 
     path("payment-success/", PaymentSuccessAPIView.as_view(), name="payment-success"),
 ]
