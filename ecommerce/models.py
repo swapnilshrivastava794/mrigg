@@ -693,6 +693,7 @@ class OrderItem(models.Model):
     id = models.BigAutoField(primary_key=True)
     order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
     product = models.ForeignKey(Product, related_name='order_items', on_delete=models.CASCADE)
+    variation = models.ForeignKey(ProductVariation, related_name='order_items', on_delete=models.SET_NULL, null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.PositiveIntegerField(default=1)
 

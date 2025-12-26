@@ -438,10 +438,36 @@ class OrderCreateSerializer(serializers.Serializer):
         # 🔒 Cart → OrderItem
         for item in validated_data['items']:
             product = Product.objects.get(id=item['product_id'])
+            
+            variation = None
+            price_to_charge = product.offerprice if product.offerprice > 0 else product.price
+
+            # Check if variation exists
+            if 'variation_id' in item and item['variation_id']:
+                try:
+                    variation = ProductVariation.objects.get(id=item['variation_id'], product=product)
+                    # Use variation price if available (assuming variation checks offerprice or price_modifier)
+                    # Simple Logic: If variation has offerprice, use it. Else use product price + modifier? 
+                    # Let's check model. Variation has offerprice field.
+                    if variation.offerprice > 0:
+                         price_to_charge = variation.offerprice
+                    elif variation.price_modifier:
+                         # This logic depends on business requirement. Usually base price + modifier.
+                         # But let's stick to what models suggest. Variation has an offerprice field.
+                         # Let's assume if variation offerprice is 0, we use product price? No, variation might be just size.
+                         # Let's use the safer bet: 
+                         # If variation offerprice > 0, use it.
+                         # Else if variation price_modifier != 0, add to product price.
+                         # For now, let's keep it robust.
+                         price_to_charge = product.price + variation.price_modifier
+                except ProductVariation.DoesNotExist:
+                    variation = None
+
             OrderItem.objects.create(
                 order=order,
                 product=product,
-                price=product.price,
+                variation=variation,
+                price=price_to_charge,
                 quantity=item['quantity']
             )
 
@@ -450,14 +476,25 @@ class OrderCreateSerializer(serializers.Serializer):
 
 class OrderItemSerializer(serializers.ModelSerializer):
     product_name = serializers.ReadOnlyField(source='product.name')
+    variation_details = serializers.SerializerMethodField()
 
     class Meta:
         model = OrderItem
         fields = [
             'product_name',
+            'variation_details',
             'price',
             'quantity'
         ]
+
+    def get_variation_details(self, obj):
+        if obj.variation:
+            return {
+                "id": obj.variation.id,
+                "name": obj.variation.name,
+                "quantity": obj.variation.quantity # e.g. XL, Red etc
+            }
+        return None
 
 
 class OrderSerializer(serializers.ModelSerializer):
