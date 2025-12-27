@@ -26,7 +26,9 @@ from .views import (
     ProductsByCategoryAPI,
     ProductDetailByIdAPI,
     HomeProductsAPI,
-    FilterProductsAPI
+    FilterProductsAPI,
+    GokwikPaymentInitiateView,
+    GokwikPaymentCallbackView
 )
 
 urlpatterns = [
@@ -91,4 +93,8 @@ urlpatterns = [
 
 
     path("payment-success/", PaymentSuccessAPIView.as_view(), name="payment-success"),
+    
+    # Gokwik
+    path("gokwik/initiate/", GokwikPaymentInitiateView.as_view(), name="gokwik-initiate"),
+    path("gokwik/callback/", GokwikPaymentCallbackView.as_view(), name="gokwik-callback"),
 ]

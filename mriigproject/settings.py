@@ -14,6 +14,9 @@ from pathlib import Path
 import os
 import mimetypes
 from datetime import timedelta
+from dotenv import load_dotenv
+
+load_dotenv()  # Load environment variables from .env file
 
 AUTH_USER_MODEL = 'ecommerce.CustomUser'
 
@@ -31,7 +34,7 @@ SECRET_KEY = 'django-insecure-=z9lp(k@r2!-j)=0oa9t(v$ycks3i&((l$aa*2j=omw))#ksuj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.100.18','192.168.1.4','192.168.29.97']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.100.18','192.168.1.9','192.168.29.97']
 #ALLOWED_HOSTS = ['mriigg.com', 'www.mriigg.com']
 
 # Application definition
@@ -130,6 +133,12 @@ DATABASES = {
 
 #     }
 # }
+
+# Gokwik Payment Configuration
+GOKWIK_MERCHANT_ID = os.getenv('GOKWIK_MERCHANT_ID')
+GOKWIK_APP_ID = os.getenv('GOKWIK_APP_ID')
+GOKWIK_APP_SECRET = os.getenv('GOKWIK_APP_SECRET')
+GOKWIK_BASE_URL = os.getenv('GOKWIK_BASE_URL', 'https://sandbox-api.gokwik.co')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -257,6 +266,16 @@ LOGGING = {
 
 
 
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=6),   # 👈 increase
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
@@ -266,6 +285,18 @@ SIMPLE_JWT = {
 
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
+
+# ================= GOKWIK CONFIGURATION =================
+GOKWIK_MERCHANT_ID = os.getenv("GOKWIK_MERCHANT_ID", "198lw61hdxya")
+GOKWIK_APP_ID = os.getenv("GOKWIK_APP_ID", "6f6766360451ee688bc53b11176a3b85")
+GOKWIK_SECRET_KEY = os.getenv("GOKWIK_SECRET_KEY", "1d40c5818a0a07eb7bd1e52c91ba7def")
+GOKWIK_ENV = os.getenv("GOKWIK_ENV", "sandbox")
+# Base URL logic based on ENV
+if GOKWIK_ENV == "sandbox":
+    GOKWIK_BASE_URL = "https://sandbox.gokwik.co" 
+else:
+    GOKWIK_BASE_URL = "https://api.gokwik.co"
+# ========================================================
 
 
 # Create logs directory if it doesn't exist
