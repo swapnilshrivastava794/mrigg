@@ -1,5 +1,11 @@
 from django.utils import timezone
 from rest_framework import generics
+import hashlib
+import hmac
+import base64
+import json
+import requests
+from django.conf import settings
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
@@ -566,4 +572,114 @@ class PaymentSuccessAPIView(APIView):
             {"message": "Payment successful. Order confirmed."},
             status=status.HTTP_200_OK
         )
+
+
+from ecommerce.models import Order, Payment # Ensure Payment is imported
+
+class GokwikPaymentInitiateView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        order_id = request.data.get('order_id')
+        if not order_id:
+            return Response({'error': 'Order ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        order = get_object_or_404(Order, id=order_id, user=request.user)
+        
+        # Gokwik Configuration
+        merchant_id = getattr(settings, 'GOKWIK_MERCHANT_ID', '')
+        app_id = getattr(settings, 'GOKWIK_APP_ID', '')
+        app_secret = getattr(settings, 'GOKWIK_APP_SECRET', '')
+        
+        if not all([merchant_id, app_id, app_secret]):
+             return Response({'error': 'Gokwik credentials not configured'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        amount = order.get_total_cost()
+
+        # 1. Create Payment Record (Pending)
+        payment = Payment.objects.create(
+            order=order,
+            amount=amount,
+            status='pending',
+            payment_method='gokwik'
+        )
+
+        # Payload Construction
+        payload = {
+            'merchant_id': merchant_id,
+            'app_id': app_id,
+            'order_id': str(order.id),
+            'amount': str(amount),
+            'currency': 'INR',
+            'customer_name': request.user.first_name,
+            'customer_email': request.user.email,
+            'customer_phone': getattr(request.user, 'mobile', ''),
+            'timestamp': str(timezone.now().timestamp()),
+            # Pass Payment ID to track it back if needed, or rely on Order ID
+            'merchant_param1': str(payment.id) 
+        }
+        
+        # Signature Generation
+        payload_string = json.dumps(payload, sort_keys=True)
+        signature = hmac.new(
+            key=app_secret.encode(),
+            msg=payload_string.encode(),
+            digestmod=hashlib.sha256
+        ).hexdigest()
+
+        return Response({
+            'payload': payload,
+            'signature': signature,
+            'url': getattr(settings, 'GOKWIK_BASE_URL', '') + '/checkout'
+        }, status=status.HTTP_200_OK)
+
+
+class GokwikPaymentCallbackView(APIView):
+    permission_classes = [AllowAny] 
+
+    def post(self, request):
+        data = request.data
+        
+        # 1. Extract Data
+        gokwik_payment_id = data.get('gokwik_payment_id')
+        status_value = data.get('status')
+        amount = data.get('amount')
+        order_id = data.get('order_id')
+        payment_id = data.get('merchant_param1') # We sent this
+
+        try:
+            # 2. Find the Payment Record
+            # Try via Payment ID first (more precise), then Order ID
+            if payment_id:
+                payment = Payment.objects.get(id=payment_id)
+            else:
+                # Fallback: Find latest pending payment for this order
+                payment = Payment.objects.filter(order_id=order_id, status='pending').last()
+                
+            if not payment:
+                 return Response({'status': 'error', 'message': 'Payment Record Not Found'}, status=status.HTTP_404_NOT_FOUND)
+
+            # 3. Update Payment Status
+            payment.gokwik_oid = gokwik_payment_id
+            payment.response_data = json.dumps(data)
+            
+            if status_value == 'SUCCESS':
+                payment.status = 'success'
+                payment.transaction_id = gokwik_payment_id
+                payment.save()
+                
+                # 4. Update Main Order
+                order = payment.order
+                order.paid = True
+                order.status = 'paid'
+                order.save()
+            else:
+                payment.status = 'failed'
+                payment.save()
+            
+            return Response({'status': 'ok'}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

@@ -693,6 +693,10 @@ class Order(models.Model):
     def __str__(self):
         return f'Order {self.id}'
 
+    def get_total_cost(self):
+        return sum(item.price * item.quantity for item in self.items.all())
+
+
 class OrderItem(models.Model):
     id = models.BigAutoField(primary_key=True)
     order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
@@ -706,6 +710,30 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f'{self.quantity} of {self.product.name}'
+
+
+class Payment(models.Model):
+    PAYMENT_STATUS = (
+        ('pending', 'Pending'),
+        ('success', 'Success'),
+        ('failed', 'Failed'),
+    )
+    id = models.BigAutoField(primary_key=True)
+    order = models.ForeignKey(Order, related_name='payments', on_delete=models.CASCADE)
+    gokwik_oid = models.CharField(max_length=100, blank=True, null=True, verbose_name="Gokwik Order ID") # Gokwik's internal ID
+    transaction_id = models.CharField(max_length=100, blank=True, null=True, verbose_name="Transaction ID")
+    payment_method = models.CharField(max_length=50, blank=True, null=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=20, choices=PAYMENT_STATUS, default='pending')
+    timestamp = models.DateTimeField(auto_now_add=True)
+    response_data = models.TextField(blank=True, null=True) # Store full JSON for debugging
+
+    class Meta:
+        db_table = 'main_payment'
+
+    def __str__(self):
+        return f"Pay {self.id} - {self.status}"
+
 
 
 class UserAddress(models.Model):
