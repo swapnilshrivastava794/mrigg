@@ -79,6 +79,7 @@ TEMPLATES = [
                 'ecommerce.context_processors.cart_item_count',
                 'ecommerce.context_processors.custom_user_context',  # ✅ add this line
                 'ecommerce.context_processors.categories_context',  # ✅ add categories context
+                'ecommerce.context_processors.profile_setting_context',  # ✅ add profile_setting context
 
             ],
         },
@@ -149,6 +150,7 @@ CKEDITOR_CONFIGS = {
 }
 
 mimetypes.add_type("image/webp", ".webp", True)
+mimetypes.add_type("image/svg+xml", ".svg", True)
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

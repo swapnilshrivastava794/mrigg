@@ -1,0 +1,22 @@
+{% extends '../layout/layout.html' %}
+
+{% block content %}
+
+<!-- ..::CMS Page Start Here::.. -->
+<section class="cms-page-area pt-120 pb-75 pt-md-60 pb-md-15 pt-xs-50 pb-xs-10 bm-5">
+    <div class="container">
+        {% if cms_page.pageimage %}
+        <div class="page-image mb-4" style="width: 100%; height: 250px; overflow: hidden; border-radius: 8px;">
+            <img src="{{ cms_page.pageimage.url }}" alt="{{ cms_page.pagename }}" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        {% endif %}
+        
+        <div class="page-content">
+            {{ cms_page.Content|safe }}
+        </div>
+    </div>
+</section>
+<!-- ..::CMS Page End Here::.. -->
+
+{% endblock content %}
+

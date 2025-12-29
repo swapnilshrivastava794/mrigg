@@ -137,8 +137,8 @@ class CMS(models.Model):
 
 class profile_setting(models.Model):
     id = models.BigAutoField(primary_key=True)
-    logo_light = models.ImageField(upload_to='logo/', null=True, blank=True, verbose_name="Logo Light (500X100px)")
-    logo_dark = models.ImageField(upload_to='logo/', null=True, blank=True, verbose_name="Logo Dark (500X100px)")
+    logo_light = models.FileField(upload_to='logo/', null=True, blank=True, verbose_name="Logo Light (SVG, PNG, JPG - 500X100px)", help_text="Accepts SVG, PNG, JPG files")
+    logo_dark = models.FileField(upload_to='logo/', null=True, blank=True, verbose_name="Logo Dark (SVG, PNG, JPG - 500X100px)", help_text="Accepts SVG, PNG, JPG files")
     footer_img = models.ImageField(upload_to='profile_image/', null=True, blank=True, verbose_name="Footer Image (1920X365px)")
     body_img =  models.ImageField(upload_to='profile_image/', null=True, blank=True, verbose_name="Body Image (1920X365px)")
     background_theme_light = models.CharField(max_length=7, null=True, blank=True, default="#FFFFFF", verbose_name="background Theme Light", help_text="Light Background")

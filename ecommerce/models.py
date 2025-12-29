@@ -682,6 +682,10 @@ class Order(models.Model):
         choices=ORDER_STATUS,
         default='created'
     )
+    
+    # Coupon fields
+    coupon = models.ForeignKey('Coupon', on_delete=models.SET_NULL, null=True, blank=True, related_name='orders')
+    discount_total = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name="Discount Amount")
 
     class Meta:
         db_table = 'main_order'  # Use existing table name
@@ -753,6 +757,148 @@ class ContactMessage(models.Model):
     def __str__(self):
         return f"{self.name} - {self.email}"
     
+
+class Coupon(models.Model):
+    """
+    Coupon model for discount codes
+    """
+    id = models.BigAutoField(primary_key=True)
+    code = models.CharField(max_length=50, unique=True, verbose_name="Coupon Code", help_text="e.g., SAVE20")
+    discount_amount = models.IntegerField(default=10, verbose_name="Discount Amount", help_text="Amount or Percentage")
+    discount_type = models.CharField(
+        max_length=10,
+        choices=[('flat', 'Flat ₹'), ('percent', '%')],
+        default='percent',
+        verbose_name="Discount Type"
+    )
+    
+    # Validation Rules
+    min_purchase_amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0,
+        verbose_name="Minimum Purchase Amount",
+        help_text="E.g. Min Order 500"
+    )
+    valid_from = models.DateTimeField(verbose_name="Valid From")
+    valid_to = models.DateTimeField(verbose_name="Valid To")
+    active = models.BooleanField(default=True, verbose_name="Active")
+    
+    # Usage Limits
+    usage_limit = models.IntegerField(
+        default=100,
+        verbose_name="Usage Limit",
+        help_text="Total times this coupon can be used"
+    )
+    used_count = models.IntegerField(
+        default=0,
+        verbose_name="Used Count",
+        help_text="How many times this coupon has been used"
+    )
+    
+    # Optional: Category restrictions
+    valid_categories = models.ManyToManyField(
+        'Category',
+        blank=True,
+        verbose_name="Valid Categories",
+        help_text="If empty, coupon is valid for all categories"
+    )
+    
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created At")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated At")
+    
+    class Meta:
+        db_table = 'main_coupon'
+        verbose_name = "Coupon"
+        verbose_name_plural = "Coupons"
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return self.code
+    
+    def is_valid(self, cart_total=0, user=None):
+        """
+        Check if coupon is valid for given cart total and user
+        """
+        from django.utils import timezone
+        
+        # Check if active
+        if not self.active:
+            return False, "Coupon is not active"
+        
+        # Check date validity
+        now = timezone.now()
+        if now < self.valid_from:
+            return False, "Coupon is not yet valid"
+        if now > self.valid_to:
+            return False, "Coupon has expired"
+        
+        # Check minimum purchase amount
+        if cart_total < self.min_purchase_amount:
+            return False, f"Minimum purchase amount of ₹{self.min_purchase_amount} required"
+        
+        # Check usage limit
+        if self.used_count >= self.usage_limit:
+            return False, "Coupon usage limit reached"
+        
+        # Check if user has already used this coupon (if CouponUsage exists)
+        if user:
+            # Use string reference to avoid circular import
+            from django.apps import apps
+            CouponUsage = apps.get_model('ecommerce', 'CouponUsage')
+            if CouponUsage.objects.filter(user=user, coupon=self).exists():
+                return False, "You have already used this coupon"
+        
+        return True, "Valid"
+    
+    def calculate_discount(self, cart_total):
+        """
+        Calculate discount amount based on cart total
+        """
+        if self.discount_type == 'flat':
+            return min(self.discount_amount, cart_total)  # Can't discount more than cart total
+        else:  # percent
+            discount = (cart_total * self.discount_amount) / 100
+            return min(discount, cart_total)  # Can't discount more than cart total
+
+
+class CouponUsage(models.Model):
+    """
+    Track which users have used which coupons
+    """
+    id = models.BigAutoField(primary_key=True)
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='coupon_usages',
+        verbose_name="User"
+    )
+    coupon = models.ForeignKey(
+        Coupon,
+        on_delete=models.CASCADE,
+        related_name='usages',
+        verbose_name="Coupon"
+    )
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name='coupon_usage',
+        null=True,
+        blank=True,
+        verbose_name="Order"
+    )
+    used_at = models.DateTimeField(auto_now_add=True, verbose_name="Used At")
+    
+    class Meta:
+        db_table = 'main_couponusage'
+        verbose_name = "Coupon Usage"
+        verbose_name_plural = "Coupon Usages"
+        unique_together = [['user', 'coupon']]  # One user can use one coupon only once
+        ordering = ['-used_at']
+    
+    def __str__(self):
+        return f"{self.user.email} - {self.coupon.code}"
+
 
 # //Custom User Model
 

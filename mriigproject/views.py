@@ -644,12 +644,12 @@ def custom_login(request):
 def profile_view(request):
     user_id = request.session.get('custom_user_id')
     if not user_id:
-        return redirect('custom_login')
+        return redirect('login')
 
     try:
         user = CustomUser.objects.get(id=user_id)
     except CustomUser.DoesNotExist:
-        return redirect('custom_login')
+        return redirect('login')
 
     return render(request, 'main/profile.html', {'user': user})
     

@@ -2,6 +2,8 @@ from django.contrib import admin
 from .models import slider, CMS, profile_setting, Blog, BlogCategory
 from django.utils.html import format_html
 from django.urls import reverse
+from django import forms
+from django.core.exceptions import ValidationError
 
 
 @admin.register(slider)
@@ -178,15 +180,46 @@ class BlogAdmin(admin.ModelAdmin):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
+class ProfileSettingForm(forms.ModelForm):
+    """Custom form to validate logo file types"""
+    class Meta:
+        model = profile_setting
+        fields = '__all__'
+    
+    def clean_logo_light(self):
+        logo_light = self.cleaned_data.get('logo_light')
+        if logo_light:
+            allowed_extensions = ['.svg', '.png', '.jpg', '.jpeg', '.webp']
+            file_extension = logo_light.name.lower().split('.')[-1]
+            if f'.{file_extension}' not in allowed_extensions:
+                raise ValidationError(
+                    f'Invalid file type. Allowed types: {", ".join(allowed_extensions)}'
+                )
+        return logo_light
+    
+    def clean_logo_dark(self):
+        logo_dark = self.cleaned_data.get('logo_dark')
+        if logo_dark:
+            allowed_extensions = ['.svg', '.png', '.jpg', '.jpeg', '.webp']
+            file_extension = logo_dark.name.lower().split('.')[-1]
+            if f'.{file_extension}' not in allowed_extensions:
+                raise ValidationError(
+                    f'Invalid file type. Allowed types: {", ".join(allowed_extensions)}'
+                )
+        return logo_dark
+
+
 @admin.register(profile_setting)
 class ProfileSettingAdmin(admin.ModelAdmin):
+    form = ProfileSettingForm
     list_display = ('id', 'status', 'email', 'phone_number1', 'create_date')
     list_filter = ('status', 'create_date')
     search_fields = ('email', 'phone_number1', 'phone_number2', 'copyright')
     
     fieldsets = (
         ('Logo Settings', {
-            'fields': ('logo_light', 'logo_dark')
+            'fields': ('logo_light', 'logo_dark'),
+            'description': 'Upload SVG, PNG, JPG, or WebP files for logos. SVG files are recommended for scalability.'
         }),
         ('Image Settings', {
             'fields': ('footer_img', 'body_img')

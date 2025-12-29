@@ -232,98 +232,70 @@
     </div>
     <div class="cart-bar">
         <div class="cart-header">
-            <h3 class="cart-heading">MY CART (3 ITEMS)</h3>
+            <h3 class="cart-heading">MY CART ({{ cart_item_count|default:0 }} {% if cart_item_count == 1 %}ITEM{% else %}ITEMS{% endif %})</h3>
             <div class="close-cart"><i class="fal fa-times"></i></div>
         </div>
-        <div class="product-area">
-            <div class="product-item">
-                <div class="product-detail">
-                    <div class="product-thumb"><img src="/static/images/slider/image1.jpg" alt="product-thumb"></div>
-                    <div class="item-wrapper">
-                        <span class="product-name">Parachute Jacket</span>
-                        <div class="item-wrapper">
-                            <span class="product-variation"><span class="color">Green /</span>
-                                <span class="size">XL</span></span>
+        <div class="product-area" style="flex: 1; overflow-y: auto; overflow-x: hidden; max-height: calc(100vh - 250px); padding-right: 5px;">
+            {% if cart_items %}
+                {% for item in cart_items %}
+                    <div class="product-item{% if forloop.last %} last-child{% endif %}">
+                        <div class="product-detail">
+                            <div class="product-thumb">
+                                {% if item.product_image %}
+                                    <img src="{{ item.product_image.image.url }}" alt="{{ item.product.name }}">
+                                {% else %}
+                                    <img src="/static/images/slider/image1.jpg" alt="{{ item.product.name }}">
+                                {% endif %}
+                            </div>
+                            <div class="item-wrapper">
+                                <span class="product-name">{{ item.product.name }}</span>
+                                <div class="item-wrapper">
+                                    <span class="product-variation">
+                                        {% if item.product.category %}
+                                            <span class="color">{{ item.product.category.name }}</span>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                <div class="item-wrapper">
+                                    <span class="product-qnty">{{ item.quantity }} ×</span>
+                                    <span class="product-price">INR {{ item.effective_price|floatformat:2 }}</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="item-wrapper">
-                            <span class="product-qnty">3 ×</span>
-                            <span class="product-price">INR 198.00</span>
+                        <div class="cart-edit">
+                            <div class="quantity-edit">
+                                <button class="button minus" data-product-id="{{ item.product.id }}"><i class="fal fa-minus"></i></button>
+                                <input type="text" class="input" value="{{ item.quantity }}" data-product-id="{{ item.product.id }}" />
+                                <button class="button plus" data-product-id="{{ item.product.id }}"><i class="fal fa-plus"></i></button>
+                            </div>
+                            <div class="item-wrapper d-flex mr--5 align-items-center">
+                                {% if item.product.subcategory and item.product.subcategory.category %}
+                                    <a href="{% url 'product_detail' item.product.subcategory.category.slug item.product.subcategory.slug item.product.slug %}" class="product-edit"><i class="fal fa-edit"></i></a>
+                                {% else %}
+                                    <a href="#" class="product-edit"><i class="fal fa-edit"></i></a>
+                                {% endif %}
+                                <a href="{% url 'remove_from_cart' item.product.id %}" class="delete-cart"><i class="fal fa-times"></i></a>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="cart-edit">
-                    <div class="quantity-edit">
-                        <button class="button"><i class="fal fa-minus minus"></i></button>
-                        <input type="text" class="input" value="3" />
-                        <button class="button plus">+<i class="fal fa-plus plus"></i></button>
-                    </div>
-                    <div class="item-wrapper d-flex mr--5 align-items-center">
-                        <a href="#" class="product-edit"><i class="fal fa-edit"></i></a>
-                        <a href="#" class="delete-cart"><i class="fal fa-times"></i></a>
-                    </div>
-                </div>
-            </div>
-            <div class="product-item">
-                <div class="product-detail">
-                    <div class="product-thumb"><img src="/static/images/slider/image2.jpg" alt="product-thumb"></div>
-                    <div class="item-wrapper">
-                        <span class="product-name">Narrow Trouser</span>
-                        <div class="item-wrapper">
-                            <span class="product-variation"><span class="color">Green /</span>
-                                <span class="size">XL</span></span>
-                        </div>
-                        <div class="item-wrapper">
-                            <span class="product-qnty">2 ×</span>
-                            <span class="product-price">INR 88.00</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="cart-edit">
-                    <div class="quantity-edit">
-                        <button class="button"><i class="fal fa-minus minus"></i></button>
-                        <input type="text" class="input" value="2" />
-                        <button class="button plus">+<i class="fal fa-plus plus"></i></button>
-                    </div>
-                    <div class="item-wrapper d-flex mr--5 align-items-center">
-                        <a href="#" class="product-edit"><i class="fal fa-edit"></i></a>
-                        <a href="#" class="delete-cart"><i class="fal fa-times"></i></a>
-                    </div>
-                </div>
-            </div>
-            <div class="product-item last-child">
-                <div class="product-detail">
-                    <div class="product-thumb"><img src="/static/images/slider/image5.jpg" alt="product-thumb"></div>
-                    <div class="item-wrapper">
-                        <span class="product-name">Bellyless Hoodie</span>
-                        <div class="item-wrapper">
-                            <span class="product-variation"><span class="color">Green /</span>
-                                <span class="size">XL</span></span>
-                        </div>
-                        <div class="item-wrapper">
-                            <span class="product-qnty">1 ×</span>
-                            <span class="product-price">INR 289.00</span>
+                {% endfor %}
+            {% else %}
+                <div class="product-item">
+                    <div class="product-detail">
+                        <div class="item-wrapper" style="text-align: center; padding: 20px;">
+                            <span class="product-name">Your cart is empty</span>
                         </div>
                     </div>
                 </div>
-                <div class="cart-edit">
-                    <div class="quantity-edit">
-                        <button class="button"><i class="fal fa-minus minus"></i></button>
-                        <input type="text" class="input" value="2" />
-                        <button class="button plus">+<i class="fal fa-plus plus"></i></button>
-                    </div>
-                    <div class="item-wrapper d-flex mr--5 align-items-center">
-                        <a href="#" class="product-edit"><i class="fal fa-edit"></i></a>
-                        <a href="#" class="delete-cart"><i class="fal fa-times"></i></a>
-                    </div>
-                </div>
-            </div>
+            {% endif %}
         </div>
         <div class="cart-bottom-area">
-            <span class="spend-shipping"><i class="fal fa-truck"></i> SPENT <span class="amount">INR 199.00</span> MORE
-                FOR FREE SHIPPING</span>
-            <span class="total-price">TOTAL: <span class="price">INR 556</span></span>
-            <a href="{% url 'checkOut' %}" class="checkout-btn cart-btn">PROCEED TO CHECKOUT</a>
-            <a href="{% url 'cart' %}" class="view-btn cart-btn">VIEW CART</a>
+            {% if cart_total_price > 0 %}
+                <span class="spend-shipping"><i class="fal fa-truck"></i> SPENT <span class="amount">INR {{ cart_total_price|floatformat:2 }}</span> MORE FOR FREE SHIPPING</span>
+                <span class="total-price">TOTAL: <span class="price">INR {{ cart_total_price|floatformat:2 }}</span></span>
+                <a href="{% url 'checkout' %}" class="checkout-btn cart-btn">PROCEED TO CHECKOUT</a>
+            {% endif %}
+            <a href="{% url 'view_cart' %}" class="view-btn cart-btn">VIEW CART</a>
         </div>
     </div>
     <!-- slide-bar start -->
@@ -457,12 +429,12 @@
             </div>
             <a href="{% url 'view_cart' %}" class="cart action-item">
                 <div class="cart-nav">
-                    <div class="cart-icon icon"><i class="rt-cart"></i><span class="wishlist-dot icon-dot">{{ cart_item_count|default:0 }}</span>
+                    <div class="cart-icon icon"><i class="rt-cart"></i><span class="cart-dot icon-dot">{{ cart_item_count|default:0 }}</span>
                     </div>
                 </div>
             </a>
             <a href="{% url 'view_wishlist' %}" class="wishlist action-item" title="Wishlist">
-                <div class="favourite-icon icon"><i class="rt-heart"></i><span class="cart-dot icon-dot">{{ wishlist_count|default:0 }}</span>
+                <div class="favourite-icon icon"><i class="rt-heart"></i><span class="wishlist-dot icon-dot">{{ wishlist_count|default:0 }}</span>
                 </div>
             </a>
             <a href="{% url 'login' %}" class="account"><i class="rt-user-2"></i></a>

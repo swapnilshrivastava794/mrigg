@@ -14,14 +14,12 @@ from mriigproject import homeViews
 from mriigproject import blogViews
 from mriigproject import pagesViews
 from mriigproject import shopViews
+from cms import views as cms_views
 
 urlpatterns = [
         
         # Add this line for API section
     path('api/', include('api.urls')),
-
-
-
     path('admin/', admin.site.urls),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('', views.home, name='home'),
@@ -99,6 +97,9 @@ urlpatterns = [
     path('sidebar-left', shopViews.sidebarLeft, name='sidebarLeft'),
     path('sidebar-right', shopViews.sidebarRight, name='sidebarRight'),
     path('variable-products', shopViews.variableProducts, name='variableProducts'),
+    
+    # CMS pages - must come before category URLs to avoid conflicts
+    path('<slug:slug>/', cms_views.cms_page, name='cms'),
     
     # SEO-friendly category URLs - product detail must come before category URLs
     path('<slug:category_slug>/<slug:subcategory_slug>/<slug:product_slug>/', views.product_detail, name='product_detail'),

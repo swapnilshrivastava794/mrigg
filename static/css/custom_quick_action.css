@@ -5,7 +5,6 @@
 
 /* Make all product cards same size */
 .product-item {
-    height: 100% !important;
     display: flex !important;
     flex-direction: column !important;
     border-radius: 8px !important;
@@ -108,7 +107,6 @@
     width: 100% !important;
     margin-bottom: 0 !important;
     flex: 1 !important;
-    min-height: 100% !important;
 }
 
 /* Product card buttons styling */

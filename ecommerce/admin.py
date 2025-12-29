@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Brand, Category, SubCategory, ContactMessage, CustomUser, Product, Order, OrderItem, ProductDetailSection ,ProductImage, ProductVariation
+from .models import Brand, Category, SubCategory, ContactMessage, CustomUser, Product, Order, OrderItem, ProductDetailSection ,ProductImage, ProductVariation, Coupon, CouponUsage
 from django.utils.translation import gettext_lazy as _
 from ckeditor.widgets import CKEditorWidget
 from django import forms
@@ -879,3 +879,56 @@ def get_app_list(self, request):
 
 # Replace the method
 admin.AdminSite.get_app_list = get_app_list
+
+
+@admin.register(Coupon)
+class CouponAdmin(admin.ModelAdmin):
+    list_display = ('code', 'discount_amount', 'discount_type', 'min_purchase_amount', 'valid_from', 'valid_to', 'active', 'used_count', 'usage_limit', 'created_at')
+    list_filter = ('active', 'discount_type', 'valid_from', 'valid_to', 'created_at')
+    search_fields = ('code',)
+    list_editable = ('active',)
+    ordering = ('-created_at',)
+    readonly_fields = ('used_count', 'created_at', 'updated_at')
+    
+    fieldsets = (
+        ('Coupon Information', {
+            'fields': ('code', 'discount_amount', 'discount_type')
+        }),
+        ('Validation Rules', {
+            'fields': ('min_purchase_amount', 'valid_from', 'valid_to', 'valid_categories')
+        }),
+        ('Usage Limits', {
+            'fields': ('usage_limit', 'used_count', 'active')
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.prefetch_related('valid_categories')
+
+
+@admin.register(CouponUsage)
+class CouponUsageAdmin(admin.ModelAdmin):
+    list_display = ('user', 'coupon', 'order', 'used_at')
+    list_filter = ('used_at', 'coupon')
+    search_fields = ('user__email', 'user__mobile', 'coupon__code', 'order__id')
+    readonly_fields = ('used_at',)
+    ordering = ('-used_at',)
+    
+    fieldsets = (
+        ('Usage Information', {
+            'fields': ('user', 'coupon', 'order')
+        }),
+        ('Timestamps', {
+            'fields': ('used_at',),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.select_related('user', 'coupon', 'order')
