@@ -4330,3 +4330,24 @@ DEBUG 2025-12-20 00:16:20,765 utils (0.016) SELECT `main_productimage`.`id`, `ma
 DEBUG 2025-12-20 00:16:20,794 utils (0.000) SELECT `main_productvariation`.`id`, `main_productvariation`.`product_id`, `main_productvariation`.`name`, `main_productvariation`.`quantity`, `main_productvariation`.`unit`, `main_productvariation`.`is_sku_code`, `main_productvariation`.`color_code`, `main_productvariation`.`slug`, `main_productvariation`.`price_modifier`, `main_productvariation`.`offerprice`, `main_productvariation`.`stock` FROM `main_productvariation` WHERE `main_productvariation`.`product_id` = 1; args=(1,); alias=default
 DEBUG 2025-12-20 00:16:20,831 utils (0.016) SELECT `main_productdetailsection`.`id`, `main_productdetailsection`.`product_id`, `main_productdetailsection`.`title`, `main_productdetailsection`.`content` FROM `main_productdetailsection` WHERE `main_productdetailsection`.`product_id` = 1; args=(1,); alias=default
 INFO 2025-12-20 00:16:20,864 basehttp "GET /api/product/1/ HTTP/1.1" 200 2451
+INFO 2026-01-02 22:07:01,868 autoreload Watching for file changes with StatReloader
+INFO 2026-01-02 22:08:39,453 autoreload C:\laragon\www\mriggProject\ecommerce\models.py changed, reloading.
+INFO 2026-01-02 22:08:40,992 autoreload Watching for file changes with StatReloader
+DEBUG 2026-01-02 22:08:41,678 utils (0.000) 
+                SELECT VERSION(),
+                       @@sql_mode,
+                       @@default_storage_engine,
+                       @@sql_auto_is_null,
+                       @@lower_case_table_names,
+                       CONVERT_TZ('2001-01-01 01:00:00', 'UTC', 'UTC') IS NOT NULL
+            ; args=None; alias=default
+DEBUG 2026-01-02 22:08:41,681 utils (0.000) SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED; args=None; alias=default
+DEBUG 2026-01-02 22:08:41,704 utils (0.031) 
+            SELECT
+                table_name,
+                table_type,
+                table_comment
+            FROM information_schema.tables
+            WHERE table_schema = DATABASE()
+            ; args=None; alias=default
+DEBUG 2026-01-02 22:08:41,729 utils (0.016) SELECT `django_migrations`.`id`, `django_migrations`.`app`, `django_migrations`.`name`, `django_migrations`.`applied` FROM `django_migrations`; args=(); alias=default
