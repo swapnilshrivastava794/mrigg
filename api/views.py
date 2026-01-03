@@ -171,6 +171,7 @@ class LogoutView(generics.GenericAPIView):
 
 
 class CategoryListView(ListAPIView):
+    permission_classes = [AllowAny]
     serializer_class = CategorySerializer
 
     def get_queryset(self):
@@ -178,6 +179,7 @@ class CategoryListView(ListAPIView):
 
 
 class BannerListView(ListAPIView):
+    permission_classes = [AllowAny]
     serializer_class = SliderSerializer
 
     def get_queryset(self):
@@ -244,6 +246,7 @@ class ProductsByCategoryAPI(APIView):
 
 
 class ProductDetailByIdAPI(APIView):
+    permission_classes = [AllowAny]
     def get(self, request, id):
         product = get_object_or_404(
             Product,
@@ -357,6 +360,7 @@ class FilterProductsAPI(APIView):
     
 
 class ProductSearchListView(ListAPIView):
+    permission_classes = [AllowAny]
     serializer_class = ProductSearchListSerializer
 
     def get_queryset(self):
