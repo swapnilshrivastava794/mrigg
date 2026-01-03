@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.generics import ListAPIView
-from ecommerce.models import Category, Order,Product, UserAddress
+from ecommerce.models import Category, Order, Product, UserAddress, Coupon, CouponUsage
 from cms.models import slider
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
@@ -460,10 +460,20 @@ class CheckoutView(APIView):
 
         if serializer.is_valid():
             order = serializer.save()
+            
+            # Calculate details for response
+            subtotal = order.get_total_cost()
+            discount = order.discount_total
+            final_total = subtotal - discount
+
             return Response(
                 {
                     "message": "Order created successfully",
-                    "order_id": order.id
+                    "order_id": order.id,
+                    "subtotal": subtotal,
+                    "discount": discount,
+                    "coupon_code": order.coupon.code if order.coupon else None,
+                    "final_total": final_total
                 },
                 status=status.HTTP_201_CREATED
             )
@@ -682,4 +692,49 @@ class GokwikPaymentCallbackView(APIView):
 
         except Exception as e:
              return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class ApplyCouponAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        code = request.data.get('code')
+        cart_total = request.data.get('cart_total')
+
+        if not code:
+             return Response({"valid": False, "error": "Coupon code is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if cart_total is None:
+             return Response({"valid": False, "error": "Cart total is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            coupon = Coupon.objects.get(code=code)
+        except Coupon.DoesNotExist:
+            return Response({"valid": False, "error": "Invalid coupon code"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Validate
+        try:
+            cart_total_float = float(cart_total)
+        except ValueError:
+            return Response({"valid": False, "error": "Invalid cart total"}, status=status.HTTP_400_BAD_REQUEST)
+
+        is_valid, message = coupon.is_valid(cart_total=cart_total_float, user=request.user)
+        
+        if not is_valid:
+             return Response({"valid": False, "error": message}, status=status.HTTP_200_OK)
+
+        # Calculate discount
+        discount = coupon.calculate_discount(cart_total_float)
+        new_total = cart_total_float - discount
+
+        return Response({
+            "valid": True,
+            "message": "Coupon applied successfully",
+            "code": coupon.code,
+            "discount_amount": discount,
+            "discount_type": coupon.discount_type,
+            "new_total": new_total,
+            "coupon_id": coupon.id
+        }, status=status.HTTP_200_OK)
+
 

@@ -14,6 +14,8 @@ from ecommerce.models import (
     ProductVariation,
     ProductDetailSection,
     UserAddress,
+    Coupon,
+    CouponUsage,
 )
 
 from cms.models import slider
@@ -416,6 +418,7 @@ class CheckoutSerializer(serializers.Serializer):
 class OrderCreateSerializer(serializers.Serializer):
     address_id = serializers.IntegerField()
     items = serializers.ListField()
+    coupon_code = serializers.CharField(required=False, allow_blank=True)
 
     def create(self, validated_data):
         user = self.context['request'].user
@@ -447,18 +450,9 @@ class OrderCreateSerializer(serializers.Serializer):
                 try:
                     variation = ProductVariation.objects.get(id=item['variation_id'], product=product)
                     # Use variation price if available (assuming variation checks offerprice or price_modifier)
-                    # Simple Logic: If variation has offerprice, use it. Else use product price + modifier? 
-                    # Let's check model. Variation has offerprice field.
                     if variation.offerprice > 0:
                          price_to_charge = variation.offerprice
                     elif variation.price_modifier:
-                         # This logic depends on business requirement. Usually base price + modifier.
-                         # But let's stick to what models suggest. Variation has an offerprice field.
-                         # Let's assume if variation offerprice is 0, we use product price? No, variation might be just size.
-                         # Let's use the safer bet: 
-                         # If variation offerprice > 0, use it.
-                         # Else if variation price_modifier != 0, add to product price.
-                         # For now, let's keep it robust.
                          price_to_charge = product.price + variation.price_modifier
                 except ProductVariation.DoesNotExist:
                     variation = None
@@ -470,6 +464,30 @@ class OrderCreateSerializer(serializers.Serializer):
                 price=price_to_charge,
                 quantity=item['quantity']
             )
+
+        # 🎟️ Coupon Logic
+        coupon_code = validated_data.get('coupon_code')
+        if coupon_code:
+            try:
+                coupon = Coupon.objects.get(code=coupon_code)
+                cart_total = order.get_total_cost()
+                
+                is_valid, msg = coupon.is_valid(cart_total=float(cart_total), user=user)
+                if is_valid:
+                    discount = coupon.calculate_discount(float(cart_total))
+                    order.coupon = coupon
+                    order.discount_total = discount
+                    order.save()
+                    
+                    # Track usage
+                    CouponUsage.objects.create(user=user, coupon=coupon, order=order)
+                    coupon.used_count += 1
+                    coupon.save()
+                else:
+                    raise serializers.ValidationError(f"Coupon failed: {msg}")
+
+            except Coupon.DoesNotExist:
+                raise serializers.ValidationError("Invalid coupon code")
 
         return order
 

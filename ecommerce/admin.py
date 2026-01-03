@@ -881,8 +881,15 @@ def get_app_list(self, request):
 admin.AdminSite.get_app_list = get_app_list
 
 
+class CouponAdminForm(forms.ModelForm):
+    class Meta:
+        model = Coupon
+        fields = '__all__'
+
+
 @admin.register(Coupon)
 class CouponAdmin(admin.ModelAdmin):
+    form = CouponAdminForm
     list_display = ('code', 'discount_amount', 'discount_type', 'min_purchase_amount', 'valid_from', 'valid_to', 'active', 'used_count', 'usage_limit', 'created_at')
     list_filter = ('active', 'discount_type', 'valid_from', 'valid_to', 'created_at')
     search_fields = ('code',)
