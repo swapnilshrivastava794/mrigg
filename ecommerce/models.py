@@ -825,6 +825,7 @@ class Coupon(models.Model):
     )
     
     # Optional: Category restrictions
+    # Optional: Category restrictions
     valid_categories = models.ManyToManyField(
         'Category',
         blank=True,

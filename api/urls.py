@@ -95,10 +95,6 @@ urlpatterns = [
 
     path("payment-success/", PaymentSuccessAPIView.as_view(), name="payment-success"),
     
-    # Gokwik
-    path("gokwik/initiate/", GokwikPaymentInitiateView.as_view(), name="gokwik-initiate"),
-    path("gokwik/callback/", GokwikPaymentCallbackView.as_view(), name="gokwik-callback"),
-    
     # Coupon
     path("coupon/apply/", ApplyCouponAPI.as_view(), name="coupon-apply"),
 ]

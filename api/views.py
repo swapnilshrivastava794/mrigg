@@ -465,6 +465,11 @@ class CheckoutView(APIView):
         if serializer.is_valid():
             order = serializer.save()
             
+            # 🟢 DIRECT SUCCESS (Bypass Payment Gateway)
+            order.paid = True
+            order.status = 'paid'
+            order.save()
+            
             # Calculate details for response
             subtotal = order.get_total_cost()
             discount = order.discount_total
@@ -472,12 +477,13 @@ class CheckoutView(APIView):
 
             return Response(
                 {
-                    "message": "Order created successfully",
+                    "message": "Order placed successfully. Payment Successful.",
                     "order_id": order.id,
                     "subtotal": subtotal,
                     "discount": discount,
                     "coupon_code": order.coupon.code if order.coupon else None,
-                    "final_total": final_total
+                    "final_total": final_total,
+                    "payment_status": "Success"
                 },
                 status=status.HTTP_201_CREATED
             )
