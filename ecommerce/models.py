@@ -684,7 +684,8 @@ class Order(models.Model):
     )
     
     # Coupon fields
-    coupon = models.ForeignKey('Coupon', on_delete=models.SET_NULL, null=True, blank=True, related_name='orders')
+    coupon = models.ForeignKey('Coupon', on_delete=models.SET_NULL, null=True, blank=True, related_name='orders') # Legacy single
+    coupons = models.ManyToManyField('Coupon', blank=True, related_name='orders_m2m') # Support multiple
     discount_total = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name="Discount Amount")
 
     class Meta:
@@ -831,6 +832,13 @@ class Coupon(models.Model):
         blank=True,
         verbose_name="Valid Categories",
         help_text="If empty, coupon is valid for all categories"
+    )
+    
+    valid_products = models.ManyToManyField(
+        'Product',
+        blank=True,
+        verbose_name="Valid Products",
+        help_text="If empty, coupon is valid for all products"
     )
     
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created At")

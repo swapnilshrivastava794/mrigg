@@ -438,56 +438,98 @@ class OrderCreateSerializer(serializers.Serializer):
             city=address.city
         )
 
-        # 🔒 Cart → OrderItem
-        for item in validated_data['items']:
-            product = Product.objects.get(id=item['product_id'])
+    # 🎟️ ITEM-LEVEL COUPON LOGIC
+        total_discount_accumulated = 0
+        used_coupons_set = set() # To track unique coupons for M2M
+
+        # 🔒 Cart → OrderItem Loop
+        for item_data in validated_data['items']:
+            product = Product.objects.get(id=item_data['product_id'])
             
             variation = None
-            price_to_charge = product.offerprice if product.offerprice > 0 else product.price
+            # Default price
+            base_price = product.offerprice if product.offerprice > 0 else product.price
 
             # Check if variation exists
-            if 'variation_id' in item and item['variation_id']:
+            if 'variation_id' in item_data and item_data['variation_id']:
                 try:
-                    variation = ProductVariation.objects.get(id=item['variation_id'], product=product)
-                    # Use variation price if available (assuming variation checks offerprice or price_modifier)
+                    variation = ProductVariation.objects.get(id=item_data['variation_id'], product=product)
                     if variation.offerprice > 0:
-                         price_to_charge = variation.offerprice
+                         base_price = variation.offerprice
                     elif variation.price_modifier:
-                         price_to_charge = product.price + variation.price_modifier
+                         base_price = product.price + variation.price_modifier
                 except ProductVariation.DoesNotExist:
-                    variation = None
+                     pass
 
-            OrderItem.objects.create(
+            quantity = item_data['quantity']
+            total_item_price = base_price * quantity
+
+            # Create OrderItem
+            order_item = OrderItem.objects.create(
                 order=order,
                 product=product,
                 variation=variation,
-                price=price_to_charge,
-                quantity=item['quantity']
+                price=base_price,
+                quantity=quantity
             )
-
-        # 🎟️ Coupon Logic
-        coupon_code = validated_data.get('coupon_code')
-        if coupon_code:
-            try:
-                coupon = Coupon.objects.get(code=coupon_code)
-                cart_total = order.get_total_cost()
-                
-                is_valid, msg = coupon.is_valid(cart_total=float(cart_total), user=user)
-                if is_valid:
-                    discount = coupon.calculate_discount(float(cart_total))
-                    order.coupon = coupon
-                    order.discount_total = discount
-                    order.save()
+            
+            # 🔍 Check for Item-Specific Coupon
+            item_coupon_code = item_data.get('coupon_code')
+            if item_coupon_code:
+                try:
+                    coupon = Coupon.objects.get(code=item_coupon_code)
                     
-                    # Track usage
-                    CouponUsage.objects.create(user=user, coupon=coupon, order=order)
-                    coupon.used_count += 1
-                    coupon.save()
-                else:
-                    raise serializers.ValidationError(f"Coupon failed: {msg}")
+                    # 1. Validate if this coupon applies to this Product/Category
+                    valid_product_ids = set(coupon.valid_products.values_list('id', flat=True))
+                    valid_category_ids = set(coupon.valid_categories.values_list('id', flat=True))
+                    has_restrictions = bool(valid_product_ids or valid_category_ids)
+                    
+                    is_eligible_for_item = True
+                    if has_restrictions:
+                        is_eligible_for_item = False
+                        if product.id in valid_product_ids:
+                             is_eligible_for_item = True
+                        elif product.subcategory.category.id in valid_category_ids:
+                             is_eligible_for_item = True
+                    
+                    if not is_eligible_for_item:
+                        # Coupon exists but does not apply to this specific item
+                        # We can either raise Error or Ignore. Raising error is safer for user feedback.
+                        raise serializers.ValidationError(f"Coupon '{item_coupon_code}' is not valid for {product.name}")
 
-            except Coupon.DoesNotExist:
-                raise serializers.ValidationError("Invalid coupon code")
+                    # 2. General Validation (Active, Dates, Usage Limit, Min Purchase against THIS item total)
+                    # Note: Min purchase check against single item total might be strict, but logical for per-item coupon
+                    is_valid, msg = coupon.is_valid(cart_total=float(total_item_price), user=user)
+                    
+                    if is_valid:
+                        # Calculate Discount for this item
+                        item_discount = coupon.calculate_discount(float(total_item_price))
+                        total_discount_accumulated += item_discount
+                        used_coupons_set.add(coupon)
+                        
+                        # (Optional) We could store discount on OrderItem model too if needed later
+                        
+                    else:
+                        raise serializers.ValidationError(f"Coupon '{item_coupon_code}' failed: {msg}")
+
+                except Coupon.DoesNotExist:
+                     raise serializers.ValidationError(f"Invalid coupon code: {item_coupon_code}")
+
+        # Finalize Order Level Details
+        if used_coupons_set:
+            order.discount_total = total_discount_accumulated
+            order.coupons.set(list(used_coupons_set))
+            # Backward compatibility
+            order.coupon = list(used_coupons_set)[0] 
+            order.save()
+
+            # Track usages
+            for c in used_coupons_set:
+                 c.used_count += 1
+                 c.save()
+                 CouponUsage.objects.create(user=user, coupon=c, order=order)
+
+        return order
 
         return order
 

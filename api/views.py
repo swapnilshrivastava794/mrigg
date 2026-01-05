@@ -709,33 +709,89 @@ class ApplyCouponAPI(APIView):
 
     def post(self, request):
         code = request.data.get('code')
-        cart_total = request.data.get('cart_total')
+        cart_total_param = request.data.get('cart_total') # Optional legacy
+        items = request.data.get('items') # New Payload: [{product_id: 1, total_price: 500}]
 
         if not code:
              return Response({"valid": False, "error": "Coupon code is required"}, status=status.HTTP_400_BAD_REQUEST)
         
-        if cart_total is None:
-             return Response({"valid": False, "error": "Cart total is required"}, status=status.HTTP_400_BAD_REQUEST)
-
         try:
             coupon = Coupon.objects.get(code=code)
         except Coupon.DoesNotExist:
             return Response({"valid": False, "error": "Invalid coupon code"}, status=status.HTTP_404_NOT_FOUND)
 
-        # Validate
-        try:
-            cart_total_float = float(cart_total)
-        except ValueError:
-            return Response({"valid": False, "error": "Invalid cart total"}, status=status.HTTP_400_BAD_REQUEST)
+        if not coupon.active:
+             return Response({"valid": False, "error": "Coupon is inactive"}, status=status.HTTP_200_OK)
 
-        is_valid, message = coupon.is_valid(cart_total=cart_total_float, user=request.user)
+        # Calculate Eligible Amount
+        eligible_amount = 0.0
+        total_cart_value = 0.0
         
+        if items and isinstance(items, list):
+            # 1. Fetch restrictions
+            valid_product_ids = set(coupon.valid_products.values_list('id', flat=True))
+            valid_category_ids = set(coupon.valid_categories.values_list('id', flat=True))
+            
+            has_restrictions = bool(valid_product_ids or valid_category_ids)
+            
+            # 2. Fetch all products in cart for attribute checking
+            cart_product_ids = [item.get('product_id') for item in items if item.get('product_id')]
+            products_map = {p.id: p for p in Product.objects.filter(id__in=cart_product_ids).select_related('subcategory__category')}
+            
+            for item in items:
+                try:
+                    p_id = item.get('product_id')
+                    price = float(item.get('total_price', 0))
+                    total_cart_value += price
+                    
+                    # If no restrictions, applies to all
+                    if not has_restrictions:
+                        eligible_amount += price
+                        continue
+
+                    is_eligible = False
+                    
+                    # Check Product Restriction
+                    if p_id in valid_product_ids:
+                        is_eligible = True
+                    
+                    # Check Category Restriction
+                    elif p_id in products_map:
+                        product = products_map[p_id]
+                        if product.subcategory.category.id in valid_category_ids:
+                            is_eligible = True
+                    
+                    if is_eligible:
+                        eligible_amount += price
+                        
+                except (ValueError, TypeError):
+                    continue
+        
+        elif cart_total_param is not None:
+             # Legacy / Manual Total Fallback
+             try:
+                eligible_amount = float(cart_total_param)
+                total_cart_value = eligible_amount
+             except ValueError:
+                return Response({"valid": False, "error": "Invalid cart total"}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+             return Response({"valid": False, "error": "Either items or cart_total is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check Min Purchase on ELIGIBLE Amount (or Total? user intent varies. usually eligible)
+        # Assuming min_purchase applies to the items getting the discount
+        if eligible_amount < coupon.min_purchase_amount:
+             return Response({"valid": False, "error": f"Minimum purchase of ₹{coupon.min_purchase_amount} required on applicable items"}, status=status.HTTP_200_OK)
+
+        # Validate other general rules (Date, Usage)
+        is_valid, message = coupon.is_valid(cart_total=total_cart_value, user=request.user)
         if not is_valid:
              return Response({"valid": False, "error": message}, status=status.HTTP_200_OK)
 
-        # Calculate discount
-        discount = coupon.calculate_discount(cart_total_float)
-        new_total = cart_total_float - discount
+        # Calculate Discount
+        discount = coupon.calculate_discount(eligible_amount)
+        
+        # Ensure we don't return negative total
+        new_total = max(0, total_cart_value - discount)
 
         return Response({
             "valid": True,

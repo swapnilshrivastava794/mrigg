@@ -62674,3 +62674,376 @@ INFO 2026-01-03 18:26:22,299 basehttp - Broken pipe from ('192.168.29.30', 53574
 INFO 2026-01-03 18:26:22,299 basehttp - Broken pipe from ('192.168.29.30', 55272)
 INFO 2026-01-03 18:26:22,299 basehttp - Broken pipe from ('192.168.29.30', 53588)
 INFO 2026-01-03 18:26:22,300 basehttp - Broken pipe from ('192.168.29.30', 44950)
+INFO 2026-01-05 17:17:58,314 autoreload Watching for file changes with StatReloader
+INFO 2026-01-05 17:19:51,833 autoreload C:\laragon\www\mriggProject\ecommerce\models.py changed, reloading.
+INFO 2026-01-05 17:19:55,418 autoreload Watching for file changes with StatReloader
+DEBUG 2026-01-05 17:19:56,844 utils (0.016) 
+                SELECT VERSION(),
+                       @@sql_mode,
+                       @@default_storage_engine,
+                       @@sql_auto_is_null,
+                       @@lower_case_table_names,
+                       CONVERT_TZ('2001-01-01 01:00:00', 'UTC', 'UTC') IS NOT NULL
+            ; args=None; alias=default
+DEBUG 2026-01-05 17:19:56,846 utils (0.000) SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED; args=None; alias=default
+DEBUG 2026-01-05 17:19:56,911 utils (0.062) 
+            SELECT
+                table_name,
+                table_type,
+                table_comment
+            FROM information_schema.tables
+            WHERE table_schema = DATABASE()
+            ; args=None; alias=default
+DEBUG 2026-01-05 17:19:56,959 utils (0.031) SELECT `django_migrations`.`id`, `django_migrations`.`app`, `django_migrations`.`name`, `django_migrations`.`applied` FROM `django_migrations`; args=(); alias=default
+INFO 2026-01-05 17:24:19,295 autoreload C:\laragon\www\mriggProject\ecommerce\models.py changed, reloading.
+INFO 2026-01-05 17:24:22,050 autoreload Watching for file changes with StatReloader
+DEBUG 2026-01-05 17:24:22,943 utils (0.032) 
+                SELECT VERSION(),
+                       @@sql_mode,
+                       @@default_storage_engine,
+                       @@sql_auto_is_null,
+                       @@lower_case_table_names,
+                       CONVERT_TZ('2001-01-01 01:00:00', 'UTC', 'UTC') IS NOT NULL
+            ; args=None; alias=default
+DEBUG 2026-01-05 17:24:22,945 utils (0.000) SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED; args=None; alias=default
+DEBUG 2026-01-05 17:24:22,984 utils (0.046) 
+            SELECT
+                table_name,
+                table_type,
+                table_comment
+            FROM information_schema.tables
+            WHERE table_schema = DATABASE()
+            ; args=None; alias=default
+DEBUG 2026-01-05 17:24:22,998 utils (0.016) SELECT `django_migrations`.`id`, `django_migrations`.`app`, `django_migrations`.`name`, `django_migrations`.`applied` FROM `django_migrations`; args=(); alias=default
+INFO 2026-01-05 17:25:32,641 autoreload C:\laragon\www\mriggProject\api\views.py changed, reloading.
+INFO 2026-01-05 17:25:34,011 autoreload Watching for file changes with StatReloader
+DEBUG 2026-01-05 17:25:34,563 utils (0.000) 
+                SELECT VERSION(),
+                       @@sql_mode,
+                       @@default_storage_engine,
+                       @@sql_auto_is_null,
+                       @@lower_case_table_names,
+                       CONVERT_TZ('2001-01-01 01:00:00', 'UTC', 'UTC') IS NOT NULL
+            ; args=None; alias=default
+DEBUG 2026-01-05 17:25:34,564 utils (0.000) SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED; args=None; alias=default
+DEBUG 2026-01-05 17:25:34,570 utils (0.000) 
+            SELECT
+                table_name,
+                table_type,
+                table_comment
+            FROM information_schema.tables
+            WHERE table_schema = DATABASE()
+            ; args=None; alias=default
+DEBUG 2026-01-05 17:25:34,579 utils (0.000) SELECT `django_migrations`.`id`, `django_migrations`.`app`, `django_migrations`.`name`, `django_migrations`.`applied` FROM `django_migrations`; args=(); alias=default
+DEBUG 2026-01-05 17:26:09,041 utils (0.000) 
+                SELECT VERSION(),
+                       @@sql_mode,
+                       @@default_storage_engine,
+                       @@sql_auto_is_null,
+                       @@lower_case_table_names,
+                       CONVERT_TZ('2001-01-01 01:00:00', 'UTC', 'UTC') IS NOT NULL
+            ; args=None; alias=default
+DEBUG 2026-01-05 17:26:09,043 utils (0.000) SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED; args=None; alias=default
+DEBUG 2026-01-05 17:26:09,052 utils (0.000) 
+            SELECT
+                table_name,
+                table_type,
+                table_comment
+            FROM information_schema.tables
+            WHERE table_schema = DATABASE()
+            ; args=None; alias=default
+DEBUG 2026-01-05 17:26:09,058 utils (0.000) SELECT `django_migrations`.`id`, `django_migrations`.`app`, `django_migrations`.`name`, `django_migrations`.`applied` FROM `django_migrations`; args=(); alias=default
+DEBUG 2026-01-05 17:26:29,178 utils (0.000) 
+                SELECT VERSION(),
+                       @@sql_mode,
+                       @@default_storage_engine,
+                       @@sql_auto_is_null,
+                       @@lower_case_table_names,
+                       CONVERT_TZ('2001-01-01 01:00:00', 'UTC', 'UTC') IS NOT NULL
+            ; args=None; alias=default
+DEBUG 2026-01-05 17:26:29,179 utils (0.000) SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED; args=None; alias=default
+DEBUG 2026-01-05 17:26:29,180 utils (0.000) 
+                SELECT VERSION(),
+                       @@sql_mode,
+                       @@default_storage_engine,
+                       @@sql_auto_is_null,
+                       @@lower_case_table_names,
+                       CONVERT_TZ('2001-01-01 01:00:00', 'UTC', 'UTC') IS NOT NULL
+            ; args=None; alias=default
+DEBUG 2026-01-05 17:26:29,307 utils (0.000) SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED; args=None; alias=default
+DEBUG 2026-01-05 17:26:29,311 utils (0.000) 
+            SELECT
+                table_name,
+                table_type,
+                table_comment
+            FROM information_schema.tables
+            WHERE table_schema = DATABASE()
+            ; args=None; alias=default
+DEBUG 2026-01-05 17:26:29,318 utils (0.000) SELECT `django_migrations`.`id`, `django_migrations`.`app`, `django_migrations`.`name`, `django_migrations`.`applied` FROM `django_migrations`; args=(); alias=default
+DEBUG 2026-01-05 17:26:29,323 utils (0.000) 
+            SELECT
+                table_name,
+                table_type,
+                table_comment
+            FROM information_schema.tables
+            WHERE table_schema = DATABASE()
+            ; args=None; alias=default
+DEBUG 2026-01-05 17:26:29,327 utils (0.000) SELECT `django_migrations`.`id`, `django_migrations`.`app`, `django_migrations`.`name`, `django_migrations`.`applied` FROM `django_migrations`; args=(); alias=default
+DEBUG 2026-01-05 17:26:29,361 utils (0.000) 
+            SELECT
+                table_name,
+                table_type,
+                table_comment
+            FROM information_schema.tables
+            WHERE table_schema = DATABASE()
+            ; args=None; alias=default
+DEBUG 2026-01-05 17:26:29,394 schema CREATE TABLE `main_coupon_valid_products` (`id` bigint AUTO_INCREMENT NOT NULL PRIMARY KEY, `coupon_id` bigint NOT NULL, `product_id` bigint NOT NULL); (params None)
+DEBUG 2026-01-05 17:26:29,507 utils (0.109) CREATE TABLE `main_coupon_valid_products` (`id` bigint AUTO_INCREMENT NOT NULL PRIMARY KEY, `coupon_id` bigint NOT NULL, `product_id` bigint NOT NULL); args=None; alias=default
+DEBUG 2026-01-05 17:26:29,509 utils (0.016) 
+            SELECT engine
+            FROM information_schema.tables
+            WHERE
+                table_name = 'main_coupon_valid_products' AND
+                table_schema = DATABASE()
+            ; args=['main_coupon_valid_products']; alias=default
+DEBUG 2026-01-05 17:26:29,511 utils (0.000) 
+            SELECT engine
+            FROM information_schema.tables
+            WHERE
+                table_name = 'main_coupon_valid_products' AND
+                table_schema = DATABASE()
+            ; args=['main_coupon_valid_products']; alias=default
+DEBUG 2026-01-05 17:26:29,512 schema ALTER TABLE `main_coupon_valid_products` ADD CONSTRAINT `main_coupon_valid_products_coupon_id_product_id_0ce6682f_uniq` UNIQUE (`coupon_id`, `product_id`); (params None)
+DEBUG 2026-01-05 17:26:29,537 utils (0.015) ALTER TABLE `main_coupon_valid_products` ADD CONSTRAINT `main_coupon_valid_products_coupon_id_product_id_0ce6682f_uniq` UNIQUE (`coupon_id`, `product_id`); args=None; alias=default
+DEBUG 2026-01-05 17:26:29,538 schema ALTER TABLE `main_coupon_valid_products` ADD CONSTRAINT `main_coupon_valid_products_coupon_id_57ef6084_fk_main_coupon_id` FOREIGN KEY (`coupon_id`) REFERENCES `main_coupon` (`id`); (params None)
+DEBUG 2026-01-05 17:26:29,610 utils (0.062) ALTER TABLE `main_coupon_valid_products` ADD CONSTRAINT `main_coupon_valid_products_coupon_id_57ef6084_fk_main_coupon_id` FOREIGN KEY (`coupon_id`) REFERENCES `main_coupon` (`id`); args=None; alias=default
+DEBUG 2026-01-05 17:26:29,611 schema ALTER TABLE `main_coupon_valid_products` ADD CONSTRAINT `main_coupon_valid_pr_product_id_baf45b50_fk_main_prod` FOREIGN KEY (`product_id`) REFERENCES `main_product` (`id`); (params None)
+DEBUG 2026-01-05 17:26:29,677 utils (0.063) ALTER TABLE `main_coupon_valid_products` ADD CONSTRAINT `main_coupon_valid_pr_product_id_baf45b50_fk_main_prod` FOREIGN KEY (`product_id`) REFERENCES `main_product` (`id`); args=None; alias=default
+DEBUG 2026-01-05 17:26:29,683 utils (0.016) INSERT INTO `django_migrations` (`app`, `name`, `applied`) VALUES ('ecommerce', '0009_coupon_valid_products', '2026-01-05 11:56:29.677833'); args=['ecommerce', '0009_coupon_valid_products', '2026-01-05 11:56:29.677833']; alias=default
+DEBUG 2026-01-05 17:26:29,687 utils (0.000) SELECT `django_migrations`.`id`, `django_migrations`.`app`, `django_migrations`.`name`, `django_migrations`.`applied` FROM `django_migrations`; args=(); alias=default
+DEBUG 2026-01-05 17:26:29,695 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'admin'; args=('admin',); alias=default
+DEBUG 2026-01-05 17:26:29,697 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE (`django_content_type`.`app_label` = 'admin' AND `django_content_type`.`model` IN ('logentry')); args=('admin', 'logentry'); alias=default
+DEBUG 2026-01-05 17:26:29,710 utils (0.000) SELECT `auth_permission`.`content_type_id` AS `content_type`, `auth_permission`.`codename` AS `codename` FROM `auth_permission` INNER JOIN `django_content_type` ON (`auth_permission`.`content_type_id` = `django_content_type`.`id`) WHERE `auth_permission`.`content_type_id` IN (1) ORDER BY `django_content_type`.`app_label` ASC, `django_content_type`.`model` ASC, 2 ASC; args=(1,); alias=default
+DEBUG 2026-01-05 17:26:29,711 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'admin'; args=('admin',); alias=default
+DEBUG 2026-01-05 17:26:29,713 utils (0.016) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'auth'; args=('auth',); alias=default
+DEBUG 2026-01-05 17:26:29,714 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE (`django_content_type`.`app_label` = 'auth' AND `django_content_type`.`model` IN ('group', 'permission')); args=('auth', 'group', 'permission'); alias=default
+DEBUG 2026-01-05 17:26:29,721 utils (0.000) SELECT `auth_permission`.`content_type_id` AS `content_type`, `auth_permission`.`codename` AS `codename` FROM `auth_permission` INNER JOIN `django_content_type` ON (`auth_permission`.`content_type_id` = `django_content_type`.`id`) WHERE `auth_permission`.`content_type_id` IN (2, 3) ORDER BY `django_content_type`.`app_label` ASC, `django_content_type`.`model` ASC, 2 ASC; args=(2, 3); alias=default
+DEBUG 2026-01-05 17:26:29,723 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'auth'; args=('auth',); alias=default
+DEBUG 2026-01-05 17:26:29,725 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'contenttypes'; args=('contenttypes',); alias=default
+DEBUG 2026-01-05 17:26:29,727 utils (0.015) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE (`django_content_type`.`app_label` = 'contenttypes' AND `django_content_type`.`model` IN ('contenttype')); args=('contenttypes', 'contenttype'); alias=default
+DEBUG 2026-01-05 17:26:29,729 utils (0.000) SELECT `auth_permission`.`content_type_id` AS `content_type`, `auth_permission`.`codename` AS `codename` FROM `auth_permission` INNER JOIN `django_content_type` ON (`auth_permission`.`content_type_id` = `django_content_type`.`id`) WHERE `auth_permission`.`content_type_id` IN (5) ORDER BY `django_content_type`.`app_label` ASC, `django_content_type`.`model` ASC, 2 ASC; args=(5,); alias=default
+DEBUG 2026-01-05 17:26:29,731 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'contenttypes'; args=('contenttypes',); alias=default
+DEBUG 2026-01-05 17:26:29,733 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'sessions'; args=('sessions',); alias=default
+DEBUG 2026-01-05 17:26:29,735 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE (`django_content_type`.`app_label` = 'sessions' AND `django_content_type`.`model` IN ('session')); args=('sessions', 'session'); alias=default
+DEBUG 2026-01-05 17:26:29,737 utils (0.000) SELECT `auth_permission`.`content_type_id` AS `content_type`, `auth_permission`.`codename` AS `codename` FROM `auth_permission` INNER JOIN `django_content_type` ON (`auth_permission`.`content_type_id` = `django_content_type`.`id`) WHERE `auth_permission`.`content_type_id` IN (6) ORDER BY `django_content_type`.`app_label` ASC, `django_content_type`.`model` ASC, 2 ASC; args=(6,); alias=default
+DEBUG 2026-01-05 17:26:29,738 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'sessions'; args=('sessions',); alias=default
+DEBUG 2026-01-05 17:26:29,740 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'autoslug'; args=('autoslug',); alias=default
+DEBUG 2026-01-05 17:26:29,743 utils (0.016) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'autoslug'; args=('autoslug',); alias=default
+DEBUG 2026-01-05 17:26:29,745 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'ecommerce'; args=('ecommerce',); alias=default
+DEBUG 2026-01-05 17:26:29,747 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE (`django_content_type`.`app_label` = 'ecommerce' AND `django_content_type`.`model` IN ('order', 'customuser', 'productvariation', 'orderitem', 'subcategory', 'category', 'productdetailsection', 'payment', 'couponusage', 'product', 'contactmessage', 'productimage', 'coupon', 'brand', 'useraddress')); args=('ecommerce', 'order', 'customuser', 'productvariation', 'orderitem', 'subcategory', 'category', 'productdetailsection', 'payment', 'couponusage', 'product', 'contactmessage', 'productimage', 'coupon', 'brand', 'useraddress'); alias=default
+DEBUG 2026-01-05 17:26:29,751 utils (0.000) SELECT `auth_permission`.`content_type_id` AS `content_type`, `auth_permission`.`codename` AS `codename` FROM `auth_permission` INNER JOIN `django_content_type` ON (`auth_permission`.`content_type_id` = `django_content_type`.`id`) WHERE `auth_permission`.`content_type_id` IN (7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 22, 24, 25, 26, 27) ORDER BY `django_content_type`.`app_label` ASC, `django_content_type`.`model` ASC, 2 ASC; args=(7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 22, 24, 25, 26, 27); alias=default
+DEBUG 2026-01-05 17:26:29,753 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'ecommerce'; args=('ecommerce',); alias=default
+DEBUG 2026-01-05 17:26:29,756 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'cms'; args=('cms',); alias=default
+DEBUG 2026-01-05 17:26:29,758 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE (`django_content_type`.`app_label` = 'cms' AND `django_content_type`.`model` IN ('blogcategory', 'blog', 'cms', 'profile_setting', 'slider')); args=('cms', 'blogcategory', 'blog', 'cms', 'profile_setting', 'slider'); alias=default
+DEBUG 2026-01-05 17:26:29,760 utils (0.000) SELECT `auth_permission`.`content_type_id` AS `content_type`, `auth_permission`.`codename` AS `codename` FROM `auth_permission` INNER JOIN `django_content_type` ON (`auth_permission`.`content_type_id` = `django_content_type`.`id`) WHERE `auth_permission`.`content_type_id` IN (17, 18, 19, 20, 21) ORDER BY `django_content_type`.`app_label` ASC, `django_content_type`.`model` ASC, 2 ASC; args=(17, 18, 19, 20, 21); alias=default
+DEBUG 2026-01-05 17:26:29,763 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'cms'; args=('cms',); alias=default
+DEBUG 2026-01-05 17:26:29,764 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'api'; args=('api',); alias=default
+DEBUG 2026-01-05 17:26:29,765 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE (`django_content_type`.`app_label` = 'api' AND `django_content_type`.`model` IN ('emailotp')); args=('api', 'emailotp'); alias=default
+DEBUG 2026-01-05 17:26:29,769 utils (0.000) SELECT `auth_permission`.`content_type_id` AS `content_type`, `auth_permission`.`codename` AS `codename` FROM `auth_permission` INNER JOIN `django_content_type` ON (`auth_permission`.`content_type_id` = `django_content_type`.`id`) WHERE `auth_permission`.`content_type_id` IN (23) ORDER BY `django_content_type`.`app_label` ASC, `django_content_type`.`model` ASC, 2 ASC; args=(23,); alias=default
+DEBUG 2026-01-05 17:26:29,769 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'api'; args=('api',); alias=default
+INFO 2026-01-05 17:28:35,545 autoreload C:\laragon\www\mriggProject\api\serializers.py changed, reloading.
+INFO 2026-01-05 17:28:36,888 autoreload Watching for file changes with StatReloader
+DEBUG 2026-01-05 17:28:37,434 utils (0.000) 
+                SELECT VERSION(),
+                       @@sql_mode,
+                       @@default_storage_engine,
+                       @@sql_auto_is_null,
+                       @@lower_case_table_names,
+                       CONVERT_TZ('2001-01-01 01:00:00', 'UTC', 'UTC') IS NOT NULL
+            ; args=None; alias=default
+DEBUG 2026-01-05 17:28:37,435 utils (0.000) SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED; args=None; alias=default
+DEBUG 2026-01-05 17:28:37,438 utils (0.000) 
+            SELECT
+                table_name,
+                table_type,
+                table_comment
+            FROM information_schema.tables
+            WHERE table_schema = DATABASE()
+            ; args=None; alias=default
+DEBUG 2026-01-05 17:28:37,445 utils (0.000) SELECT `django_migrations`.`id`, `django_migrations`.`app`, `django_migrations`.`name`, `django_migrations`.`applied` FROM `django_migrations`; args=(); alias=default
+INFO 2026-01-05 17:39:51,655 autoreload C:\laragon\www\mriggProject\ecommerce\models.py changed, reloading.
+INFO 2026-01-05 17:39:53,283 autoreload Watching for file changes with StatReloader
+DEBUG 2026-01-05 17:39:53,922 utils (0.000) 
+                SELECT VERSION(),
+                       @@sql_mode,
+                       @@default_storage_engine,
+                       @@sql_auto_is_null,
+                       @@lower_case_table_names,
+                       CONVERT_TZ('2001-01-01 01:00:00', 'UTC', 'UTC') IS NOT NULL
+            ; args=None; alias=default
+DEBUG 2026-01-05 17:39:53,922 utils (0.000) SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED; args=None; alias=default
+DEBUG 2026-01-05 17:39:53,933 utils (0.016) 
+            SELECT
+                table_name,
+                table_type,
+                table_comment
+            FROM information_schema.tables
+            WHERE table_schema = DATABASE()
+            ; args=None; alias=default
+DEBUG 2026-01-05 17:39:53,943 utils (0.000) SELECT `django_migrations`.`id`, `django_migrations`.`app`, `django_migrations`.`name`, `django_migrations`.`applied` FROM `django_migrations`; args=(); alias=default
+DEBUG 2026-01-05 17:40:56,711 utils (0.000) 
+                SELECT VERSION(),
+                       @@sql_mode,
+                       @@default_storage_engine,
+                       @@sql_auto_is_null,
+                       @@lower_case_table_names,
+                       CONVERT_TZ('2001-01-01 01:00:00', 'UTC', 'UTC') IS NOT NULL
+            ; args=None; alias=default
+DEBUG 2026-01-05 17:40:56,711 utils (0.000) SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED; args=None; alias=default
+DEBUG 2026-01-05 17:40:56,719 utils (0.000) 
+            SELECT
+                table_name,
+                table_type,
+                table_comment
+            FROM information_schema.tables
+            WHERE table_schema = DATABASE()
+            ; args=None; alias=default
+DEBUG 2026-01-05 17:40:56,726 utils (0.000) SELECT `django_migrations`.`id`, `django_migrations`.`app`, `django_migrations`.`name`, `django_migrations`.`applied` FROM `django_migrations`; args=(); alias=default
+DEBUG 2026-01-05 17:42:42,345 utils (0.000) 
+                SELECT VERSION(),
+                       @@sql_mode,
+                       @@default_storage_engine,
+                       @@sql_auto_is_null,
+                       @@lower_case_table_names,
+                       CONVERT_TZ('2001-01-01 01:00:00', 'UTC', 'UTC') IS NOT NULL
+            ; args=None; alias=default
+DEBUG 2026-01-05 17:42:42,345 utils (0.000) SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED; args=None; alias=default
+DEBUG 2026-01-05 17:42:42,347 utils (0.000) 
+                SELECT VERSION(),
+                       @@sql_mode,
+                       @@default_storage_engine,
+                       @@sql_auto_is_null,
+                       @@lower_case_table_names,
+                       CONVERT_TZ('2001-01-01 01:00:00', 'UTC', 'UTC') IS NOT NULL
+            ; args=None; alias=default
+DEBUG 2026-01-05 17:42:42,445 utils (0.000) SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED; args=None; alias=default
+DEBUG 2026-01-05 17:42:42,449 utils (0.000) 
+            SELECT
+                table_name,
+                table_type,
+                table_comment
+            FROM information_schema.tables
+            WHERE table_schema = DATABASE()
+            ; args=None; alias=default
+DEBUG 2026-01-05 17:42:42,456 utils (0.000) SELECT `django_migrations`.`id`, `django_migrations`.`app`, `django_migrations`.`name`, `django_migrations`.`applied` FROM `django_migrations`; args=(); alias=default
+DEBUG 2026-01-05 17:42:42,461 utils (0.000) 
+            SELECT
+                table_name,
+                table_type,
+                table_comment
+            FROM information_schema.tables
+            WHERE table_schema = DATABASE()
+            ; args=None; alias=default
+DEBUG 2026-01-05 17:42:42,464 utils (0.000) SELECT `django_migrations`.`id`, `django_migrations`.`app`, `django_migrations`.`name`, `django_migrations`.`applied` FROM `django_migrations`; args=(); alias=default
+DEBUG 2026-01-05 17:42:42,501 utils (0.000) 
+            SELECT
+                table_name,
+                table_type,
+                table_comment
+            FROM information_schema.tables
+            WHERE table_schema = DATABASE()
+            ; args=None; alias=default
+DEBUG 2026-01-05 17:42:42,528 schema CREATE TABLE `main_order_coupons` (`id` bigint AUTO_INCREMENT NOT NULL PRIMARY KEY, `order_id` bigint NOT NULL, `coupon_id` bigint NOT NULL); (params None)
+DEBUG 2026-01-05 17:42:42,616 utils (0.078) CREATE TABLE `main_order_coupons` (`id` bigint AUTO_INCREMENT NOT NULL PRIMARY KEY, `order_id` bigint NOT NULL, `coupon_id` bigint NOT NULL); args=None; alias=default
+DEBUG 2026-01-05 17:42:42,619 utils (0.016) 
+            SELECT engine
+            FROM information_schema.tables
+            WHERE
+                table_name = 'main_order_coupons' AND
+                table_schema = DATABASE()
+            ; args=['main_order_coupons']; alias=default
+DEBUG 2026-01-05 17:42:42,620 utils (0.000) 
+            SELECT engine
+            FROM information_schema.tables
+            WHERE
+                table_name = 'main_order_coupons' AND
+                table_schema = DATABASE()
+            ; args=['main_order_coupons']; alias=default
+DEBUG 2026-01-05 17:42:42,622 schema ALTER TABLE `main_order_coupons` ADD CONSTRAINT `main_order_coupons_order_id_coupon_id_9c2410e1_uniq` UNIQUE (`order_id`, `coupon_id`); (params None)
+DEBUG 2026-01-05 17:42:42,652 utils (0.031) ALTER TABLE `main_order_coupons` ADD CONSTRAINT `main_order_coupons_order_id_coupon_id_9c2410e1_uniq` UNIQUE (`order_id`, `coupon_id`); args=None; alias=default
+DEBUG 2026-01-05 17:42:42,652 schema ALTER TABLE `main_order_coupons` ADD CONSTRAINT `main_order_coupons_order_id_b051ef2a_fk_main_order_id` FOREIGN KEY (`order_id`) REFERENCES `main_order` (`id`); (params None)
+DEBUG 2026-01-05 17:42:42,722 utils (0.063) ALTER TABLE `main_order_coupons` ADD CONSTRAINT `main_order_coupons_order_id_b051ef2a_fk_main_order_id` FOREIGN KEY (`order_id`) REFERENCES `main_order` (`id`); args=None; alias=default
+DEBUG 2026-01-05 17:42:42,722 schema ALTER TABLE `main_order_coupons` ADD CONSTRAINT `main_order_coupons_coupon_id_69af83c1_fk_main_coupon_id` FOREIGN KEY (`coupon_id`) REFERENCES `main_coupon` (`id`); (params None)
+DEBUG 2026-01-05 17:42:42,787 utils (0.062) ALTER TABLE `main_order_coupons` ADD CONSTRAINT `main_order_coupons_coupon_id_69af83c1_fk_main_coupon_id` FOREIGN KEY (`coupon_id`) REFERENCES `main_coupon` (`id`); args=None; alias=default
+DEBUG 2026-01-05 17:42:42,795 utils (0.016) INSERT INTO `django_migrations` (`app`, `name`, `applied`) VALUES ('ecommerce', '0010_order_coupons', '2026-01-05 12:12:42.788323'); args=['ecommerce', '0010_order_coupons', '2026-01-05 12:12:42.788323']; alias=default
+DEBUG 2026-01-05 17:42:42,797 utils (0.000) SELECT `django_migrations`.`id`, `django_migrations`.`app`, `django_migrations`.`name`, `django_migrations`.`applied` FROM `django_migrations`; args=(); alias=default
+DEBUG 2026-01-05 17:42:42,801 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'admin'; args=('admin',); alias=default
+DEBUG 2026-01-05 17:42:42,802 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE (`django_content_type`.`app_label` = 'admin' AND `django_content_type`.`model` IN ('logentry')); args=('admin', 'logentry'); alias=default
+DEBUG 2026-01-05 17:42:42,809 utils (0.000) SELECT `auth_permission`.`content_type_id` AS `content_type`, `auth_permission`.`codename` AS `codename` FROM `auth_permission` INNER JOIN `django_content_type` ON (`auth_permission`.`content_type_id` = `django_content_type`.`id`) WHERE `auth_permission`.`content_type_id` IN (1) ORDER BY `django_content_type`.`app_label` ASC, `django_content_type`.`model` ASC, 2 ASC; args=(1,); alias=default
+DEBUG 2026-01-05 17:42:42,811 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'admin'; args=('admin',); alias=default
+DEBUG 2026-01-05 17:42:42,813 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'auth'; args=('auth',); alias=default
+DEBUG 2026-01-05 17:42:42,816 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE (`django_content_type`.`app_label` = 'auth' AND `django_content_type`.`model` IN ('permission', 'group')); args=('auth', 'permission', 'group'); alias=default
+DEBUG 2026-01-05 17:42:42,825 utils (0.015) SELECT `auth_permission`.`content_type_id` AS `content_type`, `auth_permission`.`codename` AS `codename` FROM `auth_permission` INNER JOIN `django_content_type` ON (`auth_permission`.`content_type_id` = `django_content_type`.`id`) WHERE `auth_permission`.`content_type_id` IN (2, 3) ORDER BY `django_content_type`.`app_label` ASC, `django_content_type`.`model` ASC, 2 ASC; args=(2, 3); alias=default
+DEBUG 2026-01-05 17:42:42,827 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'auth'; args=('auth',); alias=default
+DEBUG 2026-01-05 17:42:42,829 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'contenttypes'; args=('contenttypes',); alias=default
+DEBUG 2026-01-05 17:42:42,831 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE (`django_content_type`.`app_label` = 'contenttypes' AND `django_content_type`.`model` IN ('contenttype')); args=('contenttypes', 'contenttype'); alias=default
+DEBUG 2026-01-05 17:42:42,833 utils (0.000) SELECT `auth_permission`.`content_type_id` AS `content_type`, `auth_permission`.`codename` AS `codename` FROM `auth_permission` INNER JOIN `django_content_type` ON (`auth_permission`.`content_type_id` = `django_content_type`.`id`) WHERE `auth_permission`.`content_type_id` IN (5) ORDER BY `django_content_type`.`app_label` ASC, `django_content_type`.`model` ASC, 2 ASC; args=(5,); alias=default
+DEBUG 2026-01-05 17:42:42,834 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'contenttypes'; args=('contenttypes',); alias=default
+DEBUG 2026-01-05 17:42:42,837 utils (0.016) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'sessions'; args=('sessions',); alias=default
+DEBUG 2026-01-05 17:42:42,839 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE (`django_content_type`.`app_label` = 'sessions' AND `django_content_type`.`model` IN ('session')); args=('sessions', 'session'); alias=default
+DEBUG 2026-01-05 17:42:42,843 utils (0.000) SELECT `auth_permission`.`content_type_id` AS `content_type`, `auth_permission`.`codename` AS `codename` FROM `auth_permission` INNER JOIN `django_content_type` ON (`auth_permission`.`content_type_id` = `django_content_type`.`id`) WHERE `auth_permission`.`content_type_id` IN (6) ORDER BY `django_content_type`.`app_label` ASC, `django_content_type`.`model` ASC, 2 ASC; args=(6,); alias=default
+DEBUG 2026-01-05 17:42:42,844 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'sessions'; args=('sessions',); alias=default
+DEBUG 2026-01-05 17:42:42,846 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'autoslug'; args=('autoslug',); alias=default
+DEBUG 2026-01-05 17:42:42,848 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'autoslug'; args=('autoslug',); alias=default
+DEBUG 2026-01-05 17:42:42,849 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'ecommerce'; args=('ecommerce',); alias=default
+DEBUG 2026-01-05 17:42:42,850 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE (`django_content_type`.`app_label` = 'ecommerce' AND `django_content_type`.`model` IN ('subcategory', 'coupon', 'useraddress', 'payment', 'contactmessage', 'couponusage', 'category', 'orderitem', 'productdetailsection', 'product', 'brand', 'productvariation', 'productimage', 'order', 'customuser')); args=('ecommerce', 'subcategory', 'coupon', 'useraddress', 'payment', 'contactmessage', 'couponusage', 'category', 'orderitem', 'productdetailsection', 'product', 'brand', 'productvariation', 'productimage', 'order', 'customuser'); alias=default
+DEBUG 2026-01-05 17:42:42,854 utils (0.000) SELECT `auth_permission`.`content_type_id` AS `content_type`, `auth_permission`.`codename` AS `codename` FROM `auth_permission` INNER JOIN `django_content_type` ON (`auth_permission`.`content_type_id` = `django_content_type`.`id`) WHERE `auth_permission`.`content_type_id` IN (7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 22, 24, 25, 26, 27) ORDER BY `django_content_type`.`app_label` ASC, `django_content_type`.`model` ASC, 2 ASC; args=(7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 22, 24, 25, 26, 27); alias=default
+DEBUG 2026-01-05 17:42:42,858 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'ecommerce'; args=('ecommerce',); alias=default
+DEBUG 2026-01-05 17:42:42,860 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'cms'; args=('cms',); alias=default
+DEBUG 2026-01-05 17:42:42,861 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE (`django_content_type`.`app_label` = 'cms' AND `django_content_type`.`model` IN ('cms', 'slider', 'blogcategory', 'blog', 'profile_setting')); args=('cms', 'cms', 'slider', 'blogcategory', 'blog', 'profile_setting'); alias=default
+DEBUG 2026-01-05 17:42:42,864 utils (0.000) SELECT `auth_permission`.`content_type_id` AS `content_type`, `auth_permission`.`codename` AS `codename` FROM `auth_permission` INNER JOIN `django_content_type` ON (`auth_permission`.`content_type_id` = `django_content_type`.`id`) WHERE `auth_permission`.`content_type_id` IN (17, 18, 19, 20, 21) ORDER BY `django_content_type`.`app_label` ASC, `django_content_type`.`model` ASC, 2 ASC; args=(17, 18, 19, 20, 21); alias=default
+DEBUG 2026-01-05 17:42:42,865 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'cms'; args=('cms',); alias=default
+DEBUG 2026-01-05 17:42:42,867 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'api'; args=('api',); alias=default
+DEBUG 2026-01-05 17:42:42,869 utils (0.016) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE (`django_content_type`.`app_label` = 'api' AND `django_content_type`.`model` IN ('emailotp')); args=('api', 'emailotp'); alias=default
+DEBUG 2026-01-05 17:42:42,871 utils (0.000) SELECT `auth_permission`.`content_type_id` AS `content_type`, `auth_permission`.`codename` AS `codename` FROM `auth_permission` INNER JOIN `django_content_type` ON (`auth_permission`.`content_type_id` = `django_content_type`.`id`) WHERE `auth_permission`.`content_type_id` IN (23) ORDER BY `django_content_type`.`app_label` ASC, `django_content_type`.`model` ASC, 2 ASC; args=(23,); alias=default
+DEBUG 2026-01-05 17:42:42,872 utils (0.000) SELECT `django_content_type`.`id`, `django_content_type`.`app_label`, `django_content_type`.`model` FROM `django_content_type` WHERE `django_content_type`.`app_label` = 'api'; args=('api',); alias=default
+INFO 2026-01-05 17:43:03,707 autoreload C:\laragon\www\mriggProject\api\serializers.py changed, reloading.
+INFO 2026-01-05 17:43:05,104 autoreload Watching for file changes with StatReloader
+DEBUG 2026-01-05 17:43:05,631 utils (0.000) 
+                SELECT VERSION(),
+                       @@sql_mode,
+                       @@default_storage_engine,
+                       @@sql_auto_is_null,
+                       @@lower_case_table_names,
+                       CONVERT_TZ('2001-01-01 01:00:00', 'UTC', 'UTC') IS NOT NULL
+            ; args=None; alias=default
+DEBUG 2026-01-05 17:43:05,634 utils (0.016) SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED; args=None; alias=default
+DEBUG 2026-01-05 17:43:05,637 utils (0.000) 
+            SELECT
+                table_name,
+                table_type,
+                table_comment
+            FROM information_schema.tables
+            WHERE table_schema = DATABASE()
+            ; args=None; alias=default
+DEBUG 2026-01-05 17:43:05,643 utils (0.000) SELECT `django_migrations`.`id`, `django_migrations`.`app`, `django_migrations`.`name`, `django_migrations`.`applied` FROM `django_migrations`; args=(); alias=default
+INFO 2026-01-05 17:48:49,307 autoreload C:\laragon\www\mriggProject\api\serializers.py changed, reloading.
+INFO 2026-01-05 17:48:51,283 autoreload Watching for file changes with StatReloader
+DEBUG 2026-01-05 17:48:52,089 utils (0.016) 
+                SELECT VERSION(),
+                       @@sql_mode,
+                       @@default_storage_engine,
+                       @@sql_auto_is_null,
+                       @@lower_case_table_names,
+                       CONVERT_TZ('2001-01-01 01:00:00', 'UTC', 'UTC') IS NOT NULL
+            ; args=None; alias=default
+DEBUG 2026-01-05 17:48:52,090 utils (0.000) SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED; args=None; alias=default
+DEBUG 2026-01-05 17:48:52,100 utils (0.000) 
+            SELECT
+                table_name,
+                table_type,
+                table_comment
+            FROM information_schema.tables
+            WHERE table_schema = DATABASE()
+            ; args=None; alias=default
+DEBUG 2026-01-05 17:48:52,113 utils (0.000) SELECT `django_migrations`.`id`, `django_migrations`.`app`, `django_migrations`.`name`, `django_migrations`.`applied` FROM `django_migrations`; args=(); alias=default
