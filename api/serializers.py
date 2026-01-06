@@ -438,13 +438,18 @@ class OrderCreateSerializer(serializers.Serializer):
             city=address.city
         )
 
-    # 🎟️ ITEM-LEVEL COUPON LOGIC
-        total_discount_accumulated = 0
-        used_coupons_set = set() # To track unique coupons for M2M
+    # 🎟️ GLOBAL COUPON LOGIC (Flipkart Style)
+        total_order_amount = 0
+        order_items_objects = []
 
-        # 🔒 Cart → OrderItem Loop
+        # 1. Create all OrderItems & Calculate Total
         for item_data in validated_data['items']:
-            product = Product.objects.get(id=item_data['product_id'])
+            # Use select_related to fetch relationships to avoid "RelatedObjectDoesNotExist"
+            try:
+                # Optimized fetching, though not strictly needed for simplication, keeps it robust
+                product = Product.objects.select_related('subcategory__category').get(id=item_data['product_id'])
+            except Product.DoesNotExist:
+                 raise serializers.ValidationError(f"Product with ID {item_data['product_id']} does not exist.")
             
             variation = None
             # Default price
@@ -463,6 +468,7 @@ class OrderCreateSerializer(serializers.Serializer):
 
             quantity = item_data['quantity']
             total_item_price = base_price * quantity
+            total_order_amount += total_item_price
 
             # Create OrderItem
             order_item = OrderItem.objects.create(
@@ -472,62 +478,38 @@ class OrderCreateSerializer(serializers.Serializer):
                 price=base_price,
                 quantity=quantity
             )
-            
-            # 🔍 Check for Item-Specific Coupon
-            item_coupon_code = item_data.get('coupon_code')
-            if item_coupon_code:
-                try:
-                    coupon = Coupon.objects.get(code=item_coupon_code)
-                    
-                    # 1. Validate if this coupon applies to this Product/Category
-                    valid_product_ids = set(coupon.valid_products.values_list('id', flat=True))
-                    valid_category_ids = set(coupon.valid_categories.values_list('id', flat=True))
-                    has_restrictions = bool(valid_product_ids or valid_category_ids)
-                    
-                    is_eligible_for_item = True
-                    if has_restrictions:
-                        is_eligible_for_item = False
-                        if product.id in valid_product_ids:
-                             is_eligible_for_item = True
-                        elif product.subcategory.category.id in valid_category_ids:
-                             is_eligible_for_item = True
-                    
-                    if not is_eligible_for_item:
-                        # Coupon exists but does not apply to this specific item
-                        # We can either raise Error or Ignore. Raising error is safer for user feedback.
-                        raise serializers.ValidationError(f"Coupon '{item_coupon_code}' is not valid for {product.name}")
+            order_items_objects.append({'product': product, 'price': total_item_price})
 
-                    # 2. General Validation (Active, Dates, Usage Limit, Min Purchase against THIS item total)
-                    # Note: Min purchase check against single item total might be strict, but logical for per-item coupon
-                    is_valid, msg = coupon.is_valid(cart_total=float(total_item_price), user=user)
-                    
-                    if is_valid:
-                        # Calculate Discount for this item
-                        item_discount = coupon.calculate_discount(float(total_item_price))
-                        total_discount_accumulated += item_discount
-                        used_coupons_set.add(coupon)
-                        
-                        # (Optional) We could store discount on OrderItem model too if needed later
-                        
-                    else:
-                        raise serializers.ValidationError(f"Coupon '{item_coupon_code}' failed: {msg}")
+        # 2. Apply Global Coupon (if provided)
+        global_coupon_code = validated_data.get('coupon_code')
+        
+        if global_coupon_code:
+            try:
+                coupon = Coupon.objects.get(code=global_coupon_code)
+                
+                # Simple Global Validation (Active, Dates, Usage Limit, Min Purchase on Total Amount)
+                # No Product/Category restrictions checks - Direct Apply
+                is_valid, msg = coupon.is_valid(cart_total=float(total_order_amount), user=user)
+                
+                if not is_valid:
+                    raise serializers.ValidationError(f"Coupon error: {msg}")
 
-                except Coupon.DoesNotExist:
-                     raise serializers.ValidationError(f"Invalid coupon code: {item_coupon_code}")
+                # Calculate Discount on Total Order Amount
+                discount = coupon.calculate_discount(float(total_order_amount))
+                
+                # Apply
+                order.discount_total = discount
+                order.coupon = coupon
+                order.coupons.add(coupon)
+                order.save()
+                
+                # Track Usage
+                coupon.used_count += 1
+                coupon.save()
+                CouponUsage.objects.create(user=user, coupon=coupon, order=order)
 
-        # Finalize Order Level Details
-        if used_coupons_set:
-            order.discount_total = total_discount_accumulated
-            order.coupons.set(list(used_coupons_set))
-            # Backward compatibility
-            order.coupon = list(used_coupons_set)[0] 
-            order.save()
-
-            # Track usages
-            for c in used_coupons_set:
-                 c.used_count += 1
-                 c.save()
-                 CouponUsage.objects.create(user=user, coupon=c, order=order)
+            except Coupon.DoesNotExist:
+                 raise serializers.ValidationError(f"Invalid coupon code: {global_coupon_code}")
 
         return order
 

@@ -306,7 +306,6 @@ class HomeProductsAPI(APIView):
         })
 
 
-
 class FilterProductsAPI(APIView):
     permission_classes = [AllowAny]
 
@@ -474,15 +473,22 @@ class CheckoutView(APIView):
             subtotal = order.get_total_cost()
             discount = order.discount_total
             final_total = subtotal - discount
+            
+            # Collect multiple coupons if used
+            coupon_codes = []
+            if order.coupons.exists():
+                coupon_codes = [c.code for c in order.coupons.all()]
+            elif order.coupon: # Fallback
+                coupon_codes = [order.coupon.code]
 
             return Response(
                 {
                     "message": "Order placed successfully. Payment Successful.",
                     "order_id": order.id,
-                    "subtotal": subtotal,
-                    "discount": discount,
-                    "coupon_code": order.coupon.code if order.coupon else None,
-                    "final_total": final_total,
+                    "original_total_amount": subtotal,
+                    "coupon_discount_amount": discount,
+                    "final_payable_amount": final_total,
+                    "applied_coupons": coupon_codes,
                     "payment_status": "Success"
                 },
                 status=status.HTTP_201_CREATED
