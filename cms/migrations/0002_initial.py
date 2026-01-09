@@ -6,8 +6,6 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    initial = True
-
     dependencies = [
         ('cms', '0001_initial'),
         ('ecommerce', '0001_initial'),

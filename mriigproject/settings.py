@@ -104,7 +104,7 @@ WSGI_APPLICATION = 'mriigproject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mriig',       # phpMyAdmin में बनाया हुआ database नाम
+        'NAME': 'mrigg2',       # phpMyAdmin में बनाया हुआ database नाम
         'USER': 'root',       # XAMPP default user
         'PASSWORD': '',       # default में password खाली होता है
         'HOST': '127.0.0.1',  # localhost भी लिख सकते हो
