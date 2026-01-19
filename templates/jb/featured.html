@@ -1,0 +1,157 @@
+{% load static %}
+<!-- ****** Featured Products Area Start ****** -->
+<section class="featured_products_area clearfix">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="section_heading text-center">
+          <h3 class="featured-section-title">Featured Products</h3>
+          <p class="featured-section-subtitle">Discover our handpicked favorites</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row featured-products-grid">
+      {% for product in fl %}
+      <div
+        class="col-12 col-sm-6 col-md-4 col-lg-3 featured-product-item {{ product.category.slug }} wow fadeInUp"
+        data-wow-delay="0.{{ forloop.counter }}s"
+      >
+        <div class="featured-product-card">
+          <!-- Product Image -->
+          <div class="featured-product-img">
+            {% if product.images.all|length > 0 %}
+              <img src="{{ product.images.all.0.image.url }}" alt="{{ product.images.all.0.alt_text }}" class="product-main-image" />
+            {% else %}
+              <img src="{% static 'img/default-placeholder.png' %}" alt="No image" class="product-main-image" />
+            {% endif %}
+            <div class="featured-product-overlay">
+              <button type="button" data-toggle="modal" data-target="#quickview{{ product.id }}" class="quick-view-btn">
+                <i class="ti-eye"></i>
+                <span>Quick View</span>
+              </button>
+              <a href="{% url 'product_detail' product.slug %}" class="view-details-btn">
+                <i class="ti-link"></i>
+                <span>View Details</span>
+              </a>
+            </div>
+            {% if product.offerprice and product.offerprice < product.price %}
+              <div class="featured-product-badge">
+                <span class="badge-text">Sale</span>
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Product Info -->
+          <div class="featured-product-info">
+            <div class="featured-product-category">
+              <span>{{ product.category.name }}</span>
+            </div>
+            <h4 class="featured-product-name">{{ product.name }}</h4>
+            <div class="featured-product-price">
+              {% if product.offerprice and product.offerprice < product.price %}
+                <span class="current-price">₹{{ product.offerprice }}</span>
+                <span class="original-price">₹{{ product.price }}</span>
+                <span class="discount-percentage">
+                  {% widthratio product.price|add:"-"|add:product.offerprice product.price 100 %}% OFF
+                </span>
+              {% else %}
+                <span class="current-price">₹{{ product.price }}</span>
+              {% endif %}
+            </div>
+            {% if product.short_description %}
+              <p class="featured-product-description">{{ product.short_description|truncatewords:15 }}</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+<!-- ****** Quick View Modal Area Start ****** -->
+<div
+  class="modal fade featured-quickview-modal"
+  id="quickview{{ product.id }}"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="quickview"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content featured-modal-content">
+      <div class="modal-header featured-modal-header">
+        <h5 class="modal-title">Quick View</h5>
+        <button
+          type="button"
+          class="close featured-modal-close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body featured-modal-body">
+        <div class="featured-quickview-content">
+          <div class="row">
+            <div class="col-12 col-lg-6">
+              <div class="featured-quickview-image">
+                {% if product.images.all|length > 0 %}
+                  <img src="{{ product.images.all.0.image.url }}" alt="{{ product.name }}" class="img-fluid" />
+                {% else %}
+                  <img src="{% static 'img/default-placeholder.png' %}" alt="No image" class="img-fluid" />
+                {% endif %}
+              </div>
+            </div>
+            <div class="col-12 col-lg-6">
+              <div class="featured-quickview-details">
+                <div class="featured-quickview-category">{{ product.category.name }}</div>
+                <h4 class="featured-quickview-title">{{ product.name }}</h4>
+                
+                <div class="featured-quickview-price">
+                  {% if product.offerprice and product.offerprice < product.price %}
+                    <span class="current-price">₹{{ product.offerprice }}</span>
+                    <span class="original-price">₹{{ product.price }}</span>
+                    <span class="discount-badge">
+                      {% widthratio product.price|add:"-"|add:product.offerprice product.price 100 %}% OFF
+                    </span>
+                  {% else %}
+                    <span class="current-price">₹{{ product.price }}</span>
+                  {% endif %}
+                </div>
+                
+                {% if product.short_description %}
+                  <p class="featured-quickview-description">{{ product.short_description }}</p>
+                {% endif %}
+                
+                <div class="featured-quickview-actions">
+                  <a href="{% url 'product_detail' product.slug %}" class="btn featured-view-details-btn">
+                    <i class="ti-eye"></i>
+                    View Full Details
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ****** Quick View Modal Area End ****** -->
+
+      
+      {% empty %}
+      <div class="col-12">
+        <div class="featured-empty-state">
+          <div class="empty-state-icon">
+            <i class="ti-star"></i>
+          </div>
+          <h4>No Featured Products Available</h4>
+          <p>Check back soon for our featured selections!</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+<!-- ****** Featured Products Area End ****** -->

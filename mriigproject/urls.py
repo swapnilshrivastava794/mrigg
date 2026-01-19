@@ -98,6 +98,13 @@ urlpatterns = [
     path('sidebar-right', shopViews.sidebarRight, name='sidebarRight'),
     path('variable-products', shopViews.variableProducts, name='variableProducts'),
     
+    # SEO-friendly offer URLs
+    path('offer/<slug:offer_slug>/', views.offer_detail, name='offer_detail'),
+    
+    # Blog URLs
+    path('blog/', views.blog_list, name='blog_list'),
+    path('blog/<slug:blog_slug>/', views.blog_detail, name='blog_detail'),
+    
     # CMS pages - must come before category URLs to avoid conflicts
     path('<slug:slug>/', cms_views.cms_page, name='cms'),
     

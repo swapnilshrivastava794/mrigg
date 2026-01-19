@@ -61,11 +61,11 @@
                                     <img src="{% static 'images/icons/24clock.png' %}" alt="phone">
                                 </div>
                                 <div class="contact-info">
-                                    <span class="title">Mon - Fri: 9:00-20:00</span>
+                                    <span class="title">Mon - Fri: 9:30-18:30</span>
                                     {% if profile_setting.phone_number1 %}
                                         <a href="tel:{{ profile_setting.phone_number1 }}" class="service-time info">{{ profile_setting.phone_number1 }}</a>
                                     {% else %}
-                                        <a href="tel:0020500" class="service-time info">0020 500 - CALL - 000</a>
+                                        <a href="#" class="service-time info">Not Available</a>
                                     {% endif %}
                                 </div>
                             </div>
@@ -79,11 +79,18 @@
                                         <a href="mailto:{{ profile_setting.email }}"
                                             class="email-address info">{{ profile_setting.email }}</a>
                                     {% else %}
-                                        <a href="mailto:pixcelsthemes@gmail.com"
-                                            class="email-address info">pixcelsthemes@gmail.com</a>
+                                        <a href="#"
+                                            class="email-address info">not available</a>
                                     {% endif %}
                                 </div>
                             </div>
+                            <div class="app-download mt-3 mb-2">
+                
+                                <a href="http://appstore.com" target="_blank" class="download-store"><img
+                                        src="/static/images/items/appstore.jpg" alt=""></a>
+                                <a href="https://play.google.com/store/apps" target="_blank" class="download-store"><img
+                                        src="/static/images/items/playstore.jpg" alt=""></a>
+                                </div>
                         </div>
                         <ul class="social-links-footer2">
                             {% if profile_setting.facbook %}
@@ -165,31 +172,23 @@
                     </div>
                 </div>
             </div>
-            <div class="footer-bottombar">
-                <div class="app-download">
-                    <span class="download-text">Order faster with our App!</span>
-                    <a href="http://appstore.com" target="_blank" class="download-store"><img
-                            src="/static/images/items/appstore.jpg" alt=""></a>
-                    <a href="https://play.google.com/store/apps" target="_blank" class="download-store"><img
-                            src="/static/images/items/playstore.jpg" alt=""></a>
-                </div>
-                <div class="payment-methods"><img src="/static/images/footer/payment2.svg" alt="payment-methods">
-                </div>
-            </div>
+           
         </div>
     </div>
+   
     <div class="footer-bottom-area">
         <div class="container">
+            
             <div class="footer-bottom-inner">
                 <span class="copyright">
                     {% if profile_setting.copyright %}
                         {{ profile_setting.copyright|safe }}
                     {% else %}
-                        Copyright & Design By <a href="http://PixcelsThemes.com" class="brand"
-                        target="_blank">PixcelsThemes</a> -2024
+                        Copyright & Design By <a href="http://blumtexs.com" class="brand"
+                        target="_blank">Blumtexs Pvt Ltd</a> -2026
                     {% endif %}
                 </span>
-            </div>
+               
         </div>
     </div>
 </div>

@@ -7,12 +7,49 @@
 {% block content %}
 
 
+<!-- ..::Posters top page ad Section Start Here::.. -->
+{% if homepage_offers %}
+<div class="rts-posters-section1 mt-3">
+    <div class="container">
+        <div class="row">
+            {% for offer in homepage_offers %}
+                <div class="col-xl-4 col-lg-12 col-sm-12 col-12 last-child">
+                    <a href="{% if offer.offer_slug %}{% url 'offer_detail' offer.offer_slug %}{% else %}{% url 'shop' %}{% endif %}" class="product-box product-box-medium mid">
+                        <div class="contents">
+                            {% if offer.offer_name %}
+                                <span class="pretitle">{{ offer.get_offer_name_display }}</span>
+                            {% else %}
+                                <span class="pretitle">Special Offer</span>
+                            {% endif %}
+                            <h1 class="product-title">{{ offer.offer_title }}</h1>
+                            {% if offer.offer_description %}
+                                <p>{{ offer.offer_description|truncatewords:10 }}</p>
+                            {% else %}
+                                <p>Don't miss the last opportunity</p>
+                            {% endif %}
+                        </div>
+                        <div class="product-thumb product-thumb1">
+                            {% if offer.offer_image %}
+                                <img src="{{ offer.offer_image.url }}" alt="{{ offer.offer_title }}">
+                            {% else %}
+                                <img src="/static/images/products/dress.png" alt="{{ offer.offer_title }}">
+                            {% endif %}
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+<!-- ..::Posters Section End Here::.. -->
+
 <!-- ..::Offer Section Start Here::.. -->
 <div class="rts-offer-section">
     <div class="container">
         <div class="rts-offer-inner">
-            <p class="description">Super discount for your 100$ purchase. Use this code <a href="{% url 'shop' %}">OFFER100</a>
-            </p>
+            <h3 class="description title">Super Discount for You – Pure Herbal Beauty at Unbeatable Prices.
+            </h3>
         </div>
     </div>
 </div>
@@ -158,46 +195,42 @@
 </div>
 <!-- ..::Hand Picked Section End Here::.. -->
 
-<!-- ..::Deal Section Start Here::.. -->
-<div class="rts-deal-section1">
+<!-- ..::Posters Homepage Middle Section ad Section Start Here::.. -->
+{% if homepage_offers %}
+<div class="rts-posters-section1 mt-3">
     <div class="container">
-        <div class="section-inner">
-            <div class="row">
-                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12"></div>
-                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
-                    <div class="single-inner">
-                        <div class="content-box">
-                            <div class="sub-content">
-                                <img class="line-1" src="/static/images/banner/wvbo-icon.png" alt="">
-                                <span class="sub-text">Deal Of The Week</span>
-                            </div>
-                            <h2 class="slider-title">Roland Grand White <br> short T-shirt </h2>
-                            <div class="slider-description">
-                                <p>Our intent and our actions have always been informed by progress. We
-                                    look at an impact report as a way to measure.</p>
-                            </div>
-                            <div class="countdown" id="countdown">
-                                <ul>
-                                    <li><span id="days"></span>D</li>
-                                    <li><span id="hours"></span>H</li>
-                                    <li><span id="minutes"></span>M</li>
-                                    <li><span id="seconds"></span>S</li>
-                                </ul>
-                            </div>
-                            <div class="content-bottom">
-                                <div class="img-box"><img src="/static/images/hand-picked/deal-icon.png" alt="">
-                                </div>
-                                <p class="content">Limited time offer. The deal will expires <br>
-                                    on November 12, 2024 HURRY UP!</p>
-                            </div>
+        <div class="row">
+            {% for offer in homepage_offers %}
+                <div class="col-xl-4 col-lg-12 col-sm-12 col-12 last-child">
+                    <a href="{% if offer.offer_slug %}{% url 'offer_detail' offer.offer_slug %}{% else %}{% url 'shop' %}{% endif %}" class="product-box product-box-medium mid">
+                        <div class="contents">
+                            {% if offer.offer_name %}
+                                <span class="pretitle">{{ offer.get_offer_name_display }}</span>
+                            {% else %}
+                                <span class="pretitle">Special Offer</span>
+                            {% endif %}
+                            <h1 class="product-title">{{ offer.offer_title }}</h1>
+                            {% if offer.offer_description %}
+                                <p>{{ offer.offer_description|truncatewords:10 }}</p>
+                            {% else %}
+                                <p>Don't miss the last opportunity</p>
+                            {% endif %}
                         </div>
-                    </div>
+                        <div class="product-thumb product-thumb1">
+                            {% if offer.offer_image %}
+                                <img src="{{ offer.offer_image.url }}" alt="{{ offer.offer_title }}">
+                            {% else %}
+                                <img src="/static/images/products/dress.png" alt="{{ offer.offer_title }}">
+                            {% endif %}
+                        </div>
+                    </a>
                 </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 </div>
-<!-- ..::Deal Section End Here::.. -->
+{% endif %}
+<!-- ..::Posters Section End Here::.. -->
 
 <!-- ..::Featured Product Section Start Here::.. -->
 <div class="rts-featured-product-section1">
@@ -207,7 +240,7 @@
                 <div class="wrapper">
                     <div class="sub-content">
                         <img class="line-1" src="/static/images/banner/wvbo-icon.png" alt="">
-                        <span class="sub-text">Featured1</span>
+                        <span class="sub-text">Featured</span>
                         <img class="line-2" src="/static/images/banner/wvbo-icon.png" alt="">
                     </div>
                     <h2 class="title">LATEST PRODUCT</h2>
@@ -588,73 +621,48 @@
 <!-- ..::Featured Product Section End Here::.. -->
 
 
-<!-- ..::Posters Section Start Here::.. -->
-<div class="rts-posters-section1">
-    <div class="container">
-        <div class="row">
-            <div class="col-xl-3 col-lg-6 col-sm-6 col-12">
-                <a href="{% url 'productDetails' %}" class="product-box product-box-medium product-box-medium5">
-                    <div class="contents">
-                        <span class="pretitle">50% Offer</span>
-                        <h1 class="product-title">Last call for up <br> to 30% off</h1>
-                        <div class="view-collections go-btn">VIEW COLLECTIONS <i class="rt-arrow-right-long"></i>
-                        </div>
-                    </div>
-                    <div class="product-thumb"><img src="/static/images/featured/pot.png" alt="product-thumb">
-                    </div>
-                </a>
-            </div>
-            <div class="col-xl-6 col-lg-12 col-sm-12 col-12 last-child">
-                <a href="{% url 'productDetails' %}" class="product-box product-box-medium mid">
-                    <div class="contents">
-                        <span class="pretitle">-45% Offer</span>
-                        <h1 class="product-title">SUMMER COLLECTION</h1>
-                        <p>Don't miss the last opportunity</p>
-                    </div>
-                    <div class="product-thumb product-thumb1"><img src="/static/images/products/dress.png" alt="product-thumb"></div>
-                </a>
-            </div>
-            <div class="col-xl-3 col-lg-6 col-sm-6 col-12">
-                <a href="{% url 'productDetails' %}" class="product-box product-box-medium product-box-medium3">
-                    <div class="contents">
-                        <span class="pretitle">SUMMER DRESS</span>
-                        <h1 class="product-title">BEST COLLECTION</h1>
-                        <div class="view-collections go-btn">Shop Now <i class="rt-arrow-right-long"></i></div>
-                    </div>
-                    <div class="product-thumb"><img src="/static/images/featured/3rd-image.png" alt="product-thumb"></div>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- ..::Posters Section End Here::.. -->
-
 <!-- ..::Brand Section Start Here::.. -->
-<div class="rts-brands-section1 brand-bg3">
+{% if homepage_bottom_offers or bottom_products %}
+<div class="rts-brands-section1 brand-bg3 brand-gradient-purple">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-12">
                 <div class="slider-div">
                     <div class="swiper rts-brandSlide1">
                         <div class="swiper-wrapper">
-                            <div class="swiper-slide">
-                                <a class="brand-front" href="#"><img src="/static/images/brands/client-01.png" alt="Brand Logo"></a>
-                            </div>
-                            <div class="swiper-slide">
-                                <a class="brand-front" href="#"><img src="/static/images/brands/client-02.png" alt="Brand Logo"></a>
-                            </div>
-                            <div class="swiper-slide">
-                                <a class="brand-front" href="#"><img src="/static/images/brands/client-03.png" alt="Brand Logo"></a>
-                            </div>
-                            <div class="swiper-slide">
-                                <a class="brand-front" href="#"><img src="/static/images/brands/client-04.png" alt="Brand Logo"></a>
-                            </div>
-                            <div class="swiper-slide">
-                                <a class="brand-front" href="#"><img src="/static/images/brands/client-05.png" alt="Brand Logo"></a>
-                            </div>
-                            <div class="swiper-slide">
-                                <a class="brand-front" href="#"><img src="/static/images/brands/client-06.png" alt="Brand Logo"></a>
-                            </div>
+                            {% if homepage_bottom_offers %}
+                                {% for offer in homepage_bottom_offers %}
+                                    <div class="swiper-slide">
+                                        <a class="brand-front" href="{% if offer.offer_slug %}{% url 'offer_detail' offer.offer_slug %}{% else %}{% url 'shop' %}{% endif %}">
+                                            {% if offer.offer_image %}
+                                                <img src="{{ offer.offer_image.url }}" alt="{{ offer.offer_title }}">
+                                            {% else %}
+                                                <img src="/static/images/brands/client-01.png" alt="{{ offer.offer_title }}">
+                                            {% endif %}
+                                            <span class="product-name-text">{{ offer.offer_title }}</span>
+                                        </a>
+                                    </div>
+                                {% endfor %}
+                            {% elif bottom_products %}
+                                {% for product in bottom_products %}
+                                    <div class="swiper-slide">
+                                        <a class="brand-front" href="{% if product.subcategory and product.subcategory.category %}{% url 'product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}{% else %}{% url 'shop' %}{% endif %}">
+                                            {% if product.images.all %}
+                                                {% with images=product.images.all %}
+                                                    {% if images.0.image %}
+                                                        <img src="{{ images.0.image.url }}" alt="{{ product.name }}">
+                                                    {% else %}
+                                                        <img src="/static/images/brands/client-01.png" alt="{{ product.name }}">
+                                                    {% endif %}
+                                                {% endwith %}
+                                            {% else %}
+                                                <img src="/static/images/brands/client-01.png" alt="{{ product.name }}">
+                                            {% endif %}
+                                            <span class="product-name-text">{{ product.name }}</span>
+                                        </a>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -662,9 +670,12 @@
         </div>
     </div>
 </div>
+{% endif %}
 <!-- ..::Brand Section End Here::.. -->
 
-<!-- ..::Featured Product Section Start Here::.. -->
+<!-- ..::Featured Blog Section Start Here::.. -->
+
+{% if featured_blogs %}
 <div class="rts-featured-product-section3">
     <div class="container">
         <div class="rts-featured-product-section-inner">
@@ -672,99 +683,55 @@
                 <div class="wrapper">
                     <div class="sub-content">
                         <img class="line-1" src="/static/images/banner/wvbo-icon.png" alt="">
-                        <span class="sub-text">Featured2</span>
+                        <span class="sub-text">Featured</span>
                         <img class="line-2" src="/static/images/banner/wvbo-icon.png" alt="">
                     </div>
-                    <h2 class="title">FEATURED PRODUCT</h2>
+                    <h2 class="title">BLOG</h2>
                 </div>
             </div>
             <div class="row">
+                {% for blog in featured_blogs %}
                 <div class="col-xl-4 col-md-6 col-sm-12">
-                    <div class="full-wrapper wrapper-1">
+                    <div class="full-wrapper wrapper-{{ forloop.counter }}">
                         <div class="image-part">
-                            <a href="#" class="image"><img src="/static/images/featured/img-1.jpg" alt="Featured Image"></a>
+                            <a href="{% url 'blog_detail' blog.slug %}" class="image">
+                                {% if blog.featured_image %}
+                                    <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}">
+                                {% else %}
+                                    <img src="/static/images/featured/img-{{ forloop.counter }}.jpg" alt="{{ blog.title }}">
+                                {% endif %}
+                            </a>
                         </div>
                         <div class="blog-content">
                             <span class="date-full">
-                                <span class="day">25</span>
+                                <span class="day">{{ blog.post_date|date:"d" }}</span>
                                 <br>
-                                <span class="month">Jul</span>
+                                <span class="month">{{ blog.post_date|date:"M" }}</span>
                             </span>
                             <ul class="blog-meta">
-                                <li><a href="#">WINTER DRESS</a></li>
+                                <li>
+                                    <a href="{% if blog.category %}{% url 'blog_list' %}?category={{ blog.category.slug }}{% else %}{% url 'blog_list' %}{% endif %}">
+                                        {% if blog.category %}{{ blog.category.name }}{% else %}Blog{% endif %}
+                                    </a>
+                                </li>
                             </ul>
                             <div class="title">
-                                <a href="#">Once that’s determined with a good, you need to come up with a name</a>
+                                <a href="{% url 'blog_detail' blog.slug %}">{{ blog.title }}</a>
                             </div>
-                            <div class="author-info d-flex align-items-center">
-                                <div class="avatar"><img src="/static/images/featured/author.png" alt="Author Image"></div>
-                                <div class="info">
-                                    <p class="author-name">PixcelsThemes</p>
-                                    <p class="author-dsg">Author</p>
-                                </div>
+                            <div style="margin-top: 15px;">
+                                <a href="{% url 'blog_detail' blog.slug %}" style="display: inline-block; padding: 10px 20px; background: #8833b8; color: #fff; text-align: center; border-radius: 5px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease;">View</a>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-4 col-md-6 col-sm-12">
-                    <div class="full-wrapper wrapper-2">
-                        <div class="image-part">
-                            <a href="#" class="image"><img src="/static/images/featured/img-2.jpg" alt="Featured Image"></a>
-                        </div>
-                        <div class="blog-content">
-                            <span class="date-full">
-                                <span class="day">25</span>
-                                <br>
-                                <span class="month">Jul</span>
-                            </span>
-                            <ul class="blog-meta">
-                                <li><a href="#">WINTER DRESS</a></li>
-                            </ul>
-                            <div class="title">
-                                <a href="#">Once determined, you need to come up with a name a legal structure</a>
-                            </div>
-                            <div class="author-info d-flex align-items-center">
-                                <div class="avatar"><img src="/static/images/featured/author.png" alt="Author Image"></div>
-                                <div class="info">
-                                    <p class="author-name">PixcelsThemes</p>
-                                    <p class="author-dsg">Author</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-4 col-md-6 col-sm-12">
-                    <div class="full-wrapper wrapper-3">
-                        <div class="image-part">
-                            <a href="#" class="image"><img src="/static/images/featured/img-3.jpg" alt="Featured Image"></a>
-                        </div>
-                        <div class="blog-content">
-                            <span class="date-full">
-                                <span class="day">25</span>
-                                <br>
-                                <span class="month">Jul</span>
-                            </span>
-                            <ul class="blog-meta">
-                                <li><a href="#">WINTER DRESS</a></li>
-                            </ul>
-                            <div class="title">
-                                <a href="#">At the limit, statically generated, edge delivered a food</a>
-                            </div>
-                            <div class="author-info d-flex align-items-center">
-                                <div class="avatar"><img src="/static/images/featured/author.png" alt="Author Image"></div>
-                                <div class="info">
-                                    <p class="author-name">PixcelsThemes</p>
-                                    <p class="author-dsg">Author</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </div>
 </div>
-<!-- ..::Featured Product Section End Here::.. -->
+{% endif %}
+
+<!-- ..::Featured Blog Section End Here::.. -->
 
 <!-- ..::Newsletter Popup Start Here::.. -->
 <!-- <div class="rts-newsletter-popup">

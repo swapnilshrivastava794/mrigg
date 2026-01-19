@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+
+<!-- Cart Section -->
+<section class="cart-section">
+  <div class="container">
+    <div class="cart-header">
+      <h1 class="cart-title">Your Shopping Cart</h1>
+      <p class="cart-subtitle">Review your items before checkout</p>
+    </div>
+
+    {% if cart_items %}
+      <div class="cart-content">
+        <div class="cart-items">
+          {% for item in cart_items %}
+            <div class="cart-item">
+              <div class="cart-item-image">
+                {% if item.product.images.all|length > 0 %}
+                  <img src="{{ item.product.images.all.0.image.url }}" alt="{{ item.product.name }}">
+                {% else %}
+                  <img src="{% static 'img/default-placeholder.png' %}" alt="No image">
+                {% endif %}
+              </div>
+              
+              <div class="cart-item-details">
+                <h3 class="cart-item-name">{{ item.product.name }}</h3>
+                <div class="cart-item-category">{{ item.product.category.name }}</div>
+                <div class="cart-item-price">₹{{ item.product.price }}</div>
+              </div>
+
+              <div class="cart-item-quantity">
+                <form method="post" action="{% url 'update_cart_quantity' item.product.id %}" class="quantity-form">
+                  {% csrf_token %}
+                  <div class="quantity-selector">
+                    <button type="button" class="qty-btn qty-minus" onclick="var qty = this.nextElementSibling; if(qty.value > 1) qty.value--; return false;">
+                      <i class="fa fa-minus"></i>
+                    </button>
+                    <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="qty-input" onchange="this.form.submit()">
+                    <button type="button" class="qty-btn qty-plus" onclick="var qty = this.previousElementSibling; qty.value++; qty.form.submit(); return false;">
+                      <i class="fa fa-plus"></i>
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              <div class="cart-item-subtotal">
+                <span class="subtotal-label">Subtotal</span>
+                <span class="subtotal-amount">₹{{ item.subtotal }}</span>
+              </div>
+
+              <div class="cart-item-actions">
+                <a href="{% url 'remove_from_cart' item.product.id %}" class="remove-btn" onclick="return confirm('Are you sure you want to remove this item?')">
+                  <i class="fa fa-trash"></i>
+                  Remove
+                </a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+        <div class="cart-summary">
+          <div class="summary-card">
+            <h3 class="summary-title">Order Summary</h3>
+            
+            <div class="summary-row">
+              <span class="summary-label">Items ({{ cart_items|length }})</span>
+              <span class="summary-value">₹{{ total_price }}</span>
+            </div>
+            
+            <div class="summary-row">
+              <span class="summary-label">Shipping</span>
+              <span class="summary-value">Free</span>
+            </div>
+            
+            <div class="summary-row">
+              <span class="summary-label">Tax</span>
+              <span class="summary-value">₹0.00</span>
+            </div>
+            
+            <div class="summary-divider"></div>
+            
+            <div class="summary-row total-row">
+              <span class="summary-label">Total</span>
+              <span class="summary-value">₹{{ total_price }}</span>
+            </div>
+
+            <div class="summary-actions">
+              {% if custom_user %}
+                <a href="{% url 'checkout' %}" class="checkout-btn">
+                  <i class="fa fa-credit-card"></i>
+                  Proceed to Checkout
+                </a>
+              {% else %}
+                <a href="{% url 'login' %}?next={% url 'checkout' %}" class="checkout-btn">
+                  <i class="fa fa-sign-in"></i>
+                  Login to Checkout
+                </a>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="continue-shopping">
+            <a href="/our-product" class="continue-btn">
+              <i class="fa fa-arrow-left"></i>
+              Continue Shopping
+            </a>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div class="empty-cart">
+        <div class="empty-cart-content">
+          <div class="empty-cart-icon">
+            <i class="fa fa-shopping-cart"></i>
+          </div>
+          <h3 class="empty-cart-title">Your cart is empty</h3>
+          <p class="empty-cart-message">Looks like you haven't added any items to your cart yet.</p>
+          <a href="/our-product" class="empty-cart-btn">
+            <i class="fa fa-shopping-bag"></i>
+            Start Shopping
+          </a>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

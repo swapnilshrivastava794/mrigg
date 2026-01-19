@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Brand, Category, SubCategory, ContactMessage, CustomUser, Product, Order, OrderItem, ProductDetailSection ,ProductImage, ProductVariation, Coupon, CouponUsage
+from .models import Brand, Category, SubCategory, ContactMessage, CustomUser, Product, Order, OrderItem, ProductDetailSection ,ProductImage, ProductVariation, Coupon, CouponUsage, Offer, OfferProduct
 from django.utils.translation import gettext_lazy as _
 from ckeditor.widgets import CKEditorWidget
 from django import forms
@@ -939,3 +939,109 @@ class CouponUsageAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         return qs.select_related('user', 'coupon', 'order')
+
+
+# ==================== Offer Admin ====================
+@admin.register(Offer)
+class OfferAdmin(admin.ModelAdmin):
+    list_display = ('offer_title', 'offer_name', 'page_position', 'is_active', 'order', 'start_date', 'end_date', 'created_at', 'is_valid_status')
+    list_filter = ('offer_name', 'page_position', 'is_active', 'start_date', 'end_date', 'created_at')
+    search_fields = ('offer_title', 'offer_description', 'offer_slug', 'meta_title', 'meta_description')
+    list_editable = ('is_active', 'order')
+    ordering = ('order', '-created_at')
+    prepopulated_fields = {'offer_slug': ('offer_title',)}
+    readonly_fields = ('created_at', 'is_valid_status')
+    
+    fieldsets = (
+        ('Offer Information', {
+            'fields': ('offer_name', 'page_position', 'offer_title', 'offer_slug', 'offer_description')
+        }),
+        ('Media', {
+            'fields': ('offer_image',)
+        }),
+        ('SEO Settings', {
+            'fields': ('meta_title', 'meta_description'),
+            'classes': ('collapse',)
+        }),
+        ('Validity & Status', {
+            'fields': ('start_date', 'end_date', 'is_active', 'order', 'is_valid_status')
+        }),
+        ('Timestamps', {
+            'fields': ('created_at',),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    def save_model(self, request, obj, form, change):
+        """Override to ensure meta fields are auto-generated from offer_title and offer_description (simple text, not slug)"""
+        # Ensure meta_title is generated from offer_title if empty (simple text, not slugified)
+        meta_title_empty = not obj.meta_title or (isinstance(obj.meta_title, str) and not obj.meta_title.strip())
+        if meta_title_empty and obj.offer_title and obj.offer_title.strip():
+            # Use simple text from offer_title (not slugified)
+            obj.meta_title = obj.offer_title[:160].strip()
+        
+        # Ensure meta_description is generated from offer_description if empty (simple text)
+        meta_desc_empty = not obj.meta_description or (isinstance(obj.meta_description, str) and not obj.meta_description.strip())
+        if meta_desc_empty:
+            if obj.offer_description and obj.offer_description.strip():
+                from django.utils.html import strip_tags
+                clean_text = strip_tags(obj.offer_description)
+                if clean_text and clean_text.strip():
+                    # Use simple text from description (not slugified)
+                    obj.meta_description = clean_text[:255].strip()
+                elif obj.offer_title and obj.offer_title.strip():
+                    obj.meta_description = obj.offer_title[:255].strip()
+            elif obj.offer_title and obj.offer_title.strip():
+                obj.meta_description = obj.offer_title[:255].strip()
+        
+        super().save_model(request, obj, form, change)
+    
+    def is_valid_status(self, obj):
+        """Display if offer is currently valid"""
+        if obj.pk:
+            is_valid = obj.is_valid()
+            if is_valid:
+                return "✅ Valid"
+            else:
+                return "❌ Invalid"
+        return "-"
+    is_valid_status.short_description = 'Status'
+    is_valid_status.boolean = False
+
+
+# ==================== Offer Product Admin ====================
+@admin.register(OfferProduct)
+class OfferProductAdmin(admin.ModelAdmin):
+    list_display = ('offer', 'product', 'created_at', 'get_product_name', 'get_offer_title')
+    list_filter = ('offer', 'created_at', 'offer__offer_name', 'offer__page_position')
+    search_fields = ('offer__offer_title', 'product__name', 'product__slug')
+    ordering = ('-created_at',)
+    readonly_fields = ('created_at',)
+    autocomplete_fields = ('product',)  # For better UX when selecting products
+    
+    fieldsets = (
+        ('Offer Product Link', {
+            'fields': ('offer', 'product')
+        }),
+        ('Timestamps', {
+            'fields': ('created_at',),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    def get_product_name(self, obj):
+        """Display product name"""
+        return obj.product.name if obj.product else "-"
+    get_product_name.short_description = 'Product Name'
+    get_product_name.admin_order_field = 'product__name'
+    
+    def get_offer_title(self, obj):
+        """Display offer title"""
+        return obj.offer.offer_title if obj.offer else "-"
+    get_offer_title.short_description = 'Offer Title'
+    get_offer_title.admin_order_field = 'offer__offer_title'
+    
+    def get_queryset(self, request):
+        """Optimize queryset"""
+        qs = super().get_queryset(request)
+        return qs.select_related('offer', 'product')

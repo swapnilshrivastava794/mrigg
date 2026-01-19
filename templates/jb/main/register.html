@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+
+<!-- Register Section -->
+<section class="register-section">
+  <div class="container">
+    <div class="register-wrapper">
+      <div class="register-card">
+        <div class="register-header">
+          <h1 class="register-title">Create Account</h1>
+          <p class="register-subtitle">Join us and start shopping today</p>
+        </div>
+
+        {% if messages %}
+          <div class="alert-messages">
+            {% for message in messages %}
+              <div class="alert alert-danger">
+                <i class="fa fa-exclamation-triangle"></i>
+                {{ message }}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data" class="register-form">
+          {% csrf_token %}
+          
+          <!-- Personal Information Section -->
+          <div class="form-section">
+            <div class="section-header">
+              <h3 class="section-title">
+                <i class="fa fa-user"></i>
+                Personal Information
+              </h3>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="id_first_name" class="form-label">First Name</label>
+                <input type="text" name="first_name" id="id_first_name" class="form-input" required>
+              </div>
+              <div class="form-group">
+                <label for="id_last_name" class="form-label">Last Name</label>
+                <input type="text" name="last_name" id="id_last_name" class="form-input" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="id_email" class="form-label">Email Address</label>
+                <input type="email" name="email" id="id_email" class="form-input" required>
+              </div>
+              <div class="form-group">
+                <label for="id_mobile" class="form-label">Mobile Number</label>
+                <input type="text" name="mobile" id="id_mobile" class="form-input" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="id_date_of_birth" class="form-label">Date of Birth</label>
+                <input type="date" name="date_of_birth" id="id_date_of_birth" class="form-input">
+              </div>
+              <div class="form-group">
+                <label for="id_gender" class="form-label">Gender</label>
+                <select name="gender" id="id_gender" class="form-select">
+                  <option value="">Select Gender</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Security Section -->
+          <div class="form-section">
+            <div class="section-header">
+              <h3 class="section-title">
+                <i class="fa fa-lock"></i>
+                Security Information
+              </h3>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="id_password" class="form-label">Password</label>
+                <input type="password" name="password" id="id_password" class="form-input" required>
+              </div>
+              <div class="form-group">
+                <label for="id_confirm_password" class="form-label">Confirm Password</label>
+                <input type="password" name="confirm_password" id="id_confirm_password" class="form-input" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- Address Section -->
+          <div class="form-section">
+            <div class="section-header">
+              <h3 class="section-title">
+                <i class="fa fa-map-marker"></i>
+                Address Information
+              </h3>
+            </div>
+            
+            <div class="form-group">
+              <label for="id_address_line1" class="form-label">Address Line 1</label>
+              <input type="text" name="address_line1" id="id_address_line1" class="form-input">
+            </div>
+            
+            <div class="form-group">
+              <label for="id_address_line2" class="form-label">Address Line 2</label>
+              <input type="text" name="address_line2" id="id_address_line2" class="form-input">
+            </div>
+          </div>
+
+          <!-- Profile Section -->
+          <div class="form-section">
+            <div class="section-header">
+              <h3 class="section-title">
+                <i class="fa fa-camera"></i>
+                Profile Picture
+              </h3>
+            </div>
+            
+            <div class="form-group">
+              <label for="id_profile_image" class="form-label">Profile Image</label>
+              <div class="file-upload-wrapper">
+                <input type="file" name="profile_image" id="id_profile_image" class="file-input" accept="image/*">
+                <label for="id_profile_image" class="file-upload-label">
+                  <i class="fa fa-cloud-upload"></i>
+                  <span>Choose Profile Image</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="form-actions">
+            <button type="submit" class="register-btn">
+              <i class="fa fa-user-plus"></i>
+              Create Account
+            </button>
+          </div>
+        </form>
+
+        <div class="register-footer">
+          <p class="login-link">
+            Already have an account? 
+            <a href="{% url 'login' %}" class="login-btn">
+              <i class="fa fa-sign-in"></i>
+              Login here
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

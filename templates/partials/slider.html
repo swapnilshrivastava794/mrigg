@@ -1,343 +1,116 @@
- <!--================= Banner Section Start Here =================-->
- <div class="banner banner-1 bg-image mt-2">
-    <div class="container">
-        <div class="banner-inner">
-            <div class="row">
-                <div class="col-xl-2 col-md-4 col-sm-12 gutter-1">
-                    <div class="catagory-sidebar" style="overflow: visible;">
-                        <div class="widget-bg" style="overflow: visible; position: relative;">
-                            <h2 class="widget-title">All Categories <i class="rt-angle-down"></i></h2>
-                            <nav style="overflow: visible;">
-                                <ul class="category-menu" style="overflow: visible;">
-                                    {% for category in all_categories %}
-                                        {% with subcategories=category.subcategories.all %}
-                                        <li class="{% if subcategories %}has-mega-menu{% endif %}" style="position: relative; overflow: visible;">
-                                            <a href="{% url 'category-only' category.slug %}" class="category-link">
-                                                {% if category.image %}
-                                                    <img src="{{ category.image.url }}" alt="{{ category.name }}" style="width: 20px; height: 20px; display: inline-block; margin-right: 5px; vertical-align: middle; object-fit: cover; border-radius: 3px;">
-                                                {% endif %}
-                                                {{ category.name }}
-                                                {% if subcategories %}
-                                                    <i class="rt rt-arrow-right-long"></i>
-                                                {% endif %}
-                                            </a>
-                                            {% if subcategories %}
-                                                <ul class="dropdown-ul mega-dropdown category-mega-menu">
-                                                    <li class="mega-dropdown-li">
-                                                        <ul class="mega-dropdown-ul">
-                                                            {% for subcategory in subcategories %}
-                                                                <li class="dropdown-li">
-                                                                    <a class="dropdown-link2" href="{% url 'category-subcategory' category.slug subcategory.slug %}">
-                                                                        {{ subcategory.name }}
-                                                                    </a>
-                                                                </li>
-                                                            {% endfor %}
-                                                        </ul>
-                                                    </li>
-                                                </ul>
-                                            {% endif %}
-                                        </li>
-                                        {% endwith %}
-                                    {% empty %}
-                                        <li><a href="{% url 'shop' %}">No Categories Available <i class="rt rt-arrow-right-long"></i></a></li>
-                                    {% endfor %}
-                                </ul>
-                            </nav>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-10 col-md-8 col-sm-12 gutter-2">
-                    <div class="swiper bannerSlide2">
-                        <div class="swiper-wrapper">
-                            {% for slider_item in sliders %}
-                                <div class="swiper-slide">
-                                    <div class="banner-single {% if slider_item.sliderimage %}bg-image{% endif %}" 
-                                         {% if slider_item.sliderimage %}style="background-image: url('{{ slider_item.sliderimage.url }}'); background-size: cover; background-position: center center; background-repeat: no-repeat; height: 575px; border-radius: 10px;"{% else %}style="height: 575px;"{% endif %}>
-                                        <div class="container">
-                                            <div class="single-inner">
-                                                <div class="content-box">
-                                                    {% if slider_item.deal_type %}
-                                                        <p class="slider-subtitle">
-                                                            {% if slider_item.deal_type == 'summer_deal' %}
-                                                                <img src="/static/images/banner/wvbo-icon.png" alt=""> Summer Deal
-                                                            {% elif slider_item.deal_type == 'best_sale_product' %}
-                                                                <img src="/static/images/banner/wvbo-icon.png" alt=""> Best Sale Product
-                                                            {% elif slider_item.deal_type == 'high_demand_product' %}
-                                                                <img src="/static/images/banner/wvbo-icon.png" alt=""> High Demand Product
-                                                            {% else %}
-                                                                <img src="/static/images/banner/wvbo-icon.png" alt=""> Special Offer
-                                                            {% endif %}
-                                                            {% if slider_item.slidercat %}
-                                                                - {{ slider_item.slidercat.name }}
-                                                            {% endif %}
-                                                        </p>
-                                                    {% elif slider_item.slidercat %}
-                                                        <p class="slider-subtitle">
-                                                            <img src="/static/images/banner/wvbo-icon.png" alt=""> {{ slider_item.slidercat.name }}
-                                                        </p>
-                                                    {% endif %}
-                                                    
-                                                    <h2 class="slider-title">
-                                                        {% if slider_item.ad_title %}
-                                                            {{ slider_item.ad_title|upper }}
-                                                        {% else %}
-                                                            SPECIAL COLLECTION
-                                                        {% endif %}
-                                                    </h2>
-                                                    
-                                                    {% if slider_item.ad_description %}
-                                                        <div class="slider-description">
-                                                            <p>{{ slider_item.ad_description|truncatewords:20 }}</p>
-                                                        </div>
-                                                    {% endif %}
-                                                    
-                                                    {% if slider_item.product %}
-                                                        <a href="{% url 'product_detail' slider_item.product.subcategory.category.slug slider_item.product.subcategory.slug slider_item.product.slug %}" class="slider-btn2">
-                                                            View Product
-                                                        </a>
-                                                    {% elif slider_item.slidercat %}
-                                                        <a href="{% url 'category-only' slider_item.slidercat.slug %}" class="slider-btn2">
-                                                            View Collection
-                                                        </a>
-                                                    {% else %}
-                                                        <a href="{% url 'shop' %}" class="slider-btn2">View Collections</a>
-                                                    {% endif %}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% empty %}
-                                {# Fallback: Show default slider if no sliders in database #}
-                                <div class="swiper-slide">
-                                    <div class="banner-single bg-image bg-image-3-1" style="height: 575px;">
-                                        <div class="container">
-                                            <div class="single-inner">
-                                                <div class="content-box">
-                                                    <p class="slider-subtitle">
-                                                        <img src="/static/images/banner/wvbo-icon.png" alt=""> Spring Summer Collection
-                                                    </p>
-                                                    <h2 class="slider-title">HOT COLLECTION <br> FOR WOMEN</h2>
-                                                    <div class="slider-description">
-                                                        <p>Easy & safe payment with PayPal. sequines & embroidered for all</p>
-                                                    </div>
-                                                    <a href="{% url 'shop' %}" class="slider-btn2">View Collections</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                        {% if sliders|length > 1 %}
-                            <div class="slider-navigation">
-                                <div class="swiper-button-prev slider-btn prev"><i class="rt rt-arrow-left-long"></i></div>
-                                <div class="swiper-button-next slider-btn next"><i class="rt rt-arrow-right-long"></i></div>
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!--================= Banner Section End Here =================-->
-
 <!--================= Banner Section Start Here =================-->
-<div class="banner banner-1 bg-image mt-2">
-    <div class="container">
-        <div class="banner-inner">
-            <div class="row">
-                <!--================= Banner offer 1 =================-->
-                <div class="col-xl-6 col-md-6 col-sm-12 ">
-                    <div class="swiper bannerSlideOffer1">
-                        <div class="swiper-wrapper">
-                            {% for slider_item in sliders %}
-                                <div class="swiper-slide">
-                                    <div class="banner-single {% if slider_item.sliderimage %}bg-image{% endif %}" 
-                                         {% if slider_item.sliderimage %}style="background-image: url('{{ slider_item.sliderimage.url }}'); background-size: cover; background-position: center center; background-repeat: no-repeat; height: 575px; border-radius: 10px;"{% else %}style="height: 575px;"{% endif %}>
-                                        <div class="container">
-                                            <div class="single-inner">
-                                                <div class="content-box">
-                                                    {% if slider_item.deal_type %}
-                                                        <p class="slider-subtitle">
-                                                            {% if slider_item.deal_type == 'summer_deal' %}
-                                                                <img src="/static/images/banner/wvbo-icon.png" alt=""> Summer Deal
-                                                            {% elif slider_item.deal_type == 'best_sale_product' %}
-                                                                <img src="/static/images/banner/wvbo-icon.png" alt=""> Best Sale Product
-                                                            {% elif slider_item.deal_type == 'high_demand_product' %}
-                                                                <img src="/static/images/banner/wvbo-icon.png" alt=""> High Demand Product
-                                                            {% else %}
-                                                                <img src="/static/images/banner/wvbo-icon.png" alt=""> Special Offer
-                                                            {% endif %}
-                                                            {% if slider_item.slidercat %}
-                                                                - {{ slider_item.slidercat.name }}
-                                                            {% endif %}
-                                                        </p>
-                                                    {% elif slider_item.slidercat %}
-                                                        <p class="slider-subtitle">
-                                                            <img src="/static/images/banner/wvbo-icon.png" alt=""> {{ slider_item.slidercat.name }}
-                                                        </p>
-                                                    {% endif %}
-                                                    
-                                                    <h2 class="slider-title">
-                                                        {% if slider_item.ad_title %}
-                                                            {{ slider_item.ad_title|upper }}
-                                                        {% else %}
-                                                            SPECIAL COLLECTION
-                                                        {% endif %}
-                                                    </h2>
-                                                    
-                                                    {% if slider_item.ad_description %}
-                                                        <div class="slider-description">
-                                                            <p>{{ slider_item.ad_description|truncatewords:20 }}</p>
-                                                        </div>
-                                                    {% endif %}
-                                                    
-                                                    {% if slider_item.product %}
-                                                        <a href="{% url 'product_detail' slider_item.product.subcategory.category.slug slider_item.product.subcategory.slug slider_item.product.slug %}" class="slider-btn2">
-                                                            View Product
-                                                        </a>
-                                                    {% elif slider_item.slidercat %}
-                                                        <a href="{% url 'category-only' slider_item.slidercat.slug %}" class="slider-btn2">
-                                                            View Collection
-                                                        </a>
-                                                    {% else %}
-                                                        <a href="{% url 'shop' %}" class="slider-btn2">View Collections</a>
-                                                    {% endif %}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% empty %}
-                                {# Fallback: Show default slider if no sliders in database #}
-                                <div class="swiper-slide">
-                                    <div class="banner-single bg-image bg-image-3-1" style="height: 575px;">
-                                        <div class="container">
-                                            <div class="single-inner">
-                                                <div class="content-box">
-                                                    <p class="slider-subtitle">
-                                                        <img src="/static/images/banner/wvbo-icon.png" alt=""> Spring Summer Collection
-                                                    </p>
-                                                    <h2 class="slider-title">HOT COLLECTION <br> FOR WOMEN</h2>
-                                                    <div class="slider-description">
-                                                        <p>Easy & safe payment with PayPal. sequines & embroidered for all</p>
-                                                    </div>
-                                                    <a href="{% url 'shop' %}" class="slider-btn2">View Collections</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                        <div class="slider-navigation slider-navigation-offer1">
-                            <div class="swiper-button-prev slider-btn-offer1-prev slider-btn prev"><i class="rt rt-arrow-left-long"></i></div>
-                            <div class="swiper-button-next slider-btn-offer1-next slider-btn next"><i class="rt rt-arrow-right-long"></i></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!--================= Banner offer 2 =================-->
-                <div class="col-xl-6 col-md-6 col-sm-12">
-                    <div class="swiper bannerSlideOffer2">
-                        <div class="swiper-wrapper">
-                            {% for slider_item in sliders %}
-                                <div class="swiper-slide">
-                                    <div class="banner-single {% if slider_item.sliderimage %}bg-image{% endif %}" 
-                                         {% if slider_item.sliderimage %}style="background-image: url('{{ slider_item.sliderimage.url }}'); background-size: cover; background-position: center center; background-repeat: no-repeat; height: 575px; border-radius: 10px;"{% else %}style="height: 575px;"{% endif %}>
-                                        <div class="container">
-                                            <div class="single-inner">
-                                                <div class="content-box">
-                                                    {% if slider_item.deal_type %}
-                                                        <p class="slider-subtitle">
-                                                            {% if slider_item.deal_type == 'summer_deal' %}
-                                                                <img src="/static/images/banner/wvbo-icon.png" alt=""> Summer Deal
-                                                            {% elif slider_item.deal_type == 'best_sale_product' %}
-                                                                <img src="/static/images/banner/wvbo-icon.png" alt=""> Best Sale Product
-                                                            {% elif slider_item.deal_type == 'high_demand_product' %}
-                                                                <img src="/static/images/banner/wvbo-icon.png" alt=""> High Demand Product
-                                                            {% else %}
-                                                                <img src="/static/images/banner/wvbo-icon.png" alt=""> Special Offer
-                                                            {% endif %}
-                                                            {% if slider_item.slidercat %}
-                                                                - {{ slider_item.slidercat.name }}
-                                                            {% endif %}
-                                                        </p>
-                                                    {% elif slider_item.slidercat %}
-                                                        <p class="slider-subtitle">
-                                                            <img src="/static/images/banner/wvbo-icon.png" alt=""> {{ slider_item.slidercat.name }}
-                                                        </p>
-                                                    {% endif %}
-                                                    
-                                                    <h2 class="slider-title">
-                                                        {% if slider_item.ad_title %}
-                                                            {{ slider_item.ad_title|upper }}
-                                                        {% else %}
-                                                            SPECIAL COLLECTION
-                                                        {% endif %}
-                                                    </h2>
-                                                    
-                                                    {% if slider_item.ad_description %}
-                                                        <div class="slider-description">
-                                                            <p>{{ slider_item.ad_description|truncatewords:20 }}</p>
-                                                        </div>
-                                                    {% endif %}
-                                                    
-                                                    {% if slider_item.product %}
-                                                        <a href="{% url 'product_detail' slider_item.product.subcategory.category.slug slider_item.product.subcategory.slug slider_item.product.slug %}" class="slider-btn2">
-                                                            View Product
-                                                        </a>
-                                                    {% elif slider_item.slidercat %}
-                                                        <a href="{% url 'category-only' slider_item.slidercat.slug %}" class="slider-btn2">
-                                                            View Collection
-                                                        </a>
-                                                    {% else %}
-                                                        <a href="{% url 'shop' %}" class="slider-btn2">View Collections</a>
-                                                    {% endif %}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% empty %}
-                                {# Fallback: Show default slider if no sliders in database #}
-                                <div class="swiper-slide">
-                                    <div class="banner-single bg-image bg-image-3-1" style="height: 575px;">
-                                        <div class="container">
-                                            <div class="single-inner">
-                                                <div class="content-box">
-                                                    <p class="slider-subtitle">
-                                                        <img src="/static/images/banner/wvbo-icon.png" alt=""> Spring Summer Collection
-                                                    </p>
-                                                    <h2 class="slider-title">HOT COLLECTION <br> FOR WOMEN</h2>
-                                                    <div class="slider-description">
-                                                        <p>Easy & safe payment with PayPal. sequines & embroidered for all</p>
-                                                    </div>
-                                                    <a href="{% url 'shop' %}" class="slider-btn2">View Collections</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                        <div class="slider-navigation slider-navigation-offer2">
-                            <div class="swiper-button-prev slider-btn-offer2-prev slider-btn prev"><i class="rt rt-arrow-left-long"></i></div>
-                            <div class="swiper-button-next slider-btn-offer2-next slider-btn next"><i class="rt rt-arrow-right-long"></i></div>
-                        </div>
-                    </div>
-                </div>
-
-
-
-
-            </div>
-        </div>
-    </div>
+<div class="banner banner-1 bg-image slider-fullscreen">
+   <div class="slider-div">
+       <div class="swiper rts-topSlide1">
+           <div class="swiper-wrapper">
+               {% for slider_item in sliders %}
+                   {% if slider_item.is_video or slider_item.is_image %}
+                   <div class="swiper-slide">
+                       {% if slider_item.is_video %}
+                           {# Video Slider #}
+                           <div class="video-container">
+                               {% if slider_item.video_url and slider_item.is_youtube_or_vimeo %}
+                                   {# YouTube/Vimeo Video URL #}
+                                   {% with embed_url=slider_item.get_video_embed_url %}
+                                       {% if embed_url %}
+                                           <iframe src="{{ embed_url }}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                                       {% else %}
+                                           <video autoplay muted loop playsinline>
+                                               <source src="{{ slider_item.video_url }}" type="video/mp4">
+                                           </video>
+                                       {% endif %}
+                                   {% endwith %}
+                               {% elif slider_item.video_url %}
+                                   {# Direct Video URL #}
+                                   <video autoplay muted loop playsinline>
+                                       <source src="{{ slider_item.video_url }}" type="video/mp4">
+                                   </video>
+                               {% elif slider_item.slidervideo %}
+                                   {# Uploaded Video File - Use correct MIME type based on file extension #}
+                                   <video autoplay muted loop playsinline>
+                                       <source src="{{ slider_item.slidervideo.url }}" type="{{ slider_item.get_video_mime_type }}">
+                                   </video>
+                               {% endif %}
+                           </div>
+                       {% elif slider_item.is_image %}
+                           {# Image Slider #}
+                           <div class="slide-bg" style="background-image: url('{{ slider_item.sliderimage.url }}');"></div>
+                       {% endif %}
+                       
+                       {# Content Overlay #}
+                       <div class="slide-content">
+                           <div class="slide-content-inner">
+                               {# Deal Type Badge #}
+                               {% if slider_item.deal_type %}
+                                   <p class="slider-deal-type">
+                                       {% if slider_item.deal_type == 'hot_deals' %}
+                                           <span class="deal-badge hot-deal">🔥 Hot Deal</span>
+                                       {% elif slider_item.deal_type == 'summer_deal' %}
+                                           <span class="deal-badge summer-deal">☀️ Summer Deal</span>
+                                       {% elif slider_item.deal_type == 'best_sale_product' %}
+                                           <span class="deal-badge best-sale">⭐ Best Sale Product</span>
+                                       {% elif slider_item.deal_type == 'high_demand_product' %}
+                                           <span class="deal-badge high-demand">📈 High Demand Product</span>
+                                       {% else %}
+                                           <span class="deal-badge other-deal">🎯 Special Offer</span>
+                                       {% endif %}
+                                       {% if slider_item.slidercat %}
+                                           <br><span class="category-name">- {{ slider_item.slidercat.name }}</span>
+                                       {% endif %}
+                                   </p>
+                               {% elif slider_item.slidercat %}
+                                   <p class="slider-deal-type">
+                                       <span class="deal-badge category-badge">{{ slider_item.slidercat.name }}</span>
+                                   </p>
+                               {% endif %}
+                               
+                               {# Title #}
+                               {% if slider_item.ad_title %}
+                                   <h2 class="slider-title">{{ slider_item.ad_title|upper }}</h2>
+                               {% else %}
+                                   <h2 class="slider-title">SPECIAL COLLECTION</h2>
+                               {% endif %}
+                               
+                               {# Description #}
+                               {% if slider_item.ad_description %}
+                                   <div class="slider-description">
+                                       <p>{{ slider_item.ad_description|truncatewords:20 }}</p>
+                                   </div>
+                               {% endif %}
+                               
+                               {# CTA Button #}
+                               <div class="slider-cta">
+                                   {% if slider_item.product %}
+                                       <a href="{% url 'product_detail' slider_item.product.subcategory.category.slug slider_item.product.subcategory.slug slider_item.product.slug %}" class="slider-btn-link">View Product</a>
+                                   {% elif slider_item.slidercat %}
+                                       <a href="{% url 'category-only' slider_item.slidercat.slug %}" class="slider-btn-link">View Collection</a>
+                                   {% else %}
+                                       <a href="{% url 'shop' %}" class="slider-btn-link">View Collections</a>
+                                   {% endif %}
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+                   {% endif %}
+               {% empty %}
+                   {# Fallback: Show default slider if no sliders in database #}
+                   <div class="swiper-slide" style="background-image: url('/static/images/banner/weiboo-home-banner-1.jpg');">
+                       <h3 class="welcome-text"> Open Door To A worlds Of Fashion<a href="{% url 'shop' %}">Discover Now</a></h3>
+                   </div>
+               {% endfor %}
+           </div>
+           <div class="slider-navigation2">
+               <div class="swiper-button-prev slider-btn prev"><i class="rt rt-arrow-left-long"></i></div>
+               <div class="swiper-button-next slider-btn next"><i class="rt rt-arrow-right-long"></i>
+               </div>
+           </div>
+       </div>
+   </div>
 </div>
+
+
 <!--================= Banner Section End Here =================-->
+
 <!-- 
 <div class="rts-posters-section1 section-9">
     <div class="container">

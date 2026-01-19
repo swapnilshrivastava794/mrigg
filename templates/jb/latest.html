@@ -1,0 +1,157 @@
+{% load static %}
+<!-- ****** Latest Products Area Start ****** -->
+<section class="latest_products_area clearfix">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="section_heading text-center">
+          <h3 class="latest-section-title">Latest Products</h3>
+          <p class="latest-section-subtitle">Discover our newest arrivals</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row latest-products-grid">
+      {% for latest in lts %}
+      <div
+        class="col-12 col-sm-6 col-md-4 col-lg-3 latest-product-item {{ latest.category.slug }} wow fadeInUp"
+        data-wow-delay="0.{{ forloop.counter }}s"
+      >
+        <div class="latest-product-card">
+          <!-- Product Image -->
+          <div class="latest-product-img">
+            {% if latest.images.all|length > 0 %}
+              <img src="{{ latest.images.all.0.image.url }}" alt="{{ latest.images.all.0.alt_text }}" class="product-main-image" />
+            {% else %}
+              <img src="{% static 'img/default-placeholder.png' %}" alt="No image" class="product-main-image" />
+            {% endif %}
+            <div class="latest-product-overlay">
+              <button type="button" data-toggle="modal" data-target="#quickview{{ latest.id }}" class="quick-view-btn">
+                <i class="ti-eye"></i>
+                <span>Quick View</span>
+              </button>
+              <a href="{% url 'product_detail' latest.slug %}" class="view-details-btn">
+                <i class="ti-link"></i>
+                <span>View Details</span>
+              </a>
+            </div>
+            {% if latest.offerprice and latest.offerprice < latest.price %}
+              <div class="latest-product-badge">
+                <span class="badge-text">Sale</span>
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Product Info -->
+          <div class="latest-product-info">
+            <div class="latest-product-category">
+              <span>{{ latest.category.name }}</span>
+            </div>
+            <h4 class="latest-product-name">{{ latest.name }}</h4>
+            <div class="latest-product-price">
+              {% if latest.offerprice and latest.offerprice < latest.price %}
+                <span class="current-price">₹{{ latest.offerprice }}</span>
+                <span class="original-price">₹{{ latest.price }}</span>
+                <span class="discount-percentage">
+                  {% widthratio latest.price|add:"-"|add:latest.offerprice latest.price 100 %}% OFF
+                </span>
+              {% else %}
+                <span class="current-price">₹{{ latest.price }}</span>
+              {% endif %}
+            </div>
+            {% if latest.short_description %}
+              <p class="latest-product-description">{{ latest.short_description|truncatewords:15 }}</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+<!-- ****** Quick View Modal Area Start ****** -->
+<div
+  class="modal fade latest-quickview-modal"
+  id="quickview{{ latest.id }}"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="quickview"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content latest-modal-content">
+      <div class="modal-header latest-modal-header">
+        <h5 class="modal-title">Quick View</h5>
+        <button
+          type="button"
+          class="close latest-modal-close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body latest-modal-body">
+        <div class="latest-quickview-content">
+          <div class="row">
+            <div class="col-12 col-lg-6">
+              <div class="latest-quickview-image">
+                {% if latest.images.all|length > 0 %}
+                  <img src="{{ latest.images.all.0.image.url }}" alt="{{ latest.name }}" class="img-fluid" />
+                {% else %}
+                  <img src="{% static 'img/default-placeholder.png' %}" alt="No image" class="img-fluid" />
+                {% endif %}
+              </div>
+            </div>
+            <div class="col-12 col-lg-6">
+              <div class="latest-quickview-details">
+                <div class="latest-quickview-category">{{ latest.category.name }}</div>
+                <h4 class="latest-quickview-title">{{ latest.name }}</h4>
+                
+                <div class="latest-quickview-price">
+                  {% if latest.offerprice and latest.offerprice < latest.price %}
+                    <span class="current-price">₹{{ latest.offerprice }}</span>
+                    <span class="original-price">₹{{ latest.price }}</span>
+                    <span class="discount-badge">
+                      {% widthratio latest.price|add:"-"|add:latest.offerprice latest.price 100 %}% OFF
+                    </span>
+                  {% else %}
+                    <span class="current-price">₹{{ latest.price }}</span>
+                  {% endif %}
+                </div>
+                
+                {% if latest.short_description %}
+                  <p class="latest-quickview-description">{{ latest.short_description }}</p>
+                {% endif %}
+                
+                <div class="latest-quickview-actions">
+                  <a href="{% url 'product_detail' latest.slug %}" class="btn latest-view-details-btn">
+                    <i class="ti-eye"></i>
+                    View Full Details
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ****** Quick View Modal Area End ****** -->
+
+      
+      {% empty %}
+      <div class="col-12">
+        <div class="latest-empty-state">
+          <div class="empty-state-icon">
+            <i class="ti-package"></i>
+          </div>
+          <h4>No Latest Products Available</h4>
+          <p>Check back soon for our newest arrivals!</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+<!-- ****** Latest Products Area End ****** -->

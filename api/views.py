@@ -183,15 +183,25 @@ class BannerListView(ListAPIView):
     serializer_class = SliderSerializer
 
     def get_queryset(self):
+        from django.db.models import Value, IntegerField
+        from django.db.models.functions import Coalesce
+        from django.db.models import Q
         today = timezone.now().date()
         return slider.objects.filter(
-            status="active",
-            ad_start_date__lte=today,
-            ad_end_date__gte=today
+            status="active"
+        ).filter(
+            # Only show sliders that have at least one media (image or video)
+            Q(sliderimage__isnull=False) | Q(slidervideo__isnull=False) | Q(video_url__isnull=False)
+        ).filter(
+            # Filter by date range if dates are set
+            Q(ad_start_date__isnull=True) | Q(ad_start_date__lte=today),
+            Q(ad_end_date__isnull=True) | Q(ad_end_date__gte=today)
         ).select_related(
             "product",
             "slidercat"
-        ).order_by("order")
+        ).annotate(
+            order_value=Coalesce('order', Value(999999, output_field=IntegerField()))
+        ).order_by("order_value", "id")
 
 
 class ProductsByCategoryAPI(APIView):

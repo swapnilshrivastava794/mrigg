@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+<div class="container mt-5">
+    <h2>Your Order History</h2>
+
+    {% if orders %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Date</th>
+                    <th>City</th>
+                    <th>Items</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <td>#{{ order.id }}</td>
+                        <td>{{ order.created|date:"Y-m-d H:i" }}</td>
+                        <td>{{ order.city }}</td>
+                        <td>
+                            <ul class="mb-0 pl-3">
+                                {% for item in order.items.all %}
+                                    <li>{{ item.product.name }} (x{{ item.quantity }})</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td>{{ order.paid|yesno:"Paid,Pending" }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>You have not placed any orders yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -629,7 +629,7 @@ class ProductImage(models.Model):
         from django.core.exceptions import ValidationError
         # Validate video file size if media type is video (2MB = 2 * 1024 * 1024 bytes)
         if self.media_type == 'video' and self.image:
-            if self.image.size > 2 * 1024 * 1024:
+            if self.image.size > 5 * 1024 * 1024:
                 raise ValidationError({'image': 'Video file size must be less than 2MB.'})
     
     def save(self, *args, **kwargs):
@@ -938,6 +938,144 @@ class CouponUsage(models.Model):
 
 
 # //Custom User Model
+class Offer(models.Model):
 
+    # 🔹 Offer Type / Badge Choices
+    OFFER_NAME_CHOICES = (
+        ('MY_SUNDAY', 'My Sunday'),
+        ('NEW_LAUNCH', 'New Launch'),
+        ('HOT_PRODUCT', 'Hot Product'),
+        ('DIWALI', 'Diwali Offer'),
+        ('FLASH', 'Flash Sale'),
+        ('CLEARANCE', 'Clearance Sale'),
+    )
+
+    # 🔹 Page Position Choices
+    PAGE_POSITION_CHOICES = (
+        ('HOME_TOP', 'Homepage Top Banner'),
+        ('HOME_MIDDLE', 'Homepage Middle Section'),
+        ('HOME_BOTTOM', 'Homepage Bottom'),
+        ('LISTING', 'Category / Listing Page'),
+        ('PRODUCT', 'Product Detail Page'),
+    )
+
+    offer_name = models.CharField(
+        max_length=50,
+        choices=OFFER_NAME_CHOICES,
+        verbose_name="Offer Type / Badge"
+    )
+
+    page_position = models.CharField(
+        max_length=50,
+        choices=PAGE_POSITION_CHOICES,
+        verbose_name="Page Position"
+    )
+
+    offer_title = models.CharField(
+        max_length=150,
+        verbose_name="Offer Title"
+    )
+
+    offer_slug = models.SlugField(
+        max_length=180,
+        unique=True,
+        blank=True
+    )
+
+    offer_description = models.TextField(
+        blank=True,
+        null=True
+    )
+
+    offer_image = models.ImageField(
+        upload_to="offers/",
+        verbose_name="Offer Image"
+    )
+
+    # 🔹 SEO (Auto + Editable)
+    meta_title = models.CharField(max_length=160, verbose_name="Meta Title (SEO)")
+    meta_description = models.CharField(max_length=255, verbose_name="Meta Description (SEO)")
+
+    # 🔹 Validity
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+
+    is_active = models.BooleanField(default=True)
+    order = models.IntegerField(default=0, verbose_name="Display Order")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "offers"
+        ordering = ["order", "-created_at"]
+
+    def save(self, *args, **kwargs):
+        from django.utils.text import slugify
+        from django.utils.html import strip_tags
+        
+        # Auto slug from offer_title (always generate if empty, like slug)
+        if not self.offer_slug:
+            base_slug = slugify(self.offer_title)
+            slug = base_slug
+            counter = 1
+            while Offer.objects.filter(offer_slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.offer_slug = slug
+
+        # Auto meta_title from offer_title (always generate if empty/None/whitespace, like slug)
+        meta_title_empty = not self.meta_title or (isinstance(self.meta_title, str) and not self.meta_title.strip())
+        if meta_title_empty and self.offer_title and self.offer_title.strip():
+            self.meta_title = self.offer_title[:160].strip()
+
+        # Auto meta_description from offer_description (always generate if empty/None/whitespace, like slug)
+        meta_desc_empty = not self.meta_description or (isinstance(self.meta_description, str) and not self.meta_description.strip())
+        if meta_desc_empty:
+            if self.offer_description and self.offer_description.strip():
+                clean_text = strip_tags(self.offer_description)
+                if clean_text and clean_text.strip():
+                    self.meta_description = clean_text[:255].strip()
+                elif self.offer_title and self.offer_title.strip():
+                    self.meta_description = self.offer_title[:255].strip()
+            elif self.offer_title and self.offer_title.strip():
+                # Fallback to offer_title if description is empty
+                self.meta_description = self.offer_title[:255].strip()
+
+        super().save(*args, **kwargs)
+
+    def is_valid(self):
+        from django.utils import timezone
+        now = timezone.now()
+        return (
+            self.is_active and
+            self.start_date <= now <= self.end_date
+        )
+
+    def __str__(self):
+        return f"{self.get_offer_name_display()} | {self.get_page_position_display()}"
+
+
+class OfferProduct(models.Model):
+    """Model to link Offers with Products"""
+    offer = models.ForeignKey(
+        Offer,
+        on_delete=models.CASCADE,
+        related_name="offer_products"
+    )
+    product = models.ForeignKey(
+        Product,  # Product is in same app (ecommerce)
+        on_delete=models.CASCADE,
+        related_name="product_offers"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "offer_products"
+        unique_together = ('offer', 'product')
+        ordering = ['-created_at']
+        verbose_name = "Offer Product"
+        verbose_name_plural = "Offer Products"
+
+    def __str__(self):
+        return f"{self.offer.offer_title} → {self.product.name}"
 
 

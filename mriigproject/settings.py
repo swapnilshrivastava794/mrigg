@@ -34,7 +34,7 @@ SECRET_KEY = 'django-insecure-=z9lp(k@r2!-j)=0oa9t(v$ycks3i&((l$aa*2j=omw))#ksuj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.29.97','192.168.1.2','192.168.29.97']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'mriigg.com', 'www.mriigg.com']
 #ALLOWED_HOSTS = ['mriigg.com', 'www.mriigg.com']
 
 # Application definition
@@ -101,39 +101,125 @@ WSGI_APPLICATION = 'mriigproject.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mrigg2',       # phpMyAdmin में बनाया हुआ database नाम
-        'USER': 'root',       # XAMPP default user
-        'PASSWORD': '',       # default में password खाली होता है
-        'HOST': '127.0.0.1',  # localhost भी लिख सकते हो
-        'PORT': '3306',       # default MySQL port
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            'charset': 'utf8mb4',
-        },
-        'CONN_MAX_AGE': 600,  # Connection pooling - keep connections alive for 10 minutes
+# Database Configuration - Auto-detect Local or Production
+# Check if running on production server
+import socket
+IS_PRODUCTION = False
+
+# Method 1: Check environment variables (primary method)
+if os.getenv('DJANGO_ENV') == 'production' or os.getenv('ENVIRONMENT') == 'production':
+    IS_PRODUCTION = True
+
+# Method 2: Check if production DB credentials are set via environment variables
+if not IS_PRODUCTION:
+    db_user = os.getenv('DB_USER', '')
+    db_name = os.getenv('DB_NAME', '')
+    if db_user and 'tqjsimyv' in db_user:
+        IS_PRODUCTION = True
+    elif db_name and 'tqjsimyv' in db_name:
+        IS_PRODUCTION = True
+
+# Method 3: Check hostname
+if not IS_PRODUCTION:
+    try:
+        hostname = socket.gethostname()
+        if 'mriigg.com' in hostname or 'www.mriigg.com' in hostname or 'tqjsimyv' in hostname:
+            IS_PRODUCTION = True
+    except:
+        pass
+
+# Method 4: Check if DEBUG is False (production indicator)
+if not IS_PRODUCTION and not DEBUG:
+    IS_PRODUCTION = True
+
+# Method 5: Check BASE_DIR path for production indicators
+if not IS_PRODUCTION:
+    try:
+        base_dir_str = str(BASE_DIR)
+        if 'tqjsimyv' in base_dir_str or 'mriigg.com' in base_dir_str or '/home/' in base_dir_str:
+            # If we're in a production-like path, use production config
+            IS_PRODUCTION = True
+    except:
+        pass
+
+# Method 6: Final fallback - if DEBUG is False, assume production
+if not IS_PRODUCTION and not DEBUG:
+    IS_PRODUCTION = True
+
+# Use environment variables if set, otherwise use defaults based on IS_PRODUCTION
+if IS_PRODUCTION:
+    # Production/Live Database Configuration
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.getenv('DB_NAME', 'tqjsimyv_mriiggdb'),
+            'USER': os.getenv('DB_USER', 'tqjsimyv_mriigguser'),
+            'PASSWORD': os.getenv('DB_PASSWORD', 'f!_u-NOW[RF)RyZs'),
+            'HOST': os.getenv('DB_HOST', '127.0.0.1'),
+            'PORT': os.getenv('DB_PORT', '3306'),
+            'OPTIONS': {
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+                'charset': 'utf8mb4',
+            },
+            'CONN_MAX_AGE': 600,  # Connection pooling - keep connections alive for 10 minutes
+        }
     }
-}
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'tqjsimyv_mriiggdb',       # phpMyAdmin में बनाया हुआ database नाम
-#         'USER': 'tqjsimyv_mriigguser',       # XAMPP default user
-#         'PASSWORD': 'f!_u-NOW[RF)RyZs',       # default में password खाली होता है
-#         'HOST': '127.0.0.1',  # localhost भी लिख सकते हो
-#         'PORT': '3306',       # default MySQL port
-#         'OPTIONS': {
-#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-#             'charset': 'utf8mb4',
-#         },
-#         'CONN_MAX_AGE': 600,  # Connection pooling - keep connections alive for 10 minutes
-        
-
-#     }
-# }
+else:
+    # Local/Development Database Configuration
+    # But check if production DB credentials are provided via env vars
+    db_user = os.getenv('DB_USER', '')
+    db_name = os.getenv('DB_NAME', '')
+    
+    # If production credentials are provided, use them even if IS_PRODUCTION is False
+    if db_user and 'tqjsimyv' in db_user:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.mysql',
+                'NAME': os.getenv('DB_NAME', 'tqjsimyv_mriiggdb'),
+                'USER': os.getenv('DB_USER', 'tqjsimyv_mriigguser'),
+                'PASSWORD': os.getenv('DB_PASSWORD', 'f!_u-NOW[RF)RyZs'),
+                'HOST': os.getenv('DB_HOST', '127.0.0.1'),
+                'PORT': os.getenv('DB_PORT', '3306'),
+                'OPTIONS': {
+                    'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+                    'charset': 'utf8mb4',
+                },
+                'CONN_MAX_AGE': 600,
+            }
+        }
+    elif db_name and 'tqjsimyv' in db_name:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.mysql',
+                'NAME': os.getenv('DB_NAME', 'tqjsimyv_mriiggdb'),
+                'USER': os.getenv('DB_USER', 'tqjsimyv_mriigguser'),
+                'PASSWORD': os.getenv('DB_PASSWORD', 'f!_u-NOW[RF)RyZs'),
+                'HOST': os.getenv('DB_HOST', '127.0.0.1'),
+                'PORT': os.getenv('DB_PORT', '3306'),
+                'OPTIONS': {
+                    'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+                    'charset': 'utf8mb4',
+                },
+                'CONN_MAX_AGE': 600,
+            }
+        }
+    else:
+        # Local/Development Database Configuration
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.mysql',
+                'NAME': os.getenv('DB_NAME', 'mriig'),
+                'USER': os.getenv('DB_USER', 'root'),
+                'PASSWORD': os.getenv('DB_PASSWORD', ''),
+                'HOST': os.getenv('DB_HOST', '127.0.0.1'),
+                'PORT': os.getenv('DB_PORT', '3306'),
+                'OPTIONS': {
+                    'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+                    'charset': 'utf8mb4',
+                },
+                'CONN_MAX_AGE': 600,  # Connection pooling - keep connections alive for 10 minutes
+            }
+        }
 
 # Gokwik Payment Configuration
 GOKWIK_MERCHANT_ID = os.getenv('GOKWIK_MERCHANT_ID')
@@ -219,52 +305,40 @@ else:
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Logging Configuration for Debugging
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '{levelname} {asctime} {module} {message}',
-            'style': '{',
-        },
-        'simple': {
-            'format': '{levelname} {message}',
-            'style': '{',
-        },
-    },
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': BASE_DIR / 'logs' / 'admin_debug.log',
-            'formatter': 'verbose',
-        },
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple',
-        },
-    },
-    'loggers': {
-        'django.db.backends': {
-            'handlers': ['file', 'console'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
-        'ecommerce.admin': {
-            'handlers': ['file', 'console'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
-        'django': {
-            'handlers': ['file', 'console'],
-            'level': 'INFO',
-            'propagate': False,
-        },
-    },
-}
+# Set to False if you don't want to see SQL queries in console
+ENABLE_SQL_LOGGING = True  # Change to False to disable SQL query logging
 
-
+if ENABLE_SQL_LOGGING and DEBUG:
+    LOGGING = {
+        'version': 1,
+        'handlers': {
+            'console': {
+                'class': 'logging.StreamHandler',
+            },
+        },
+        'loggers': {
+            'django.db.backends': {
+                'handlers': ['console'],
+                'level': 'DEBUG',
+            },
+        },
+    }
+else:
+    # Disable SQL query logging
+    LOGGING = {
+        'version': 1,
+        'handlers': {
+            'console': {
+                'class': 'logging.StreamHandler',
+            },
+        },
+        'loggers': {
+            'django.db.backends': {
+                'handlers': ['console'],
+                'level': 'WARNING',  # Only show warnings and errors
+            },
+        },
+    }
 
 
 
