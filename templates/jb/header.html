@@ -1,0 +1,135 @@
+{% load static %}
+<div id="wrapper">
+  <!-- ****** Header Area Start ****** -->
+
+  <header class="header_area">
+
+    <!-- Top Banner -->
+    <div class="bg-dark text-white py-1 small">
+      <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center text-center">
+        <div>
+          FREE INTERNATIONAL EXPRESS SHIPPING
+        </div>
+        <div>
+          <a href="/" class="text-white text-decoration-none mx-2">Home</a> |
+          <a href="/about-us" class="text-white text-decoration-none mx-2">About Us</a> |
+          <a href="/contact-us" class="text-white text-decoration-none mx-2">Contact Us</a>
+          {% if custom_user %}
+            | <a href="{% url 'profile' %}" class="text-white text-decoration-none mx-2">Profile</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Logo & Icons Row -->
+    <div class="container d-flex justify-content-between align-items-center">
+      <!-- Empty Left Side -->
+      <div class="d-none d-md-block" style="width: 100px;"></div>
+
+      <!-- Center Logo -->
+      <div class="top_logo text-center">
+        <a href="{% url 'home' %}">
+          <img src="{% static 'img/core-img/logo.svg' %}" alt="Logo" style="height: 125px;">
+        </a>
+      </div>
+
+      <!-- Right Side Icons -->
+      <div class="d-flex align-items-center" style="gap: 25px;">
+        {% if custom_user %}
+          <span style="font-size: 14px; color: black;">Hi, {{ custom_user.first_name }} {{ custom_user.last_name }}</span>
+          <a href="{% url 'logout' %}" title="Logout">
+            <i class="fa fa-sign-out" style="font-size: 20px; color: black;"></i>
+          </a>
+        {% else %}
+          <a href="{% url 'login' %}?next={{ request.path }}" title="Login">
+            <i class="fa fa-user" style="font-size: 20px; color: black;"></i>
+          </a>
+        {% endif %}
+
+        <a href="#"><i class="fa fa-search" style="font-size: 20px; color: black;"></i></a>
+
+        <a href="{% url 'view_cart' %}" class="position-relative">
+          <i class="fa fa-shopping-bag" style="font-size: 20px;"></i>
+          {% if cart_item_count > 0 %}
+            <span class="badge badge-danger position-absolute" style="top: -5px; right: -10px;">{{ cart_item_count }}</span>
+          {% endif %}
+        </a>
+      </div>
+    </div>
+
+  </header>
+
+  <!-- Sticky Navigation -->
+  <header class="header_area sticky-header">
+    <div class="container">
+      <nav class="navbar navbar-expand-lg justify-content-center">
+        <div class="collapse navbar-collapse show">
+          <ul class="navbar-nav d-flex justify-content-center w-100 enhanced-navbar">
+            {% for category in categories %}
+              <li class="nav-item dropdown enhanced-dropdown">
+                <a class="nav-link enhanced-nav-link" href="#" id="karlDropdown{{ forloop.counter }}" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {{ category.name }}
+                  {% if category.subcategories.all %}
+                    <i class="fa fa-chevron-down dropdown-icon"></i>
+                  {% endif %}
+                </a>
+                {% if category.subcategories.all %}
+                  <div class="dropdown-menu enhanced-dropdown-menu" aria-labelledby="karlDropdown{{ forloop.counter }}">
+                    {% for sub in category.subcategories.all %}
+                      <a class="dropdown-item enhanced-dropdown-item" href="/{{ category.slug }}/{{ sub.slug }}">
+                        <i class="fa fa-angle-right"></i>
+                        {{ sub.name }}
+                      </a>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </li>
+            {% endfor %}
+            <li class="nav-item">
+              <a class="nav-link enhanced-nav-link" href="#">News</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+    <div class="navbar-border"></div>
+  </header>
+
+  <!-- ****** Header Area End ****** -->
+</div>
+
+<script>
+$(document).ready(function() {
+    // Disable Bootstrap's default dropdown behavior
+    $('.enhanced-dropdown [data-toggle="dropdown"]').off('click.bs.dropdown');
+    
+    // Enable hover dropdown functionality
+    $('.enhanced-dropdown').on('mouseenter', function() {
+        // Mouse enter - show dropdown
+        $(this).addClass('show');
+        $(this).find('.enhanced-dropdown-menu').addClass('show');
+        $(this).find('.enhanced-nav-link').attr('aria-expanded', 'true');
+    });
+    
+    $('.enhanced-dropdown').on('mouseleave', function() {
+        // Mouse leave - hide dropdown
+        $(this).removeClass('show');
+        $(this).find('.enhanced-dropdown-menu').removeClass('show');
+        $(this).find('.enhanced-nav-link').attr('aria-expanded', 'false');
+    });
+    
+    // Prevent dropdown from closing when clicking inside
+    $('.enhanced-dropdown-menu').on('click', function(e) {
+        e.stopPropagation();
+    });
+    
+    // Close dropdowns when clicking outside
+    $(document).on('click', function(e) {
+        if (!$(e.target).closest('.enhanced-dropdown').length) {
+            $('.enhanced-dropdown').removeClass('show');
+            $('.enhanced-dropdown-menu').removeClass('show');
+            $('.enhanced-nav-link').attr('aria-expanded', 'false');
+        }
+    });
+});
+</script>

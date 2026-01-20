@@ -1,0 +1,157 @@
+{% load static %}
+<!-- ****** Popular Products Area Start ****** -->
+<section class="popular_products_area clearfix">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="section_heading text-center">
+          <h3 class="popular-section-title">Popular Products</h3>
+          <p class="popular-section-subtitle">Our best-selling favorites</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row popular-products-grid">
+      {% for popular in pl %}
+      <div
+        class="col-12 col-sm-6 col-md-4 col-lg-3 popular-product-item {{ popular.category.slug }} wow fadeInUp"
+        data-wow-delay="0.{{ forloop.counter }}s"
+      >
+        <div class="popular-product-card">
+          <!-- Product Image -->
+          <div class="popular-product-img">
+            {% if popular.images.all|length > 0 %}
+              <img src="{{ popular.images.all.0.image.url }}" alt="{{ popular.images.all.0.alt_text }}" class="product-main-image" />
+            {% else %}
+              <img src="{% static 'img/default-placeholder.png' %}" alt="No image" class="product-main-image" />
+            {% endif %}
+            <div class="popular-product-overlay">
+              <button type="button" data-toggle="modal" data-target="#quickview{{ popular.id }}" class="quick-view-btn">
+                <i class="ti-eye"></i>
+                <span>Quick View</span>
+              </button>
+              <a href="{% url 'product_detail' popular.slug %}" class="view-details-btn">
+                <i class="ti-link"></i>
+                <span>View Details</span>
+              </a>
+            </div>
+            {% if popular.offerprice and popular.offerprice < popular.price %}
+              <div class="popular-product-badge">
+                <span class="badge-text">Sale</span>
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Product Info -->
+          <div class="popular-product-info">
+            <div class="popular-product-category">
+              <span>{{ popular.category.name }}</span>
+            </div>
+            <h4 class="popular-product-name">{{ popular.name }}</h4>
+            <div class="popular-product-price">
+              {% if popular.offerprice and popular.offerprice < popular.price %}
+                <span class="current-price">₹{{ popular.offerprice }}</span>
+                <span class="original-price">₹{{ popular.price }}</span>
+                <span class="discount-percentage">
+                  {% widthratio popular.price|add:"-"|add:popular.offerprice popular.price 100 %}% OFF
+                </span>
+              {% else %}
+                <span class="current-price">₹{{ popular.price }}</span>
+              {% endif %}
+            </div>
+            {% if popular.short_description %}
+              <p class="popular-product-description">{{ popular.short_description|truncatewords:15 }}</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+<!-- ****** Quick View Modal Area Start ****** -->
+<div
+  class="modal fade popular-quickview-modal"
+  id="quickview{{ popular.id }}"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="quickview"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content popular-modal-content">
+      <div class="modal-header popular-modal-header">
+        <h5 class="modal-title">Quick View</h5>
+        <button
+          type="button"
+          class="close popular-modal-close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body popular-modal-body">
+        <div class="popular-quickview-content">
+          <div class="row">
+            <div class="col-12 col-lg-6">
+              <div class="popular-quickview-image">
+                {% if popular.images.all|length > 0 %}
+                  <img src="{{ popular.images.all.0.image.url }}" alt="{{ popular.name }}" class="img-fluid" />
+                {% else %}
+                  <img src="{% static 'img/default-placeholder.png' %}" alt="No image" class="img-fluid" />
+                {% endif %}
+              </div>
+            </div>
+            <div class="col-12 col-lg-6">
+              <div class="popular-quickview-details">
+                <div class="popular-quickview-category">{{ popular.category.name }}</div>
+                <h4 class="popular-quickview-title">{{ popular.name }}</h4>
+                
+                <div class="popular-quickview-price">
+                  {% if popular.offerprice and popular.offerprice < popular.price %}
+                    <span class="current-price">₹{{ popular.offerprice }}</span>
+                    <span class="original-price">₹{{ popular.price }}</span>
+                    <span class="discount-badge">
+                      {% widthratio popular.price|add:"-"|add:popular.offerprice popular.price 100 %}% OFF
+                    </span>
+                  {% else %}
+                    <span class="current-price">₹{{ popular.price }}</span>
+                  {% endif %}
+                </div>
+                
+                {% if popular.short_description %}
+                  <p class="popular-quickview-description">{{ popular.short_description }}</p>
+                {% endif %}
+                
+                <div class="popular-quickview-actions">
+                  <a href="{% url 'product_detail' popular.slug %}" class="btn popular-view-details-btn">
+                    <i class="ti-eye"></i>
+                    View Full Details
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ****** Quick View Modal Area End ****** -->
+
+      
+      {% empty %}
+      <div class="col-12">
+        <div class="popular-empty-state">
+          <div class="empty-state-icon">
+            <i class="ti-heart"></i>
+          </div>
+          <h4>No Popular Products Available</h4>
+          <p>Check back soon for trending items!</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+<!-- ****** Popular Products Area End ****** -->

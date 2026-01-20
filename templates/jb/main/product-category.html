@@ -1,0 +1,142 @@
+{% extends 'base.html' %} {% load static %} {% block body %}
+
+<style>
+  .product-img {
+    width: 100%;
+    height: 250px; /* Set your desired fixed height */
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .product-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+</style>
+<section class="new_arrivals_area clearfix py-2">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="section_heading text-center">
+          <h1>Explore the latest curated artworks and creations</h1>
+          <p>Elevate your living space with our curated collection of home decor, antique treasures, and handcrafted pots. Each piece adds charm, history, and elegance to any interior. From vintage-inspired accents to timeless pottery, explore designs that reflect tradition, artistry, and individuality — perfect for unique and tasteful home styling.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  </section>
+{% include 'latest.html' %}
+{% include 'featured.html' %}
+{% include 'popular.html' %}
+<!-- ****** Offer Area Start ****** -->
+<section
+  class="offer_area height-600 background-overlay section_padding_100 bg-img"
+  style="background-image: url('{% static 'img/bg-img/big-banner.webp' %}');"
+>
+  <div class="container h-100">
+    <div class="row h-100 align-items-end justify-content-end">
+      <div class="col-12 col-md-8 col-lg-6">
+        <div class="offer-content-area wow fadeInUp" data-wow-delay="1s">
+          <h2>A Jhumkabali Exclusive <span class="karl-level">Hot</span></h2>
+          <p>* THE WORLD OF JANOS TÖRÖK</p>
+          <div class="offer-product-price">
+            <h3><span class="regular-price">₹25.90</span> ₹15.90</h3>
+          </div>
+          <a href="#" class="btn karl-btn mt-30">Shop Now</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ****** Offer Area End ****** -->
+
+<!-- ****** Popular Brands Area Start ****** -->
+<section class="karl-testimonials-area section_padding_100">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="section_heading text-center">
+          <h2>Testimonials</h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-8">
+        <div class="karl-testimonials-slides owl-carousel">
+          <!-- Single Testimonial Area -->
+          <div class="single-testimonial-area text-center">
+            <span class="quote">"</span>
+            <h6>
+              Nunc pulvinar molestie sem id blandit. Nunc venenatis interdum
+              mollis. Aliquam finibus nulla quam, a iaculis justo finibus non.
+              Suspendisse in fermentum nunc.Nunc pulvinar molestie sem id
+              blandit. Nunc venenatis interdum mollis.
+            </h6>
+            <div
+              class="testimonial-info d-flex align-items-center justify-content-center"
+            >
+              <div class="tes-thumbnail">
+                <img src="{% static 'img/bg-img/tes-1.jpg' %}" alt="" />
+              </div>
+              <div class="testi-data">
+                <p>Michelle Williams</p>
+                <span>Client, Los Angeles</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Single Testimonial Area -->
+          <div class="single-testimonial-area text-center">
+            <span class="quote">"</span>
+            <h6>
+              Nunc pulvinar molestie sem id blandit. Nunc venenatis interdum
+              mollis. Aliquam finibus nulla quam, a iaculis justo finibus non.
+              Suspendisse in fermentum nunc.Nunc pulvinar molestie sem id
+              blandit. Nunc venenatis interdum mollis.
+            </h6>
+            <div
+              class="testimonial-info d-flex align-items-center justify-content-center"
+            >
+              <div class="tes-thumbnail">
+                <img src="{% static 'img/bg-img/tes-1.jpg' %}" alt="" />
+              </div>
+              <div class="testi-data">
+                <p>Michelle Williams</p>
+                <span>Client, Los Angeles</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Single Testimonial Area -->
+          <div class="single-testimonial-area text-center">
+            <span class="quote">"</span>
+            <h6>
+              Nunc pulvinar molestie sem id blandit. Nunc venenatis interdum
+              mollis. Aliquam finibus nulla quam, a iaculis justo finibus non.
+              Suspendisse in fermentum nunc.Nunc pulvinar molestie sem id
+              blandit. Nunc venenatis interdum mollis.
+            </h6>
+            <div
+              class="testimonial-info d-flex align-items-center justify-content-center"
+            >
+              <div class="tes-thumbnail">
+                <img src="{% static 'img/bg-img/tes-1.jpg' %}" alt="" />
+              </div>
+              <div class="testi-data">
+                <p>Michelle Williams</p>
+                <span>Client, Los Angeles</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ****** Popular Brands Area End ****** -->
+
+{% endblock %}

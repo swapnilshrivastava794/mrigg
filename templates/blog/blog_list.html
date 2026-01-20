@@ -21,12 +21,29 @@
                 {% for blog in blogs %}
                 <div class="col-xl-4 col-md-6 col-sm-12">
                     <div class="full-wrapper wrapper-{% cycle '1' '2' '3' %} wrapper-4">
+<section class="news-feed-area pt-120 pb-75 pt-md-60 pb-md-15 pt-xs-50 pb-xs-10">
+    <div class="container">
+        <div class="row mb-15">
+            <h2 class="title">BLOG</h2>
+            <div class="col-lg-8 pe-xl-0">
+                <div class="rts-featured-product-section3">
+                    <div class="rts-featured-product-section-inner">
+{% if blogs %}
+<div class="rts-featured-product-section3">
+    <div class="container">
+        <div class="rts-featured-product-section-inner">
+          
+            <div class="row">
+                {% for blog in featured_blogs %}
+                <div class="col-xl-4 col-md-6 col-sm-12">
+                    <div class="full-wrapper wrapper-{{ forloop.counter }}">
                         <div class="image-part">
                             <a href="{% url 'blog_detail' blog.slug %}" class="image">
                                 {% if blog.featured_image %}
                                     <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}">
                                 {% else %}
                                     <img src="/static/images/featured/img-{{ forloop.counter|default:1 }}.jpg" alt="{{ blog.title }}">
+                                    <img src="/static/images/featured/img-{{ forloop.counter }}.jpg" alt="{{ blog.title }}">
                                 {% endif %}
                             </a>
                         </div>
@@ -48,6 +65,7 @@
                             </div>
                             <div style="margin-top: 15px;">
                                 <a href="{% url 'blog_detail' blog.slug %}" style="display: inline-block; padding: 10px 20px; background: #8833b8; color: #fff; text-align: center; border-radius: 5px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease;">View Detail</a>
+                                <a href="{% url 'blog_detail' blog.slug %}" style="display: inline-block; padding: 10px 20px; background: #8833b8; color: #fff; text-align: center; border-radius: 5px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease;">View</a>
                             </div>
                         </div>
                     </div>
@@ -67,6 +85,78 @@
         </div>
     </div>
 </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+                      
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="col-lg-4 pl-30 pl-lg-15 pl-md-15 pl-xs-15">
+                <div class="news-right-widget" style="background: linear-gradient(135deg, #e6e6fa 0%, #d8bfd8 50%, #dda0dd 100%); padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <div class="widget widget-search mb-40">
+                        <div class="widget-title-box pb-25 mb-30">
+                            <h4 class="widget-sub-title2 fs-20" style="color: #4a4a4a; font-weight: 700;">Search Here</h4>
+                        </div>
+                        <form class="subscribe-form mb-10" action="{% url 'blog_list' %}" method="get">
+                            <input type="text" name="search" placeholder="Search your keyword..." value="{{ request.GET.search }}" style="background: rgba(255,255,255,0.9); border: 1px solid rgba(136,51,184,0.3); color: #333; padding: 12px 15px; border-radius: 5px; width: 100%;" onfocus="this.style.background='#fff'; this.style.borderColor='#8833b8';" onblur="this.style.background='rgba(255,255,255,0.9)'; this.style.borderColor='rgba(136,51,184,0.3)';">
+                            <style>
+                                input::placeholder { color: rgba(85,85,85,0.6) !important; }
+                                .news-right-widget .tag-list a:hover { background: #8833b8 !important; color: #fff !important; border-color: #8833b8 !important; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(136,51,184,0.3); }
+                                .news-right-widget .list-none a:hover { color: #8833b8 !important; font-weight: 600; }
+                            </style>
+                            {% if selected_category %}
+                            <input type="hidden" name="category" value="{{ selected_category }}">
+                            {% endif %}
+                            <button class="widget-btn" type="submit" style="background: #8833b8; color: #fff; border: none;"><i class="fal fa-search"></i></button>
+                        </form>
+                    </div>
+                    {% if blog_categories %}
+                    <div class="widget widget-categories-list mb-40">
+                        <div class="widget-title-box pb-25 mb-30">
+                            <h4 class="widget-sub-title2 fs-20" style="color: #4a4a4a; font-weight: 700;">Categories</h4>
+                        </div>
+                        <ul class="list-none">
+                            {% for category in blog_categories %}
+                            <li style="border-bottom: 1px solid rgba(136,51,184,0.2); padding: 8px 0;"><a href="{% url 'blog_list' %}?category={{ category.slug }}" class="{% if selected_category == category.slug %}active{% endif %}" style="color: #555; font-weight: 500;">{{ category.name }} <span class="f-right" style="color: #8833b8; font-weight: 600;">{{ category.blogs.count }}</span></a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                    <div class="widget widget-categories-tag mb-40">
+                        <div class="widget-title-box pb-25 mb-25">
+                            <h4 class="widget-sub-title2 fs-20" style="color: #4a4a4a; font-weight: 700;">Tags</h4>
+                        </div>
+                        <div class="tag-list">
+                            {% if all_tags %}
+                                {% for tag in all_tags %}
+                                <a href="{% url 'blog_list' %}?search={{ tag }}" style="color: #555; background: rgba(255,255,255,0.8); border: 1px solid rgba(136,51,184,0.3);">{{ tag }}</a>
+                                {% endfor %}
+                            {% else %}
+                                <a href="{% url 'blog_list' %}?search=Cosmetics" style="color: #555; background: rgba(255,255,255,0.8); border: 1px solid rgba(136,51,184,0.3);">Cosmetics</a>
+                                <a href="{% url 'blog_list' %}?search=Makeup" style="color: #555; background: rgba(255,255,255,0.8); border: 1px solid rgba(136,51,184,0.3);">Makeup</a>
+                                <a href="{% url 'blog_list' %}?search=Skincare" style="color: #555; background: rgba(255,255,255,0.8); border: 1px solid rgba(136,51,184,0.3);">Skincare</a>
+                                <a href="{% url 'blog_list' %}?search=Herbal" style="color: #555; background: rgba(255,255,255,0.8); border: 1px solid rgba(136,51,184,0.3);">Herbal</a>
+                                <a href="{% url 'blog_list' %}?search=Natural Beauty" style="color: #555; background: rgba(255,255,255,0.8); border: 1px solid rgba(136,51,184,0.3);">Natural Beauty</a>
+                                <a href="{% url 'blog_list' %}?search=Matte Finish" style="color: #555; background: rgba(255,255,255,0.8); border: 1px solid rgba(136,51,184,0.3);">Matte Finish</a>
+                                <a href="{% url 'blog_list' %}?search=Loose Powder" style="color: #555; background: rgba(255,255,255,0.8); border: 1px solid rgba(136,51,184,0.3);">Loose Powder</a>
+                                <a href="{% url 'blog_list' %}?search=Glow Skin" style="color: #555; background: rgba(255,255,255,0.8); border: 1px solid rgba(136,51,184,0.3);">Glow Skin</a>
+                                <a href="{% url 'blog_list' %}?search=Oil Control" style="color: #555; background: rgba(255,255,255,0.8); border: 1px solid rgba(136,51,184,0.3);">Oil Control</a>
+                                <a href="{% url 'blog_list' %}?search=Pore Blurring" style="color: #555; background: rgba(255,255,255,0.8); border: 1px solid rgba(136,51,184,0.3);">Pore Blurring</a>
+                                <a href="{% url 'blog_list' %}?search=Beauty Care" style="color: #555; background: rgba(255,255,255,0.8); border: 1px solid rgba(136,51,184,0.3);">Beauty Care</a>
+                                <a href="{% url 'blog_list' %}?search=Daily Makeup" style="color: #555; background: rgba(255,255,255,0.8); border: 1px solid rgba(136,51,184,0.3);">Daily Makeup</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</section>
 <!--news-feed-area end-->
 
 {% endblock content %}
