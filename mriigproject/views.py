@@ -1,10 +1,11 @@
 from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
-from django.db.models import Q, Count
+from django.db.models import Q, Count, F, Value, IntegerField
+from django.db.models.functions import Coalesce
 from datetime import date
 
-from ecommerce.models import Category, SubCategory, ContactMessage, CustomUser, Order, OrderItem, Product
-from cms.models import slider
+from ecommerce.models import Category, SubCategory, ContactMessage, CustomUser, Order, OrderItem, Product, Offer
+from cms.models import slider, Blog
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import login
@@ -61,19 +62,84 @@ def home(request):
     popular = Product.objects.filter(is_active=True, popular=True).prefetch_related('images').order_by('id')[:12]
     latest = Product.objects.filter(is_active=True, latest=True).prefetch_related('images').order_by('-id')[:12]
     
-    # Get active sliders with date filtering - Show only Hot Deals
+    # Get active sliders with date filtering - Show all deal types
     today = date.today()
+    
+    # Get all active sliders with media (any deal_type)
     sliders = slider.objects.filter(
-        status='active',
-        deal_type='hot_deals'  # Show only Hot Deal sliders
+        status='active'
     ).filter(
-        # Filter by date range if dates are set
-        # Show slider if:
-        # 1. No start date set OR start date <= today
-        # 2. AND (No end date set OR end date >= today)
-        Q(ad_start_date__isnull=True) | Q(ad_start_date__lte=today),
-        Q(ad_end_date__isnull=True) | Q(ad_end_date__gte=today)
-    ).select_related('product', 'slidercat').order_by('order', '-post_date')
+        # Only show sliders that have at least one media (image or video)
+        Q(sliderimage__isnull=False) | Q(slidervideo__isnull=False) | Q(video_url__isnull=False)
+    ).exclude(
+        # Exclude sliders with empty string media
+        Q(sliderimage='') & Q(slidervideo='') & Q(video_url='')
+    )
+    
+    # Apply date filtering - show if no dates OR dates are valid
+    sliders = sliders.filter(
+        # Show if: (no start date OR start <= today) AND (no end date OR end >= today)
+        (Q(ad_start_date__isnull=True) | Q(ad_start_date__lte=today)) &
+        (Q(ad_end_date__isnull=True) | Q(ad_end_date__gte=today))
+    ).select_related('product', 'slidercat').annotate(
+        order_value=Coalesce('order', Value(999999, output_field=IntegerField()))
+    ).order_by('order_value', 'id')
+    
+    # Get active offers for homepage top section
+    now = timezone.now()
+    
+    homepage_offers = Offer.objects.filter(
+        page_position='HOME_TOP',
+        is_active=True,
+        start_date__lte=now,
+        end_date__gte=now
+    ).order_by('order', '-created_at')  # Show all HOME_TOP offers, ordered by order field (with or without images)
+    
+    # Get active offers for homepage bottom section
+    homepage_bottom_offers = Offer.objects.filter(
+        page_position='HOME_BOTTOM',
+        is_active=True,
+        start_date__lte=now,
+        end_date__gte=now
+    ).filter(
+        offer_image__isnull=False
+    ).exclude(
+        offer_image=''
+    ).order_by('order', '-created_at')[:6]  # Limit to 6 offers for brand slider, ordered by order field
+    
+    # Get products for bottom section if no offers available
+    bottom_products = None
+    if not homepage_bottom_offers.exists():
+        # Get featured or popular products with images
+        from ecommerce.models import ProductImage
+        # First get product IDs that have images (without limit to avoid MariaDB issue)
+        product_ids_with_images = list(ProductImage.objects.filter(
+            product__is_active=True
+        ).filter(
+            Q(product__featured=True) | Q(product__popular=True)
+        ).values_list('product_id', flat=True).distinct())
+        
+        # Apply limit after converting to list
+        if product_ids_with_images:
+            product_ids_with_images = product_ids_with_images[:6]
+            bottom_products = Product.objects.filter(
+                id__in=product_ids_with_images,
+                is_active=True
+            ).prefetch_related('images').order_by('-id')
+    
+    # Get products by category for product_by_category section
+    # Add products to each category (limit to 6 products per category)
+    for cat in all_categories:
+        # Get all active subcategories for this category
+        subcategory_ids = list(cat.subcategories.filter(is_active=True).values_list('id', flat=True))
+        if subcategory_ids:
+            # Get up to 6 products from all subcategories of this category
+            cat.category_products = Product.objects.filter(
+                subcategory_id__in=subcategory_ids,
+                is_active=True
+            ).prefetch_related('images').order_by('-id')[:6]
+        else:
+            cat.category_products = []
     
     return render(request, 'home/index.html', {
         'categories': categories,
@@ -83,6 +149,12 @@ def home(request):
         'pl': popular,
         'lts': latest,
         'sliders': sliders,  # Add sliders to context
+        'homepage_offers': homepage_offers,  # Add offers for posters section
+        'homepage_bottom_offers': homepage_bottom_offers,  # Add offers for bottom brand section
+        'bottom_products': bottom_products,  # Add products for bottom section if no offers
+        'featured_blogs': Blog.objects.filter(
+            status='active'
+        ).select_related('category', 'subcategory', 'author').order_by('-is_featured', 'order', '-post_date')[:3],  # Active blogs for homepage (prioritize featured)
         'footer': True,  # Show footer
     })
     
@@ -191,7 +263,155 @@ def product_detail(request, category_slug, subcategory_slug, product_slug):
         'title': 'Product Details',
         'subTitle': 'Shop',
         'subTitle2': 'Product',
-        'script': '<script src="/static/js/vendors/zoom.js"></script>',
+    })
+
+def offer_detail(request, offer_slug):
+    """SEO-friendly offer detail page"""
+    from django.utils import timezone
+    now = timezone.now()
+    
+    # Get the offer
+    offer = get_object_or_404(
+        Offer.objects.filter(
+            offer_slug=offer_slug,
+            is_active=True,
+            start_date__lte=now,
+            end_date__gte=now
+        )
+    )
+    
+    # Get all categories for menu
+    categories = Category.objects.filter(is_active=True).order_by('order')[:6]
+    all_categories = Category.objects.filter(is_active=True).prefetch_related('subcategories').order_by('order')
+    
+    # Get products linked to this offer
+    from ecommerce.models import OfferProduct
+    offer_products = OfferProduct.objects.filter(offer=offer).select_related('product').prefetch_related('product__images')
+    product_ids = [op.product.id for op in offer_products if op.product.is_active]
+    
+    if product_ids:
+        products = Product.objects.filter(
+            id__in=product_ids,
+            is_active=True
+        ).select_related('subcategory', 'subcategory__category', 'brand').prefetch_related('images', 'variations').order_by('-id')
+    else:
+        # If no products linked, show empty queryset
+        products = Product.objects.none()
+    
+    return render(request, 'shop/shop.html', {
+        'title': offer.offer_title,
+        'subTitle': 'Offer',
+        'subTitle2': offer.offer_title,
+        'css': '<link rel="stylesheet" type="text/css" href="/static/css/variables/variable6.css"/>',
+        'css2': '<link rel="stylesheet" type="text/css" href="/static/css/jquery.nstSlider.min.css"/>',
+        'footer': True,
+        'script': '<script src="/static/js/vendors/zoom.js"></script>  <script src="/static/js/vendors/jquery.nstSlider.min.js"></script>',
+        'categories': categories,
+        'all_categories': all_categories,
+        'products': products,
+        'offer': offer,
+        'selected_category': None,
+        'selected_subcategory': None,
+        'product_count': products.count(),
+        'brands': [],
+        'colors': [],
+        'price_min': 0,
+        'price_max': 10000,
+        'current_price_min': 0,
+        'current_price_max': 10000,
+        'selected_brand': None,
+        'selected_color': None,
+    })
+
+def blog_list(request):
+    """Blog listing page"""
+    categories = Category.objects.filter(is_active=True).order_by('order')[:6]
+    
+    # Get all active blogs
+    blogs = Blog.objects.filter(
+        status='active'
+    ).select_related('category', 'subcategory', 'author').order_by('order', '-post_date')
+    
+    # Get blog categories for filtering
+    from cms.models import BlogCategory
+    blog_categories = BlogCategory.objects.filter(is_active=True).order_by('order', 'name')
+    
+    # Filter by category if provided
+    category_slug = request.GET.get('category', None)
+    if category_slug:
+        blogs = blogs.filter(category__slug=category_slug)
+    
+    # Search functionality
+    search_query = request.GET.get('search', None)
+    if search_query:
+        blogs = blogs.filter(
+            Q(title__icontains=search_query) |
+            Q(short_description__icontains=search_query) |
+            Q(content__icontains=search_query)
+        )
+    
+    # Get all unique tags from all active blogs for sidebar
+    all_active_blogs = Blog.objects.filter(status='active').exclude(tags__isnull=True).exclude(tags='')
+    all_tags_set = set()
+    for blog in all_active_blogs:
+        if blog.tags:
+            tags_list = blog.get_tags_list()
+            all_tags_set.update(tags_list)
+    all_tags = sorted(list(all_tags_set))[:20]  # Limit to 20 most common tags
+    
+    return render(request, 'blog/blog_list.html', {
+        'blogs': blogs,
+        'blog_categories': blog_categories,
+        'categories': categories,
+        'selected_category': category_slug,
+        'search_query': search_query,
+        'all_tags': all_tags,
+        'title': 'Blog',
+        'subTitle': 'Blog',
+        'subTitle2': 'Latest Posts',
+        'footer': True,
+    })
+
+def blog_detail(request, blog_slug):
+    """Blog detail page"""
+    categories = Category.objects.filter(is_active=True).order_by('order')[:6]
+    
+    # Get the blog post
+    blog = get_object_or_404(
+        Blog.objects.select_related('category', 'subcategory', 'author'),
+        slug=blog_slug,
+        status='active'
+    )
+    
+    # Increment view counter
+    blog.view_counter += 1
+    blog.save(update_fields=['view_counter'])
+    
+    # Get related blogs (same category)
+    related_blogs = Blog.objects.filter(
+        status='active'
+    ).exclude(id=blog.id)
+    
+    if blog.category:
+        related_blogs = related_blogs.filter(category=blog.category)
+    else:
+        related_blogs = related_blogs.filter(is_featured=True)
+    
+    related_blogs = related_blogs.select_related('category', 'subcategory', 'author').order_by('order', '-post_date')[:3]
+    
+    # Get blog categories for sidebar
+    from cms.models import BlogCategory
+    blog_categories = BlogCategory.objects.filter(is_active=True).order_by('order', 'name')
+    
+    return render(request, 'blog/blog_detail.html', {
+        'blog': blog,
+        'related_blogs': related_blogs,
+        'blog_categories': blog_categories,
+        'categories': categories,
+        'title': blog.title,
+        'subTitle': 'Blog',
+        'subTitle2': blog.title,
+        'footer': True,
     })
 
 # def register(request):

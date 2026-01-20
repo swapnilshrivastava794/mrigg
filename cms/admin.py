@@ -6,8 +6,56 @@ from django import forms
 from django.core.exceptions import ValidationError
 
 
+class SliderForm(forms.ModelForm):
+    """Custom form for slider to validate video uploads"""
+    class Meta:
+        model = slider
+        fields = '__all__'
+    
+    def clean_slidervideo(self):
+        """Validate video file type and size"""
+        video = self.cleaned_data.get('slidervideo')
+        if video:
+            # Check file extension
+            allowed_extensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi']
+            file_extension = video.name.lower().split('.')[-1]
+            if f'.{file_extension}' not in allowed_extensions:
+                raise ValidationError(
+                    f'Invalid video file type. Allowed types: {", ".join(allowed_extensions)}'
+                )
+            
+            # Check file size (max 50MB)
+            if video.size > 50 * 1024 * 1024:
+                raise ValidationError('Video file size must be less than 50MB.')
+        
+        return video
+    
+    def clean(self):
+        """Ensure either image or video is provided, but not both"""
+        cleaned_data = super().clean()
+        sliderimage = cleaned_data.get('sliderimage')
+        slidervideo = cleaned_data.get('slidervideo')
+        video_url = cleaned_data.get('video_url')
+        
+        has_image = bool(sliderimage)
+        has_video = bool(slidervideo)
+        has_video_url = bool(video_url)
+        
+        if not has_image and not has_video and not has_video_url:
+            raise ValidationError("Please provide either an image, video file, or video URL.")
+        
+        if has_image and (has_video or has_video_url):
+            raise ValidationError("Please provide either an image OR a video (not both).")
+        
+        if has_video and has_video_url:
+            raise ValidationError("Please provide either a video file OR a video URL (not both).")
+        
+        return cleaned_data
+
+
 @admin.register(slider)
 class SliderAdmin(admin.ModelAdmin):
+    form = SliderForm
     list_display = ('ad_title', 'slidercat', 'product', 'deal_type', 'ad_start_date', 'ad_end_date', 'status', 'order', 'post_date', 'author')
     list_filter = ('status', 'deal_type', 'ad_start_date', 'ad_end_date', 'post_date', 'author')
     search_fields = ('ad_title', 'ad_description', 'slidercat__name', 'product__name')
@@ -16,8 +64,12 @@ class SliderAdmin(admin.ModelAdmin):
     list_per_page = 20
     
     fieldsets = (
+        ('Slider Media (Choose ONE option)', {
+            'fields': ('sliderimage', 'slidervideo', 'video_url'),
+            'description': 'Upload an IMAGE OR a VIDEO FILE OR provide a VIDEO URL (YouTube/Vimeo). Do not use multiple options.'
+        }),
         ('Slider Information', {
-            'fields': ('slidercat', 'sliderimage')
+            'fields': ('slidercat',)
         }),
         ('Slider Ad Details', {
             'fields': ('ad_title', 'ad_description', 'product', 'deal_type', 'ad_start_date', 'ad_end_date')
@@ -41,6 +93,20 @@ class SliderAdmin(admin.ModelAdmin):
         if obj:  # editing an existing object
             return self.readonly_fields + ('slug',)
         return self.readonly_fields
+    
+    def save_model(self, request, obj, form, change):
+        """Override save to optimize performance"""
+        # Set author if not set
+        if not obj.author_id:
+            obj.author = request.user
+        
+        # Check if image field was actually changed using form's changed_data
+        if change and 'sliderimage' not in form.changed_data:
+            # Image wasn't changed, skip image processing for faster save
+            obj.save(skip_image_processing=True)
+        else:
+            # Image was changed or new object, use normal save
+            super().save_model(request, obj, form, change)
 
 
 @admin.register(CMS)
@@ -110,7 +176,7 @@ class BlogCategoryAdmin(admin.ModelAdmin):
 class BlogAdmin(admin.ModelAdmin):
     list_display = ('title', 'get_category', 'get_subcategory', 'author', 'status', 'is_featured', 'order', 'view_counter', 'post_date', 'preview_image')
     list_filter = ('status', 'is_featured', 'category', 'subcategory', 'post_date', 'author')
-    search_fields = ('title', 'short_description', 'content')
+    search_fields = ('title', 'short_description', 'content', 'tags')
     list_editable = ('status', 'is_featured', 'order')
     ordering = ('-post_date', 'order')
     list_per_page = 20
@@ -118,7 +184,7 @@ class BlogAdmin(admin.ModelAdmin):
     
     fieldsets = (
         ('Blog Content', {
-            'fields': ('title', 'slug', 'short_description', 'content', 'featured_image')
+            'fields': ('title', 'slug', 'short_description', 'content', 'featured_image', 'tags')
         }),
         ('Category & Subcategory', {
             'fields': ('category', 'subcategory')

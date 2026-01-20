@@ -183,15 +183,25 @@ class BannerListView(ListAPIView):
     serializer_class = SliderSerializer
 
     def get_queryset(self):
+        from django.db.models import Value, IntegerField
+        from django.db.models.functions import Coalesce
+        from django.db.models import Q
         today = timezone.now().date()
         return slider.objects.filter(
-            status="active",
-            ad_start_date__lte=today,
-            ad_end_date__gte=today
+            status="active"
+        ).filter(
+            # Only show sliders that have at least one media (image or video)
+            Q(sliderimage__isnull=False) | Q(slidervideo__isnull=False) | Q(video_url__isnull=False)
+        ).filter(
+            # Filter by date range if dates are set
+            Q(ad_start_date__isnull=True) | Q(ad_start_date__lte=today),
+            Q(ad_end_date__isnull=True) | Q(ad_end_date__gte=today)
         ).select_related(
             "product",
             "slidercat"
-        ).order_by("order")
+        ).annotate(
+            order_value=Coalesce('order', Value(999999, output_field=IntegerField()))
+        ).order_by("order_value", "id")
 
 
 class ProductsByCategoryAPI(APIView):
@@ -808,5 +818,43 @@ class ApplyCouponAPI(APIView):
             "new_total": new_total,
             "coupon_id": coupon.id
         }, status=status.HTTP_200_OK)
+
+
+class UserdelAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, cusuid_id):
+        """
+        Deactivate a user by ID.
+        Users can only deactivate their own account, or admin can deactivate any user.
+        """
+        try:
+            # Get the user to be deactivated
+            user_to_deactivate = get_object_or_404(User, id=cusuid_id)
+            
+            # Check if user is trying to deactivate their own account
+            # OR if user is admin/staff
+            if request.user.id != user_to_deactivate.id:
+                # Check if current user is admin/staff
+                if not (request.user.is_staff or request.user.is_superuser):
+                    return Response(
+                        {"error": "You don't have permission to deactivate this user"},
+                        status=status.HTTP_403_FORBIDDEN
+                    )
+            
+            # Deactivate the user (set is_active = False)
+            user_to_deactivate.is_active = False
+            user_to_deactivate.save()
+            
+            return Response(
+                {"message": "Account deactivated successfully"},
+                status=status.HTTP_200_OK
+            )
+            
+        except Exception as e:
+            return Response(
+                {"error": f"Error deactivating user: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 

@@ -1,6 +1,13 @@
 (function ($) {
   "use strict";
 
+  // Prevent body scroll when fullscreen slider is present
+  $(document).ready(function() {
+    if ($('.slider-fullscreen').length > 0) {
+      $('body, html').addClass('has-fullscreen-slider');
+    }
+  });
+
   //preloader
   $(window).on('load', function () {
     $("#rts__preloader").delay(0).fadeOut(1000);
@@ -350,37 +357,20 @@
   });
   // Common-slider-over
   var swiper = new Swiper(".rts-topSlide1", {
-    slidesPerView: 3,
+    slidesPerView: 1,
     spaceBetween: 0,
     slidesPerGroup: 1,
-    speed: 700,   
-    loop: false,
+    speed: 700,
+    loop: true,
     loopFillGroupWithBlank: false,
     autoplay: {
       delay: 3000,
-      disableOnInteraction: true
+      disableOnInteraction: false
     },
     centeredSlides: false,
-    breakpoints: {
-      1500: {
-        slidesPerView: 1,
-      },
-      991: {
-        slidesPerView: 1,
-      },
-      767: {
-        slidesPerView: 1,
-      },
-      575: {
-        slidesPerView: 1,
-      },
-      0: {
-        slidesPerView: 1,
-      }
-    },
     navigation: {
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev",
+      nextEl: ".rts-topSlide1 .swiper-button-next",
+      prevEl: ".rts-topSlide1 .swiper-button-prev",
     }
   });
   var swiper = new Swiper(".rts-topSlide2", {
@@ -601,42 +591,7 @@
       prevEl: ".swiper-button-prev",
     }
   });
-  // banner slider
-  var swiper = new Swiper(".bannerSlide2", {
-    slidesPerView: 1,
-    spaceBetween: 0,
-    slidesPerGroup: 1,
-    speed: 700,
-    effect: 'fade',
-    loop: false,
-    loopFillGroupWithBlank: true,
-    autoplay: {
-      delay: 3000,
-      disableOnInteraction: false
-    },
-    centeredSlides: false,
-    breakpoints: {
-      1500: {
-        slidesPerView: 1,
-      },
-      991: {
-        slidesPerView: 1,
-      },
-      767: {
-        slidesPerView: 1,
-      },
-      575: {
-        slidesPerView: 1,
-      },
-      0: {
-        slidesPerView: 1,
-      }
-    },
-    navigation: {
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev",
-    }
-  });
+  // Bootstrap carousel is used for banner slider - no JavaScript needed
 
   // Banner Offer 1 Slider
   if (document.querySelector(".bannerSlideOffer1")) {
@@ -1093,8 +1048,8 @@
 
 
   /*------------------------------------
-		Mobile Menu
-	--------------------------------------*/
+    Mobile Menu
+  --------------------------------------*/
 
   $('#mobile-menu-active').metisMenu();
 
@@ -1112,7 +1067,7 @@
   });
 
   /* Search
-  	-------------------------------------------------------*/
+    -------------------------------------------------------*/
   var $searchWrap = $('.search-wrap');
   var $navSearch = $('.nav-search');
   var $searchClose = $('#search-close');

@@ -19,6 +19,7 @@ from .views import (
     VerifyOTPChangePasswordView,
     LogoutView,
     ResendOTPView,
+    UserdelAPIView,
 
     CategoryListView,
     BannerListView,
@@ -97,4 +98,6 @@ urlpatterns = [
     
     # Coupon
     path("coupon/apply/", ApplyCouponAPI.as_view(), name="coupon-apply"),
+    #ad by vicky
+    path("deleteuser/<int:cusuid_id>/", UserdelAPIView.as_view(), name="user-delete"),
 ]

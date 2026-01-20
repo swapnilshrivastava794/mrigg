@@ -1,0 +1,227 @@
+{% extends '../layout/layout.html' %}
+
+{% block content %}
+
+<!--news-feed-area start-->
+<section class="news-feed-area pt-120 pb-75 pt-md-60 pb-md-15 pt-xs-50 pb-xs-10">
+    <div class="container">
+        <div class="row mb-15">
+            <div class="col-lg-8 pe-xl-0">
+                <div class="news-left2">
+                    <div class="news-top">
+                        <div class="icon-text">
+                            <span class="viewers fs-10"><a href="#"><i class="fal fa-eye"></i> {{ blog.view_counter }} Views</a></span>
+                            <span class="date fs-10"><a href="#"><i class="fal fa-calendar-alt"></i> {{ blog.post_date|date:"jS F Y" }}</a></span>
+                            {% if blog.category %}
+                            <span class="comment fs-10"><a href="{% url 'blog_list' %}?category={{ blog.category.slug }}"><i class="fal fa-tag"></i> {{ blog.category.name }}</a></span>
+                            {% endif %}
+                        </div>
+                        {% if blog.featured_image %}
+                        <div class="image-section mb-30">
+                            <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" style="width: 100%; height: auto; border-radius: 10px;">
+                        </div>
+                        {% endif %}
+                        <h1 class="mb-30" style="font-size: 32px; font-weight: 700; line-height: 1.3;">{{ blog.title }}</h1>
+                        {% if blog.short_description %}
+                        <p class="description" style="font-size: 18px; color: #666; margin-bottom: 20px;">
+                            {{ blog.short_description }}
+                        </p>
+                        {% endif %}
+                        <div class="description-content">
+                            {{ blog.content|safe }}
+                        </div>
+                    </div>
+                    <div class="button-area">
+                        <div class="row justify-content-between">
+                            <div class="col-lg-6 col-sm-6 col-12">
+                                {% if blog.category %}
+                                <div class="tag-area">
+                                    <h3>Related Tags</h3>
+                                    <div class="button-tag">
+                                        <ul>
+                                            <li><a href="{% url 'blog_list' %}?category={{ blog.category.slug }}">{{ blog.category.name }}</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-6 col-sm-6 col-12 text-sm-end text-start">
+                                <div class="social-area">
+                                    <div class="social-title">
+                                        <h3>Social Share</h3>
+                                    </div>
+                                    <div class="social-icon">
+                                        <ul>
+                                            <li><a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
+                                            <li><a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ blog.title }}" target="_blank"><i class="fab fa-twitter"></i></a></li>
+                                            <li><a href="https://www.linkedin.com/shareArticle?url={{ request.build_absolute_uri }}" target="_blank"><i class="fab fa-linkedin-in"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% if related_blogs %}
+                        <div class="post-area">
+                            <div class="row align-items-center justify-content-between">
+                                {% if related_blogs|length > 0 %}
+                                <div class="col-lg-4 col-sm-4 col-12 text-start">
+                                    <div class="previous-post">
+                                        {% if related_blogs.0.featured_image %}
+                                        <div class="post-img">
+                                            <a href="{% url 'blog_detail' related_blogs.0.slug %}"><img src="{{ related_blogs.0.featured_image.url }}"
+                                                    alt="{{ related_blogs.0.title }}"></a>
+                                        </div>
+                                        {% endif %}
+                                        <div class="post-text">
+                                            <h3 class="sub-title">Previous Post</h3>
+                                            <h2 class="sect-title"><a href="{% url 'blog_detail' related_blogs.0.slug %}">{{ related_blogs.0.title|truncatewords:8 }}</a></h2>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                <div class="col-lg-4 col-sm-4 col-12 text-sm-center text-start">
+                                    <div class="icon-area">
+                                        <a href="{% url 'blog_list' %}"><img src="/static/images/blog-details/shape.png" alt="img"></a>
+                                    </div>
+                                </div>
+                                {% if related_blogs|length > 1 %}
+                                <div
+                                    class="col-lg-4 col-sm-4 col-12 text-sm-end text-start justify-content-sm-end justify-content-start">
+                                    <div class="next-post">
+                                        <div class="post-text">
+                                            <h3 class="sub-title">Next Post</h3>
+                                            <h2 class="sect-title"><a href="{% url 'blog_detail' related_blogs.1.slug %}">{{ related_blogs.1.title|truncatewords:8 }}</a></h2>
+                                        </div>
+                                        {% if related_blogs.1.featured_image %}
+                                        <div class="post-img">
+                                            <a href="{% url 'blog_detail' related_blogs.1.slug %}"><img src="{{ related_blogs.1.featured_image.url }}"
+                                                    alt="{{ related_blogs.1.title }}"></a>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if related_blogs %}
+                        <div class="related-post mt-50">
+                            <h3 class="section-title">Related Posts</h3>
+                            <div class="row">
+                                {% for r_blog in related_blogs|slice:":3" %}
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="feed-item2">
+                                        <a href="{% url 'blog_detail' r_blog.slug %}" class="feed-image">
+                                            {% if r_blog.featured_image %}
+                                                <img src="{{ r_blog.featured_image.url }}" alt="{{ r_blog.title }}">
+                                            {% else %}
+                                                <img src="/static/images/featured/img-{{ forloop.counter }}.jpg" alt="feed-image">
+                                            {% endif %}
+                                        </a>
+                                        <div class="feed-content">
+                                            {% if r_blog.category %}
+                                                <span class="feed-catagory"><a href="{% url 'blog_list' %}?category={{ r_blog.category.slug }}">{{ r_blog.category.name }}</a></span>
+                                            {% endif %}
+                                            <h2 class="feed-title"><a href="{% url 'blog_detail' r_blog.slug %}">{{ r_blog.title }}</a></h2>
+                                            <div class="feed-info">
+                                                <span class="feed-date">
+                                                    <i class="rt-calendar-days"></i> {{ r_blog.post_date|date:"F d, Y" }}</span>
+                                                <span class="comments"><i class="rt-comments"></i>{{ r_blog.view_counter }} Views</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 pl-30 pl-lg-15 pl-md-15 pl-xs-15">
+                <div class="news-right-widget" style="background: linear-gradient(135deg, #e6e6fa 0%, #d8bfd8 50%, #dda0dd 100%); padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <div class="widget widget-search mb-40">
+                        <div class="widget-title-box pb-25 mb-30">
+                            <h4 class="widget-sub-title2 fs-20" style="color: #4a4a4a; font-weight: 700;">Search Here</h4>
+                        </div>
+                        <form class="subscribe-form mb-10" action="{% url 'blog_list' %}" method="get">
+                            <input type="text" name="search" placeholder="Search your keyword..." value="{{ request.GET.search }}" style="background: rgba(255,255,255,0.9); border: 1px solid rgba(136,51,184,0.3); color: #333; padding: 12px 15px; border-radius: 5px; width: 100%;" onfocus="this.style.background='#fff'; this.style.borderColor='#8833b8';" onblur="this.style.background='rgba(255,255,255,0.9)'; this.style.borderColor='rgba(136,51,184,0.3)';">
+                            <style>
+                                input::placeholder { color: rgba(85,85,85,0.6) !important; }
+                                .news-right-widget .tag-list a:hover { background: #8833b8 !important; color: #fff !important; border-color: #8833b8 !important; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(136,51,184,0.3); }
+                                .news-right-widget .list-none a:hover { color: #8833b8 !important; font-weight: 600; }
+                            </style>
+                            <button class="widget-btn" type="submit" style="background: #8833b8; color: #fff; border: none;"><i class="fal fa-search"></i></button>
+                        </form>
+                    </div>
+                    {% if related_blogs %}
+                    <div class="widget widget-post mb-40">
+                        <div class="widget-title-box pb-25 mb-30">
+                            <h4 class="widget-sub-title2 fs-20" style="color: #4a4a4a; font-weight: 700;">Popular Feeds</h4>
+                        </div>
+                        <ul class="post-list">
+                            {% for r_blog in related_blogs|slice:":4" %}
+                            <li>
+                                <div class="blog-post {% if not forloop.last %}mb-30{% endif %}">
+                                    <a href="{% url 'blog_detail' r_blog.slug %}">
+                                        {% if r_blog.featured_image %}
+                                            <img src="{{ r_blog.featured_image.url }}" alt="{{ r_blog.title }}">
+                                        {% else %}
+                                            <img src="/static/images/blog/img-{{ forloop.counter|add:13 }}.jpg" alt="Post Img">
+                                        {% endif %}
+                                    </a>
+                                    <div class="post-content">
+                                        <h6 class="mb-10"><a href="{% url 'blog_detail' r_blog.slug %}" style="color: #555;">{{ r_blog.title|truncatewords:8 }}</a></h6>
+                                        <span class="fs-14" style="color: #777;"><i class="fal fa-calendar-alt"></i> {{ r_blog.post_date|date:"jS F Y" }}</span>
+                                    </div>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                    {% if blog_categories %}
+                    <div class="widget widget-categories-list mb-40">
+                        <div class="widget-title-box pb-25 mb-30">
+                            <h4 class="widget-sub-title2 fs-20" style="color: #4a4a4a; font-weight: 700;">Categories</h4>
+                        </div>
+                        <ul class="list-none">
+                            {% for category in blog_categories %}
+                            <li style="border-bottom: 1px solid rgba(136,51,184,0.2); padding: 8px 0;"><a href="{% url 'blog_list' %}?category={{ category.slug }}" style="color: #555; font-weight: 500;">{{ category.name }} <span class="f-right" style="color: #8833b8; font-weight: 600;">{{ category.blogs.count }}</span></a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                    <div class="widget widget-categories-tag mb-40">
+                        <div class="widget-title-box pb-25 mb-25">
+                            <h4 class="widget-sub-title2 fs-20" style="color: #4a4a4a; font-weight: 700;">Tags</h4>
+                        </div>
+                        <div class="tag-list">
+                            {% if blog.tags %}
+                                {% for tag in blog.get_tags_list %}
+                                <a href="{% url 'blog_list' %}?search={{ tag }}" style="color: #555; background: rgba(255,255,255,0.8); border: 1px solid rgba(136,51,184,0.3);">{{ tag }}</a>
+                                {% endfor %}
+                            {% else %}
+                                <a href="{% url 'blog_list' %}?search=Cosmetics" style="color: #555; background: rgba(255,255,255,0.8); border: 1px solid rgba(136,51,184,0.3);">Cosmetics</a>
+                                <a href="{% url 'blog_list' %}?search=Makeup" style="color: #555; background: rgba(255,255,255,0.8); border: 1px solid rgba(136,51,184,0.3);">Makeup</a>
+                                <a href="{% url 'blog_list' %}?search=Skincare" style="color: #555; background: rgba(255,255,255,0.8); border: 1px solid rgba(136,51,184,0.3);">Skincare</a>
+                                <a href="{% url 'blog_list' %}?search=Herbal" style="color: #555; background: rgba(255,255,255,0.8); border: 1px solid rgba(136,51,184,0.3);">Herbal</a>
+                                <a href="{% url 'blog_list' %}?search=Natural Beauty" style="color: #555; background: rgba(255,255,255,0.8); border: 1px solid rgba(136,51,184,0.3);">Natural Beauty</a>
+                                <a href="{% url 'blog_list' %}?search=Matte Finish" style="color: #555; background: rgba(255,255,255,0.8); border: 1px solid rgba(136,51,184,0.3);">Matte Finish</a>
+                                <a href="{% url 'blog_list' %}?search=Loose Powder" style="color: #555; background: rgba(255,255,255,0.8); border: 1px solid rgba(136,51,184,0.3);">Loose Powder</a>
+                                <a href="{% url 'blog_list' %}?search=Glow Skin" style="color: #555; background: rgba(255,255,255,0.8); border: 1px solid rgba(136,51,184,0.3);">Glow Skin</a>
+                                <a href="{% url 'blog_list' %}?search=Oil Control" style="color: #555; background: rgba(255,255,255,0.8); border: 1px solid rgba(136,51,184,0.3);">Oil Control</a>
+                                <a href="{% url 'blog_list' %}?search=Pore Blurring" style="color: #555; background: rgba(255,255,255,0.8); border: 1px solid rgba(136,51,184,0.3);">Pore Blurring</a>
+                                <a href="{% url 'blog_list' %}?search=Beauty Care" style="color: #555; background: rgba(255,255,255,0.8); border: 1px solid rgba(136,51,184,0.3);">Beauty Care</a>
+                                <a href="{% url 'blog_list' %}?search=Daily Makeup" style="color: #555; background: rgba(255,255,255,0.8); border: 1px solid rgba(136,51,184,0.3);">Daily Makeup</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--news-feed-area end-->
+
+{% endblock content %}

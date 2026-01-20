@@ -3,6 +3,153 @@
     background: rgba(230, 230, 250, 0.8) !important; /* Light lavender with 80% opacity */
 }
 
+/* Product By Category Section - Quick Action Button Styles (Same as Hand-Picked Section) */
+.rts-product-by-category-section .product-item {
+    position: relative !important;
+}
+
+.rts-product-by-category-section .product-item .quick-action-button {
+    z-index: 11;
+    position: absolute;
+    cursor: pointer;
+    left: 12px;
+    top: 12px;
+    background: #fff;
+    width: 54px;
+    height: 15px;
+    padding-top: 15px;
+    padding-bottom: 25px;
+    border-radius: 100px;
+    transition: all 0.4s;
+    overflow: hidden;
+}
+
+.rts-product-by-category-section .product-item .quick-action-button:hover {
+    height: 150px;
+}
+
+.rts-product-by-category-section .product-item .quick-action-button:hover .cta-single.cta-quickview,
+.rts-product-by-category-section .product-item .quick-action-button:hover .cta-single.cta-wishlist,
+.rts-product-by-category-section .product-item .quick-action-button:hover .cta-single.cta-addtocart {
+    opacity: 1;
+    visibility: visible;
+}
+
+.rts-product-by-category-section .product-item .quick-action-button .cta-single {
+    padding-left: 16px;
+    width: 56px;
+    transition: all 0.7s;
+}
+
+.rts-product-by-category-section .product-item .quick-action-button .cta-single a {
+    color: #333;
+    text-decoration: none;
+    display: block;
+    line-height: 1;
+}
+
+.rts-product-by-category-section .product-item .quick-action-button .cta-single.cta-plus:hover a {
+    color: #8833b8;
+}
+
+.rts-product-by-category-section .product-item .quick-action-button .cta-single.cta-quickview {
+    opacity: 0;
+    visibility: hidden;
+    padding-left: 19px;
+    padding-top: 15px;
+    transition: all 0.2s;
+}
+
+.rts-product-by-category-section .product-item .quick-action-button .cta-single.cta-quickview .product-details-popup-btn:hover,
+.rts-product-by-category-section .product-item .quick-action-button .cta-single.cta-quickview a:hover {
+    color: #8833b8;
+}
+
+.rts-product-by-category-section .product-item .quick-action-button .cta-single.cta-wishlist {
+    opacity: 0;
+    visibility: hidden;
+    padding-left: 20px;
+    margin-top: 18px;
+    transition: all 0.2s;
+}
+
+.rts-product-by-category-section .product-item .quick-action-button .cta-single.cta-wishlist:hover a {
+    color: #8833b8;
+}
+
+.rts-product-by-category-section .product-item .quick-action-button .cta-single.cta-addtocart {
+    opacity: 0;
+    visibility: hidden;
+    padding-left: 16px;
+    padding-top: 18px;
+    transition: all 0.2s;
+}
+
+.rts-product-by-category-section .product-item .quick-action-button .cta-single.cta-addtocart:hover a {
+    color: #8833b8;
+}
+
+/* Product By Category Section - Product Features (SALE tag) - Right Side */
+.rts-product-by-category-section .product-item .product-features {
+    position: absolute !important;
+    top: 3% !important;
+    right: 3% !important;
+    left: unset !important;
+    transition: all 300ms !important;
+    opacity: 1 !important;
+    z-index: 1 !important;
+}
+
+.rts-product-by-category-section .product-item .product-features .discount-tag {
+    background: #ff69b4 !important; /* Pink background */
+    color: #fff !important; /* White text for better contrast */
+    width: 56px !important;
+    height: 56px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    border-radius: 50% !important;
+    margin-bottom: 10px !important;
+    box-shadow: 0 2px 8px rgba(255, 105, 180, 0.3) !important;
+    border: 2px solid #ff69b4 !important;
+}
+
+.rts-product-by-category-section .product-item .product-features .new-tag {
+    background: #fff !important;
+    color: #040404 !important;
+    width: 56px !important;
+    height: 56px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    border-radius: 50% !important;
+    margin-bottom: 10px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.rts-product-by-category-section .product-item .product-features .hot-tag {
+    background: #fff !important;
+    color: #8833b8 !important;
+    width: 56px !important;
+    height: 56px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    border-radius: 50% !important;
+    margin-bottom: 10px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.rts-product-by-category-section .product-item:hover .product-features {
+    opacity: 1 !important;
+}
+
 /* Make all product cards same size */
 .product-item {
     display: flex !important;

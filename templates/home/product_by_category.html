@@ -1,0 +1,132 @@
+<!-- ..::Product By Category Section Start Here::.. -->
+{% if all_categories %}
+<div class="rts-product-by-category-section section-gap">
+    <div class="container">
+        <div class="section-header section-header3 text-center mb-50">
+            <div class="wrapper">
+                <div class="sub-content">
+                    <img class="line-1" src="/static/images/banner/wvbo-icon.png" alt="">
+                    <span class="sub-text">Shop by Category</span>
+                    <img class="line-2" src="/static/images/banner/wvbo-icon.png" alt="">
+                </div>
+                <h2 class="title">PRODUCTS BY CATEGORY</h2>
+            </div>
+        </div>
+        
+        {% for category in all_categories %}
+            {% if category.category_products %}
+                <div class="category-products-section mb-60">
+                    <div class="category-header mb-30">
+                        <div class="row align-items-center mb-5" style="border-bottom: 1px solid #e0e0e0; padding-bottom: 20px;">
+                            <div class="col-lg-8">
+                                <h3 class="category-title" style="font-size: 24px; font-weight: 700; color: #333; margin-bottom: 5px;">
+                                    <a href="{% url 'category-only' category.slug %}" style="color: #333; text-decoration: none; transition: color 0.3s ease;">
+                                        {{ category.name|upper }}
+                                    </a>
+                                </h3>
+                                <p class="category-description" style="color: #666; margin-top: 10px; font-size: 14px;">
+                                    Explore our {{ category.name }} collection
+                                </p>
+                            </div>
+                            <div class="col-lg-4 text-lg-end text-start mt-lg-0 mt-3">
+                                <a href="{% url 'category-only' category.slug %}" class="view-all-btn" style="display: inline-block; padding: 12px 30px; background: #8833b8; color: #fff; text-decoration: none; border-radius: 5px; font-weight: 600; transition: all 0.3s ease; font-size: 14px;">
+                                    View All <i class="fal fa-arrow-right" style="margin-left: 5px;"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="slider-div">
+                        <div class="swiper rts-sixSlide-over">
+                            <div class="swiper-wrapper">
+                                {% for product in category.category_products %}
+                                    <div class="swiper-slide">
+                                        <div class="product-item element-item1">
+                                            <a href="{% url 'product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" class="product-image image-hover-variations">
+                                                {% if product.images.all %}
+                                                    {% with images=product.images.all %}
+                                                        <div class="image-vari1 image-vari">
+                                                            <img src="{{ images.0.image.url }}" alt="{{ product.name }}">
+                                                        </div>
+                                                        {% if images|length > 1 %}
+                                                            <div class="image-vari2 image-vari">
+                                                                <img src="{{ images.1.image.url }}" alt="{{ product.name }}">
+                                                            </div>
+                                                        {% else %}
+                                                            <div class="image-vari2 image-vari">
+                                                                <img src="{{ images.0.image.url }}" alt="{{ product.name }}">
+                                                            </div>
+                                                        {% endif %}
+                                                    {% endwith %}
+                                                {% else %}
+                                                    <div class="image-vari1 image-vari">
+                                                        <img src="/static/images/hand-picked/slider-img8_2.jpg" alt="{{ product.name }}">
+                                                    </div>
+                                                    <div class="image-vari2 image-vari">
+                                                        <img src="/static/images/hand-picked/slider-img8_2.jpg" alt="{{ product.name }}">
+                                                    </div>
+                                                {% endif %}
+                                            </a>
+                                            <div class="bottom-content">
+                                                <a href="{% url 'product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" class="product-name">{{ product.name }}</a>
+                                                <div class="action-wrap">
+                                                    {% if product.offerprice and product.offerprice < product.price %}
+                                                        <span class="price">₹{{ product.offerprice }}</span>
+                                                        <span class="old-price" style="text-decoration: line-through; color: #777; margin-left: 10px; font-size: 14px;">₹{{ product.price }}</span>
+                                                    {% else %}
+                                                        <span class="price">₹{{ product.price }}</span>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="product-card-buttons" style="margin-top: 15px; display: flex; gap: 10px;">
+                                                    <a href="{% url 'product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" class="btn-view-details" style="flex: 1; padding: 10px 15px; background: rgba(230, 230, 250, 0.8); color: #333; text-align: center; border-radius: 5px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease;">View Details</a>
+                                                    <a href="{% url 'add_to_cart' product.slug %}" class="btn-add-to-cart" style="flex: 1; padding: 10px 15px; background: #8833b8; color: #fff; text-align: center; border-radius: 5px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease;">Add to Cart</a>
+                                                </div>
+                                            </div>
+                                            <div class="quick-action-button">
+                                                <div class="cta-single cta-plus">
+                                                    <a href="#"><i class="rt-plus"></i></a>
+                                                </div>
+                                                <div class="cta-single cta-quickview">
+                                                    <a href="{% url 'product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" class="cta-quickview-link"><i class="far fa-eye"></i></a>
+                                                </div>
+                                                <div class="cta-single cta-wishlist">
+                                                    <a href="{% url 'add_to_wishlist' product.slug %}"><i class="far fa-heart"></i></a>
+                                                </div>
+                                                <div class="cta-single cta-addtocart">
+                                                    <a href="{% url 'add_to_cart' product.slug %}"><i class="rt-basket-shopping"></i></a>
+                                                </div>
+                                            </div>
+                                            {% if product.offerprice and product.offerprice < product.price %}
+                                                <div class="product-features">
+                                                    <div class="discount-tag product-tag">SALE</div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% empty %}
+                                    <div class="swiper-slide">
+                                        <div class="product-item element-item1">
+                                            <a href="{% url 'category-only' category.slug %}" class="product-image image-hover-variations">
+                                                <div class="image-vari1 image-vari"><img src="/static/images/hand-picked/slider-img8.webp" alt="product-image"></div>
+                                                <div class="image-vari2 image-vari"><img src="/static/images/hand-picked/slider-img8.webp" alt="product-image"></div>
+                                            </a>
+                                            <div class="bottom-content">
+                                                <a href="{% url 'category-only' category.slug %}" class="product-name">No Products Available</a>
+                                                <div class="action-wrap">
+                                                    <span class="price">Coming Soon</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+<!-- ..::Product By Category Section End Here::.. -->
+

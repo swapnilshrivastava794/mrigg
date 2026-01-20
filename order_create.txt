@@ -1,0 +1,16 @@
+CREATE TABLE `main_order` (
+  `id` bigint NOT NULL,
+  `first_name` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `last_name` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(254) COLLATE utf8mb4_general_ci NOT NULL,
+  `address` varchar(250) COLLATE utf8mb4_general_ci NOT NULL,
+  `postal_code` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `city` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `created` datetime(6) NOT NULL,
+  `updated` datetime(6) NOT NULL,
+  `paid` tinyint(1) NOT NULL,
+  `user_id` bigint DEFAULT NULL,
+  `status` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `discount_total` decimal(10,2) NOT NULL,
+  `coupon_id` bigint DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci

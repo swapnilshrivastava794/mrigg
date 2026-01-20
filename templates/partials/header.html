@@ -2,29 +2,7 @@
     <div class="header-topbar header-topbar1">
         <div class="container">
             <div class="header-top-area">
-                <div class="slider-div">
-                    <div class="swiper rts-topSlide1">
-                        <div class="swiper-wrapper">
-                            <div class="swiper-slide">
-                                <h3 class="welcome-text"> Open Door To A worlds Of Fashion<a href="#">Discover Now</a></h3>
-                            </div>
-                            <div class="swiper-slide">
-                                <h3 class="welcome-text"> Open Door To A worlds Of Fashion<a href="#">Discover Now</a></h3>
-                            </div>
-                            <div class="swiper-slide">
-                                <h3 class="welcome-text"> Open Door To A worlds Of Fashion<a href="#">Discover Now</a></h3>
-                            </div>
-                            <div class="swiper-slide">
-                                <h3 class="welcome-text"> Open Door To A worlds Of Fashion<a href="#">Discover Now</a></h3>
-                            </div>
-                        </div>
-                        <div class="slider-navigation2">
-                            <div class="swiper-button-prev slider-btn prev"><i class="rt rt-arrow-left-long"></i></div>
-                            <div class="swiper-button-next slider-btn next"><i class="rt rt-arrow-right-long"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
             </div>
         </div>
     </div>
@@ -35,17 +13,29 @@
                     <nav class="nav navbar">
                         <div class="navbar-menu">
                             <ul>
-                                <li><a href="#">About Us</a></li>
-                                <li><a href="#">My Account</a></li>
-                                <li><a href="#">Whishlist</a></li>
-                                <li><a href="#">Order Tracking</a></li>
+                                <li><a href="{% url 'about-us' %}">About Us</a></li>
+                                {% if user.is_authenticated or custom_user %}
+                                    <li><a href="{% url 'profile' %}">My Account</a></li>
+                                {% else %}
+                                    <li><a href="{% url 'login' %}">My Account</a></li>
+                                {% endif %}
+                                <li><a href="{% url 'wishlist' %}">Wishlist</a></li>
+                                {% if user.is_authenticated or custom_user %}
+                                    <li><a href="{% url 'order_history' %}">Order Tracking</a></li>
+                                {% else %}
+                                    <li><a href="{% url 'login' %}">Order Tracking</a></li>
+                                {% endif %}
                             </ul>
                         </div>
                     </nav>
                 </div>
                 <div class="menu-area-right-side">
                     <div class="contact"><i aria-hidden="true" class="fas fa-phone"></i>Need help? <strong>Call us:
-                            <a href="call:0020500">+ 0020 500</a></strong></div>
+                            {% if profile_setting.phone_number1 %}
+                                <a href="tel:{{ profile_setting.phone_number1 }}">{{ profile_setting.phone_number1 }}</a>
+                            {% else %}
+                                <a href="tel:0020500">+ 0020 500</a>
+                            {% endif %}</strong></div>
                     <div class="topbar-select-area">
                         <select class="topbar-select custom-select">
                             <option value="eng">English</option>
@@ -80,16 +70,43 @@
                                 <span class="dot9"></span>
                             </a>
                         </div>
-                        <a href="/" class="logo"><img src="/static/images/logo1.svg" alt="weiboo-logo"></a>
+                        <a href="/" class="logo">
+                            {% if profile_setting.logo_light %}
+                                <img src="{{ profile_setting.logo_light.url }}" alt="logo">
+                            {% else %}
+                                <img src="/static/images/logo1.svg" alt="logo">
+                            {% endif %}
+                        </a>
                     </div>
                     <div class="rts-menu">
                         <nav class="menus menu-toggle">
                             
                             <ul class="nav__menu">
-                               
+                                {# 1. Brands #}
+                                <li class="has-dropdown"><a class="menu-item menu-item {% if subTitle == 'Shop' %}
+                                    active1
+                                 {% endif %} " href="#">Brands </a>
+                                    <ul class="dropdown-ul">
+                                        {% if all_brands %}
+                                            {% for brand in all_brands %}
+                                            <li class="dropdown-li">
+                                                <a class="dropdown-link" href="{% url 'shop' %}?brand={{ brand.slug }}">
+                                                    {{ brand.name }}
+                                                </a>
+                                            </li>
+                                            {% endfor %}
+                                        {% else %}
+                                            <li class="dropdown-li">
+                                                <a class="dropdown-link" href="{% url 'shop' %}">No brands available</a>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </li>
+                                
+                                {# 2. Categories #}
                                 <li class="has-dropdown"><a class="menu-item {% if subTitle == 'Shop' %}
                                                                                     active1
-                                                                             {% endif %}" href="#">Categories<i class="rt-plus"></i></a>
+                                     {% endif %}" href="#">Categories</a>
                                     <ul class="dropdown-ul mega-dropdown">
                                         {% if all_categories %}
                                             {% for category in all_categories %}
@@ -121,28 +138,16 @@
                                         {% endif %}
                                     </ul>
                                 </li>
-                                <li class="has-dropdown"><a class="menu-item menu-item {% if subTitle == 'Shop' %}
+                                
+                                {# 3. Trending Fashion #}
+                                <li><a class="menu-item menu-item {% if subTitle == 'Contact' %}
                                     active1
-                                 {% endif %} " href="#">Brands <i class="rt-plus"></i></a>
-                                    <ul class="dropdown-ul">
-                                        {% if all_brands %}
-                                            {% for brand in all_brands %}
-                                            <li class="dropdown-li">
-                                                <a class="dropdown-link" href="{% url 'shop' %}?brand={{ brand.slug }}">
-                                                    {{ brand.name }}
-                                                </a>
-                                            </li>
-                                            {% endfor %}
-                                        {% else %}
-                                            <li class="dropdown-li">
-                                                <a class="dropdown-link" href="{% url 'shop' %}">No brands available</a>
-                                            </li>
-                                        {% endif %}
-                                    </ul>
-                                </li>
-                        <li class="has-dropdown"><a class="menu-item menu-item {% if subTitle == 'Pages' %}
+                                    {% endif %} " href="{% url 'contact' %}">Trending Fashion</a></li>
+                                
+                                {# 4. Offers #}
+                                <li class="has-dropdown"><a class="menu-item menu-item {% if subTitle == 'Pages' %}
                         active1
-                        {% endif %} " href="#">Offers <i class="rt-plus"></i></a>
+                        {% endif %} " href="#">Offers </a>
                         <ul class="dropdown-ul">
                             <li class="dropdown-li">
                                 <a class="dropdown-link" href="#">Whats New</a>
@@ -166,21 +171,18 @@
                         </ul>
                         </li>
 
-
-                <li class="has-dropdown">
-                    <a class="menu-item menu-item {% if subTitle == 'Blog' %}
-                active1
-                {% endif %}" href="#">Beauty Advice <i class="rt-plus"></i></a>
-                <!-- <ul class="dropdown-ul">
-                <li class="dropdown-li"><a class="dropdown-link" href="{% url 'news' %}">Blog</a>
-                </li>
-                <li class="dropdown-li"><a class="dropdown-link" href="{% url 'newsGrid' %}">Blog Grid</a></li>
-                <li class="dropdown-li"><a class="dropdown-link" href="{% url 'newsDetails' %}">Blog Details</a></li>
-                </ul> -->
-                </li>
-                <li><a class="menu-item menu-item {% if subTitle == 'Contact' %}
-                    active1
-                    {% endif %} " href="{% url 'contact' %}">Trending Fashion</a></li>
+                                {# 5. Beauty Advice #}
+                                <li class="has-dropdown">
+                                    <a class="menu-item menu-item {% if subTitle == 'Blog' %}
+                                active1
+                                {% endif %}" href="{% url 'blog_list' %}">Beauty Advice </a>
+                                    <!-- <ul class="dropdown-ul">
+                                    <li class="dropdown-li"><a class="dropdown-link" href="{% url 'news' %}">Blog</a>
+                                    </li>
+                                    <li class="dropdown-li"><a class="dropdown-link" href="{% url 'newsGrid' %}">Blog Grid</a></li>
+                                    <li class="dropdown-li"><a class="dropdown-link" href="{% url 'newsDetails' %}">Blog Details</a></li>
+                                    </ul> -->
+                                </li>
                 <!-- <li><a class="menu-item menu-item {% if subTitle == 'Contact' %}
                 active1
                 {% endif %} " href="{% url 'contact' %}">Contact</a></li> -->
@@ -217,9 +219,6 @@
                             </div>
                         </div>
                         <a href="{% url 'login' %}" class="account"><i class="rt-user-2"></i></a>
-                        <a href="{% url 'view_wishlist' %}" class="wishlist action-item" title="Wishlist">
-                            <div class="favourite-icon icon"><i class="rt-heart"></i><span class="wishlist-dot icon-dot">{{ wishlist_count|default:0 }}</span></div>
-                        </a>
                         <div class="cart action-item">
                             <div class="cart-nav">
                                 <div class="cart-icon icon"><a href="{% url 'view_cart' %}"><i aria-hidden="true" class="fas fa-shopping-basket"></i></a><span class="cart-dot icon-dot">{{ cart_item_count|default:0 }}</span></div>
@@ -307,27 +306,56 @@
         <div class="offset-sidebar-main">
             <div class="offset-widget mb-40">
                 <div class="info-widget">
-                    <img src="/static/images/logo1.svg" alt="">
-                    <p class="mb-30">
-                        We must explain to you how all seds this mistakens idea denouncing pleasures and praising account.
-                    </p>
+                    {% if profile_setting.logo_light %}
+                        <img src="{{ profile_setting.logo_light.url }}" alt="logo">
+                    {% else %}
+                        <img src="/static/images/logo1.svg" alt="logo">
+                    {% endif %}
+                    {% if profile_setting.main_office_address %}
+                        <p class="mb-30">{{ profile_setting.main_office_address }}</p>
+                    {% else %}
+                        <p class="mb-30">
+                            We must explain to you how all seds this mistakens idea denouncing pleasures and praising account.
+                        </p>
+                    {% endif %}
                 </div>
                 <div class="info-widget info-widget2">
                     <h4 class="offset-title mb-20">Get In Touch </h4>
                     <ul>
-                        <li class="info phone"><a href="tel:78090790890208806803">780 907 908 90, 208 806 803</a></li>
-                        <li class="info email"><a href="email:pixcelsthemes@gmail.com">pixcelsthemes@gmail.com</a></li>
-                        <li class="info web"><a href="www.mriigg.com">www.mriigg.com</a></li>
-                        <li class="info location">13/A, New Pro State, NYC</li>
+                        {% if profile_setting.phone_number1 %}
+                            <li class="info phone"><a href="tel:{{ profile_setting.phone_number1 }}">{{ profile_setting.phone_number1 }}</a></li>
+                        {% endif %}
+                        {% if profile_setting.phone_number2 %}
+                            <li class="info phone"><a href="tel:{{ profile_setting.phone_number2 }}">{{ profile_setting.phone_number2 }}</a></li>
+                        {% endif %}
+                        {% if profile_setting.email %}
+                            <li class="info email"><a href="mailto:{{ profile_setting.email }}">{{ profile_setting.email }}</a></li>
+                        {% endif %}
+                        {% if profile_setting.main_office_address %}
+                            <li class="info location">{{ profile_setting.main_office_address }}</li>
+                        {% endif %}
+                        {% if profile_setting.branch_office_address %}
+                            <li class="info location">{{ profile_setting.branch_office_address }}</li>
+                        {% endif %}
                     </ul>
                     <div class="offset-social-link">
                         <h4 class="offset-title mb-20">Follow Us </h4>
                         <ul class="social-icon">
-                            <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
-                            <li><a href="#"><i class="fab fa-twitter"></i></a></li>
-                            <li><a href="#"><i class="fab fa-youtube"></i></a></li>
-                            <li><a href="#"><i class="fab fa-linkedin"></i></a></li>
-                            <li><a href="#"><i class="fab fa-behance"></i></a></li>
+                            {% if profile_setting.facbook %}
+                                <li><a href="{{ profile_setting.facbook }}" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
+                            {% endif %}
+                            {% if profile_setting.twitter %}
+                                <li><a href="{{ profile_setting.twitter }}" target="_blank"><i class="fab fa-twitter"></i></a></li>
+                            {% endif %}
+                            {% if profile_setting.youtube %}
+                                <li><a href="{{ profile_setting.youtube }}" target="_blank"><i class="fab fa-youtube"></i></a></li>
+                            {% endif %}
+                            {% if profile_setting.linkedin %}
+                                <li><a href="{{ profile_setting.linkedin }}" target="_blank"><i class="fab fa-linkedin"></i></a></li>
+                            {% endif %}
+                            {% if profile_setting.instagram %}
+                                <li><a href="{{ profile_setting.instagram }}" target="_blank"><i class="fab fa-instagram"></i></a></li>
+                            {% endif %}
                         </ul>
                     </div>
                 </div>
@@ -337,7 +365,21 @@
         <!-- side-mobile-menu start -->
         <nav class="side-mobile-menu side-mobile-menu1">
             <ul id="mobile-menu-active">
+                {# 1. Brands #}
+                <li class="has-dropdown firstlvl">
+                    <a class="mm-link" href="#">Brands <i class="rt-angle-down"></i></a>
+                    <ul class="sub-menu">
+                        {% if all_brands %}
+                            {% for brand in all_brands %}
+                            <li><a href="{% url 'shop' %}?brand={{ brand.slug }}">{{ brand.name }}</a></li>
+                            {% endfor %}
+                        {% else %}
+                            <li><a href="{% url 'shop' %}">No brands available</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
                 
+                {# 2. Categories #}
                 <li class="has-dropdown firstlvl">
                     <a class="mm-link" href="{% url 'shop' %}">Categories <i class="rt-angle-down"></i></a>
                     <ul class="sub-menu mega-dropdown-mobile">
@@ -371,35 +413,30 @@
                         {% endif %}
                     </ul>
                 </li>
+                
+                {# 3. Trending Fashion #}
+                <li><a class="mm-link" href="{% url 'contact' %}">Trending Fashion</a></li>
+                
+                {# 4. Offers #}
                 <li class="has-dropdown firstlvl">
-                    <a class="mm-link" href="#">Brands <i class="rt-angle-down"></i></a>
+                    <a class="mm-link" href="/">Offers <i class="rt-angle-down"></i></a>
                     <ul class="sub-menu">
-                        {% if all_brands %}
-                            {% for brand in all_brands %}
-                            <li><a href="{% url 'shop' %}?brand={{ brand.slug }}">{{ brand.name }}</a></li>
-                            {% endfor %}
-                        {% else %}
-                            <li><a href="{% url 'shop' %}">No brands available</a></li>
-                        {% endif %}
+                        <li><a href="#">Whats New</a></li>
+                        <li><a href="#">Whats Hot</a></li>
+                        <li><a href="#">My Sunday</a></li>
+                        <li><a href="#">Combo</a></li>
                     </ul>
                 </li>
+                
+                {# 5. Beauty Advice #}
                 <li class="has-dropdown firstlvl">
-                    <a class="mm-link" href="/">Pages <i class="rt-angle-down"></i></a>
-                    <ul class="sub-menu">
-                        <li><a href="{% url 'about' %}">About</a></li>
-                        <li><a href="{% url 'faq' %}">FAQ's</a></li>
-                        <li><a href="{% url 'errorPage' %}">Error 404</a></li>
-                    </ul>
-                </li>
-                <li class="has-dropdown firstlvl">
-                    <a class="mm-link" href="{% url 'news' %}">Blog <i class="rt-angle-down"></i></a>
+                    <a class="mm-link" href="{% url 'blog_list' %}">Beauty Advice <i class="rt-angle-down"></i></a>
                     <ul class="sub-menu">
                         <li><a href="{% url 'news' %}">Blog</a></li>
                         <li><a href="{% url 'newsGrid' %}">Blog Grid</a></li>
                         <li><a href="{% url 'newsDetails' %}">Blog Details</a></li>
                     </ul>
                 </li>
-                <li><a class="mm-link" href="{% url 'contact' %}">Contact</a></li>
             </ul>
         </nav>
         <div class="header-action-items header-action-items1 header-action-items-side">
@@ -433,23 +470,9 @@
                     </div>
                 </div>
             </a>
-            <a href="{% url 'view_wishlist' %}" class="wishlist action-item" title="Wishlist">
-                <div class="favourite-icon icon"><i class="rt-heart"></i><span class="wishlist-dot icon-dot">{{ wishlist_count|default:0 }}</span>
-                </div>
-            </a>
             <a href="{% url 'login' %}" class="account"><i class="rt-user-2"></i></a>
         </div>
         <!-- side-mobile-menu end -->
     </aside>
-    <div class="page-path">
-        <div class="container">
-            <div class="breadcrumbs-inner">
-                <h1 class="path-title">{{title}}</h1>
-                <ul>
-                    <li><a class="home-page-link" href="/">{{subTitle}}<i class="fal fa-angle-right"></i></a></li>
-                    <li><a class="current-page" href="#">{{subTitle2}}</a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
+    
 </header>
