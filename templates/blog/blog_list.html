@@ -3,6 +3,24 @@
 {% block content %}
 
 <!--news-feed-area start-->
+<div class="rts-featured-product-section3">
+    <div class="container">
+        <div class="rts-featured-product-section-inner">
+            <div class="section-header section-header3 text-center">
+                <div class="wrapper">
+                    <div class="sub-content">
+                        <img class="line-1" src="/static/images/banner/wvbo-icon.png" alt="">
+                        <h3 class="title">BLOG</h3>
+                        <img class="line-2" src="/static/images/banner/wvbo-icon.png" alt="">
+                    </div>
+                    
+                </div>
+            </div>
+            {% if blogs %}
+            <div class="row">
+                {% for blog in blogs %}
+                <div class="col-xl-4 col-md-6 col-sm-12">
+                    <div class="full-wrapper wrapper-{% cycle '1' '2' '3' %} wrapper-4">
 <section class="news-feed-area pt-120 pb-75 pt-md-60 pb-md-15 pt-xs-50 pb-xs-10">
     <div class="container">
         <div class="row mb-15">
@@ -10,60 +28,68 @@
             <div class="col-lg-8 pe-xl-0">
                 <div class="rts-featured-product-section3">
                     <div class="rts-featured-product-section-inner">
-                        {% if blogs %}
-                        <div class="rts-featured-product-section3">
-                            <div class="container">
-                                <div class="rts-featured-product-section-inner">
-                                    <div class="row">
-                                        {% for blog in blogs %}
-                                        <div class="col-xl-4 col-md-6 col-sm-12">
-                                            <div class="full-wrapper wrapper-{% cycle '1' '2' '3' %} wrapper-4">
-                                                <div class="image-part">
-                                                    <a href="{% url 'blog_detail' blog.slug %}" class="image">
-                                                        {% if blog.featured_image %}
-                                                            <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}">
-                                                        {% else %}
-                                                            <img src="/static/images/featured/img-{{ forloop.counter|default:1 }}.jpg" alt="{{ blog.title }}">
-                                                        {% endif %}
-                                                    </a>
-                                                </div>
-                                                <div class="blog-content">
-                                                    <span class="date-full">
-                                                        <span class="day">{{ blog.post_date|date:"d" }}</span>
-                                                        <br>
-                                                        <span class="month">{{ blog.post_date|date:"M" }}</span>
-                                                    </span>
-                                                    <ul class="blog-meta">
-                                                        <li>
-                                                            <a href="{% if blog.category %}{% url 'blog_list' %}?category={{ blog.category.slug }}{% else %}{% url 'blog_list' %}{% endif %}">
-                                                                {% if blog.category %}{{ blog.category.name }}{% else %}Blog{% endif %}
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                    <div class="title">
-                                                        <a href="{% url 'blog_detail' blog.slug %}">{{ blog.title }}</a>
-                                                    </div>
-                                                    <div style="margin-top: 15px;">
-                                                        <a href="{% url 'blog_detail' blog.slug %}" style="display: inline-block; padding: 10px 20px; background: #8833b8; color: #fff; text-align: center; border-radius: 5px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease;">View Detail</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        {% endfor %}
-                                    </div>
-                                </div>
+{% if blogs %}
+<div class="rts-featured-product-section3">
+    <div class="container">
+        <div class="rts-featured-product-section-inner">
+          
+            <div class="row">
+                {% for blog in featured_blogs %}
+                <div class="col-xl-4 col-md-6 col-sm-12">
+                    <div class="full-wrapper wrapper-{{ forloop.counter }}">
+                        <div class="image-part">
+                            <a href="{% url 'blog_detail' blog.slug %}" class="image">
+                                {% if blog.featured_image %}
+                                    <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}">
+                                {% else %}
+                                    <img src="/static/images/featured/img-{{ forloop.counter|default:1 }}.jpg" alt="{{ blog.title }}">
+                                    <img src="/static/images/featured/img-{{ forloop.counter }}.jpg" alt="{{ blog.title }}">
+                                {% endif %}
+                            </a>
+                        </div>
+                        <div class="blog-content">
+                            <span class="date-full">
+                                <span class="day">{{ blog.post_date|date:"d" }}</span>
+                                <br>
+                                <span class="month">{{ blog.post_date|date:"M" }}</span>
+                            </span>
+                            <ul class="blog-meta">
+                                <li>
+                                    <a href="{% if blog.category %}{% url 'blog_list' %}?category={{ blog.category.slug }}{% else %}{% url 'blog_list' %}{% endif %}">
+                                        {% if blog.category %}{{ blog.category.name }}{% else %}Blog{% endif %}
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="title">
+                                <a href="{% url 'blog_detail' blog.slug %}">{{ blog.title }}</a>
+                            </div>
+                            <div style="margin-top: 15px;">
+                                <a href="{% url 'blog_detail' blog.slug %}" style="display: inline-block; padding: 10px 20px; background: #8833b8; color: #fff; text-align: center; border-radius: 5px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease;">View Detail</a>
+                                <a href="{% url 'blog_detail' blog.slug %}" style="display: inline-block; padding: 10px 20px; background: #8833b8; color: #fff; text-align: center; border-radius: 5px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease;">View</a>
                             </div>
                         </div>
-                        {% else %}
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="text-center" style="padding: 60px 20px;">
-                                    <h3 style="color: #666; margin-bottom: 20px;">No blog posts found</h3>
-                                    <p style="color: #999;">{% if search_query %}Try a different search term{% elif selected_category %}No posts in this category{% else %}Check back later for new posts{% endif %}</p>
-                                </div>
-                            </div>
-                        </div>
-                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="row">
+                <div class="col-12">
+                    <div class="text-center" style="padding: 60px 20px;">
+                        <h3 style="color: #666; margin-bottom: 20px;">No blog posts found</h3>
+                        <p style="color: #999;">{% if search_query %}Try a different search term{% elif selected_category %}No posts in this category{% else %}Check back later for new posts{% endif %}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+        </div>
+    </div>
+</div>
+{% endif %}
+                      
                     </div>
                 </div>
             </div>

@@ -6,6 +6,8 @@ import base64
 import json
 import requests
 from django.conf import settings
+import razorpay
+
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
@@ -797,6 +799,99 @@ class ApplyCouponAPI(APIView):
         # Assuming min_purchase applies to the items getting the discount
         if eligible_amount < coupon.min_purchase_amount:
              return Response({"valid": False, "error": f"Minimum purchase of ₹{coupon.min_purchase_amount} required on applicable items"}, status=status.HTTP_200_OK)
+
+
+class RazorpayOrderCreateAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        order_id = request.data.get('order_id')
+        if not order_id:
+            return Response({'error': 'Order ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        order = get_object_or_404(Order, id=order_id, user=request.user)
+        amount = int(order.get_total_cost() * 100)  # Amount in paise
+
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+
+        data = {
+            "amount": amount,
+            "currency": "INR",
+            "receipt": f"order_rcptid_{order.id}",
+            "notes": {
+                "order_id": order.id,
+                "user_email": request.user.email
+            }
+        }
+
+        try:
+            razorpay_order = client.order.create(data=data)
+            
+            # Create Payment record
+            Payment.objects.create(
+                order=order,
+                amount=order.get_total_cost(),
+                status='pending',
+                payment_method='razorpay',
+                razorpay_order_id=razorpay_order['id']
+            )
+
+            return Response({
+                'id': razorpay_order['id'],
+                'amount': razorpay_order['amount'],
+                'currency': razorpay_order['currency'],
+                'keyId': settings.RAZORPAY_KEY_ID
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class RazorpayPaymentVerifyAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        data = request.data
+        razorpay_payment_id = data.get('razorpay_payment_id')
+        razorpay_order_id = data.get('razorpay_order_id')
+        razorpay_signature = data.get('razorpay_signature')
+
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+
+        try:
+            # Verify signature
+            params_dict = {
+                'razorpay_order_id': razorpay_order_id,
+                'razorpay_payment_id': razorpay_payment_id,
+                'razorpay_signature': razorpay_signature
+            }
+            client.utility.verify_payment_signature(params_dict)
+
+            # Update Payment Record
+            payment = Payment.objects.get(razorpay_order_id=razorpay_order_id)
+            payment.razorpay_payment_id = razorpay_payment_id
+            payment.razorpay_signature = razorpay_signature
+            payment.status = 'success'
+            payment.save()
+
+            # Update Order Status
+            order = payment.order
+            order.paid = True
+            order.status = 'paid'
+            order.save()
+
+            return Response({'status': 'Payment successful'}, status=status.HTTP_200_OK)
+
+        except razorpay.errors.SignatureVerificationError:
+            payment = Payment.objects.filter(razorpay_order_id=razorpay_order_id).first()
+            if payment:
+                payment.status = 'failed'
+                payment.save()
+            return Response({'error': 'Payment verification failed'}, status=status.HTTP_400_BAD_REQUEST)
+        except Payment.DoesNotExist:
+             return Response({'error': 'Payment record not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         # Validate other general rules (Date, Usage)
         is_valid, message = coupon.is_valid(cart_total=total_cart_value, user=request.user)

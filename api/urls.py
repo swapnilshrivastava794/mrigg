@@ -30,8 +30,11 @@ from .views import (
     FilterProductsAPI,
     GokwikPaymentInitiateView,
     GokwikPaymentCallbackView,
-    ApplyCouponAPI
+    ApplyCouponAPI,
+    RazorpayOrderCreateAPI,
+    RazorpayPaymentVerifyAPI
 )
+
 
 urlpatterns = [
 
@@ -100,4 +103,9 @@ urlpatterns = [
     path("coupon/apply/", ApplyCouponAPI.as_view(), name="coupon-apply"),
     #ad by vicky
     path("deleteuser/<int:cusuid_id>/", UserdelAPIView.as_view(), name="user-delete"),
+
+    # Razorpay
+    path("razorpay/create-order/", RazorpayOrderCreateAPI.as_view(), name="razorpay-create-order"),
+    path("razorpay/verify-payment/", RazorpayPaymentVerifyAPI.as_view(), name="razorpay-verify-payment"),
 ]
+
