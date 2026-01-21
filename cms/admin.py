@@ -4,6 +4,7 @@ from django.utils.html import format_html
 from django.urls import reverse
 from django import forms
 from django.core.exceptions import ValidationError
+from django.contrib.admin.widgets import AdminFileWidget
 
 
 class SliderForm(forms.ModelForm):
@@ -37,16 +38,66 @@ class SliderForm(forms.ModelForm):
         slidervideo = cleaned_data.get('slidervideo')
         video_url = cleaned_data.get('video_url')
         
-        has_image = bool(sliderimage)
-        has_video = bool(slidervideo)
-        has_video_url = bool(video_url)
+        # Check if fields were explicitly cleared (False means cleared via checkbox)
+        image_cleared = sliderimage is False
+        video_cleared = slidervideo is False
         
+        # If updating existing instance
+        if self.instance and self.instance.pk:
+            # If image is being cleared, validate that other media exists
+            if image_cleared:
+                # Don't modify cleaned_data yet - let Django handle False
+                # Just validate that other media will be available after clearing
+                will_have_video = (slidervideo and slidervideo is not False) or bool(self.instance.slidervideo)
+                will_have_video_url = (video_url and video_url.strip() if isinstance(video_url, str) else video_url) or bool(self.instance.video_url)
+                
+                if not will_have_video and not will_have_video_url:
+                    raise ValidationError("Cannot clear image. Please add a video file or video URL first, or keep the existing image.")
+            
+            # If video is being cleared, validate that other media exists
+            if video_cleared:
+                # Don't modify cleaned_data yet - let Django handle False
+                # Just validate that other media will be available after clearing
+                will_have_image = (sliderimage and sliderimage is not False) or bool(self.instance.sliderimage)
+                will_have_video_url = (video_url and video_url.strip() if isinstance(video_url, str) else video_url) or bool(self.instance.video_url)
+                
+                if not will_have_image and not will_have_video_url:
+                    raise ValidationError("Cannot clear video. Please add an image or video URL first, or keep the existing video.")
+            
+            # Preserve existing values if fields weren't changed (not cleared and not new upload)
+            if not image_cleared and not sliderimage and self.instance.sliderimage:
+                cleaned_data['sliderimage'] = self.instance.sliderimage
+                sliderimage = self.instance.sliderimage
+            
+            if not video_cleared and not slidervideo and self.instance.slidervideo:
+                cleaned_data['slidervideo'] = self.instance.slidervideo
+                slidervideo = self.instance.slidervideo
+            
+            if not video_url and self.instance.video_url:
+                cleaned_data['video_url'] = self.instance.video_url
+                video_url = self.instance.video_url
+        
+        # Check what media types will be available after processing
+        # For cleared fields (False), they will be cleared, so don't count them
+        has_image = bool(sliderimage) and sliderimage is not False
+        has_video = bool(slidervideo) and slidervideo is not False
+        has_video_url = bool(video_url) and (video_url.strip() if isinstance(video_url, str) else True)
+        
+        # Final validation: At least one media type must be present
         if not has_image and not has_video and not has_video_url:
-            raise ValidationError("Please provide either an image, video file, or video URL.")
+            if self.instance and self.instance.pk:
+                # For updates, if no media in form, check if instance has media (fields weren't changed)
+                if not (self.instance.sliderimage or self.instance.slidervideo or self.instance.video_url):
+                    raise ValidationError("Please provide either an image, video file, or video URL.")
+            else:
+                # New instance - must have at least one media
+                raise ValidationError("Please provide either an image, video file, or video URL.")
         
+        # Validation: Cannot have both image and video
         if has_image and (has_video or has_video_url):
             raise ValidationError("Please provide either an image OR a video (not both).")
         
+        # Validation: Cannot have both video file and video URL
         if has_video and has_video_url:
             raise ValidationError("Please provide either a video file OR a video URL (not both).")
         
@@ -95,10 +146,16 @@ class SliderAdmin(admin.ModelAdmin):
         return self.readonly_fields
     
     def save_model(self, request, obj, form, change):
-        """Override save to optimize performance"""
+        """Override save to optimize performance and handle cleared fields"""
         # Set author if not set
         if not obj.author_id:
             obj.author = request.user
+        
+        # Handle cleared file fields - convert False to None for database
+        if obj.sliderimage is False:
+            obj.sliderimage = None
+        if obj.slidervideo is False:
+            obj.slidervideo = None
         
         # Check if image field was actually changed using form's changed_data
         if change and 'sliderimage' not in form.changed_data:
@@ -109,8 +166,68 @@ class SliderAdmin(admin.ModelAdmin):
             super().save_model(request, obj, form, change)
 
 
+class CMSFileWidget(AdminFileWidget):
+    """Custom widget that allows both clear checkbox and file upload"""
+    def value_from_datadict(self, data, files, name):
+        """Override to handle both clear checkbox and file upload"""
+        upload = files.get(name)
+        clear = data.get(f"{name}-clear", False)
+        
+        # If both are provided, prioritize the new file (ignore clear checkbox)
+        if upload and clear:
+            return upload
+        
+        # If only clear checkbox is checked
+        if clear:
+            return False
+        
+        # If only file is uploaded
+        if upload:
+            return upload
+        
+        # If neither, return None (will keep existing file)
+        return None
+
+
+class CMSForm(forms.ModelForm):
+    """Custom form for CMS to handle image uploads properly"""
+    class Meta:
+        model = CMS
+        fields = '__all__'
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Make pageimage optional for updates
+        if self.instance and self.instance.pk:
+            self.fields['pageimage'].required = False
+            # Use custom widget
+            self.fields['pageimage'].widget = CMSFileWidget()
+    
+    def clean_pageimage(self):
+        """Handle image field validation"""
+        pageimage = self.cleaned_data.get('pageimage')
+        
+        # If pageimage is False, it means clear checkbox was checked
+        # Django will handle this automatically, we just need to allow it
+        if pageimage is False:
+            return False
+        
+        # If a new file is uploaded, validate it
+        if pageimage:
+            # Check file extension
+            allowed_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp']
+            file_extension = pageimage.name.lower().split('.')[-1]
+            if f'.{file_extension}' not in allowed_extensions:
+                raise ValidationError(
+                    f'Invalid image file type. Allowed types: {", ".join(allowed_extensions)}'
+                )
+        
+        return pageimage
+
+
 @admin.register(CMS)
 class CMSAdmin(admin.ModelAdmin):
+    form = CMSForm
     list_display = ('pagename', 'status', 'viewcounter', 'order', 'post_date', 'author')
     list_filter = ('status', 'post_date', 'author')
     search_fields = ('pagename', 'Content')
@@ -141,6 +258,19 @@ class CMSAdmin(admin.ModelAdmin):
         """Optimize queryset to avoid N+1 queries"""
         qs = super().get_queryset(request)
         return qs.select_related('author')
+    
+    def save_model(self, request, obj, form, change):
+        """Override save to handle cleared image fields properly"""
+        # Set author if not set
+        if not obj.author_id:
+            obj.author = request.user
+        
+        # Handle cleared image field - convert False to None for database
+        if obj.pageimage is False:
+            obj.pageimage = None
+        
+        # Save the model
+        super().save_model(request, obj, form, change)
 
 
 @admin.register(BlogCategory)

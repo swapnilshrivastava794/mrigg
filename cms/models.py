@@ -260,10 +260,17 @@ class CMS(models.Model):
     def save(self, *args, **kwargs):
         super(CMS, self).save(*args, **kwargs)
         if self.pageimage:
-            img = Image.open(self.pageimage.path)
-            desired_size = (1280, 220)
-            img.thumbnail(desired_size)
-            img.save(self.pageimage.path)
+            # Check if file actually exists before processing
+            import os
+            if os.path.exists(self.pageimage.path):
+                try:
+                    img = Image.open(self.pageimage.path)
+                    desired_size = (1280, 220)
+                    img.thumbnail(desired_size)
+                    img.save(self.pageimage.path)
+                except Exception as e:
+                    # If image processing fails, log but don't break save
+                    print(f"Error processing CMS image: {e}")
     
     slug=models.SlugField(max_length=200, unique=True, null=True, blank=True, verbose_name="Slug")
     post_date=models.DateTimeField(auto_now_add=True)

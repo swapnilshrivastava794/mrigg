@@ -43,9 +43,7 @@
                             <option value="ban">Bangla</option>
                         </select>
                         <select class="topbar-select custom-select2">
-                            <option value="usd">USD</option>
-                            <option value="eur">Euro</option>
-                            <option value="tk">Taka</option>
+                            <option value="inr">INR</option>
                         </select>
                     </div>
                 </div>
@@ -149,25 +147,19 @@
                         active1
                         {% endif %} " href="#">Offers </a>
                         <ul class="dropdown-ul">
-                            <li class="dropdown-li">
-                                <a class="dropdown-link" href="#">Whats New</a>
-                            </li>
-                        <li class="dropdown-li">
-                            <a class="dropdown-link" href="#">Whats Hot</a>
-                        </li>
-                        <li class="dropdown-li">
-                            <a class="dropdown-link" href="#">My Sunday</a>
-                        </li>
-                        <li class="dropdown-li">
-                            <a class="dropdown-link" href="#">Combo</a>
-                        </li>
-                        <!-- <li class="dropdown-li"><a class="dropdown-link" href="{% url 'about' %}">About</a>
-                        </li>
-                        <li class="dropdown-li"><a class="dropdown-link" href="{% url 'faq' %}">FAQ's</a>
-                        </li>
-                        <li class="dropdown-li"><a class="dropdown-link" href="{% url 'errorPage' %}">Error
-                        404</a>
-                        </li> -->
+                            {% if all_offers %}
+                                {% for offer in all_offers %}
+                                <li class="dropdown-li">
+                                    <a class="dropdown-link" href="{% if offer.offer_slug %}{% url 'offer_detail' offer.offer_slug %}{% else %}{% url 'shop' %}{% endif %}">
+                                        {{ offer.offer_title }}
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            {% else %}
+                                <li class="dropdown-li">
+                                    <a class="dropdown-link" href="{% url 'shop' %}">No offers available</a>
+                                </li>
+                            {% endif %}
                         </ul>
                         </li>
 
@@ -421,10 +413,13 @@
                 <li class="has-dropdown firstlvl">
                     <a class="mm-link" href="/">Offers <i class="rt-angle-down"></i></a>
                     <ul class="sub-menu">
-                        <li><a href="#">Whats New</a></li>
-                        <li><a href="#">Whats Hot</a></li>
-                        <li><a href="#">My Sunday</a></li>
-                        <li><a href="#">Combo</a></li>
+                        {% if all_offers %}
+                            {% for offer in all_offers %}
+                            <li><a href="{% if offer.offer_slug %}{% url 'offer_detail' offer.offer_slug %}{% else %}{% url 'shop' %}{% endif %}">{{ offer.offer_title }}</a></li>
+                            {% endfor %}
+                        {% else %}
+                            <li><a href="{% url 'shop' %}">No offers available</a></li>
+                        {% endif %}
                     </ul>
                 </li>
                 

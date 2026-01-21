@@ -70,18 +70,22 @@ def home(request):
         status='active'
     ).filter(
         # Only show sliders that have at least one media (image or video)
-        Q(sliderimage__isnull=False) | Q(slidervideo__isnull=False) | Q(video_url__isnull=False)
-    ).exclude(
-        # Exclude sliders with empty string media
-        Q(sliderimage='') & Q(slidervideo='') & Q(video_url='')
+        # Check for non-null AND non-empty values
+        (Q(sliderimage__isnull=False) & ~Q(sliderimage='')) |
+        (Q(slidervideo__isnull=False) & ~Q(slidervideo='')) |
+        (Q(video_url__isnull=False) & ~Q(video_url=''))
     )
     
     # Apply date filtering - show if no dates OR dates are valid
-    sliders = sliders.filter(
-        # Show if: (no start date OR start <= today) AND (no end date OR end >= today)
-        (Q(ad_start_date__isnull=True) | Q(ad_start_date__lte=today)) &
-        (Q(ad_end_date__isnull=True) | Q(ad_end_date__gte=today))
-    ).select_related('product', 'slidercat').annotate(
+    # Commented out to show all active sliders regardless of dates
+    # Uncomment below to enable date filtering
+    # sliders = sliders.filter(
+    #     # Show if: (no start date OR start <= today) AND (no end date OR end >= today)
+    #     (Q(ad_start_date__isnull=True) | Q(ad_start_date__lte=today)) &
+    #     (Q(ad_end_date__isnull=True) | Q(ad_end_date__gte=today))
+    # )
+    
+    sliders = sliders.select_related('product', 'slidercat').annotate(
         order_value=Coalesce('order', Value(999999, output_field=IntegerField()))
     ).order_by('order_value', 'id')
     
