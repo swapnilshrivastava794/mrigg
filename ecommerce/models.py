@@ -728,11 +728,6 @@ class Payment(models.Model):
     status = models.CharField(max_length=20, choices=PAYMENT_STATUS, default='pending')
     timestamp = models.DateTimeField(auto_now_add=True)
     response_data = models.TextField(blank=True, null=True) # Store full JSON for debugging
-    
-    # Razorpay Fields
-    razorpay_order_id = models.CharField(max_length=100, blank=True, null=True, verbose_name="Razorpay Order ID")
-    razorpay_payment_id = models.CharField(max_length=100, blank=True, null=True, verbose_name="Razorpay Payment ID")
-    razorpay_signature = models.CharField(max_length=200, blank=True, null=True, verbose_name="Razorpay Signature")
 
     class Meta:
         db_table = 'main_payment'
