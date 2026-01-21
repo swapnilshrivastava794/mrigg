@@ -86,6 +86,8 @@ urlpatterns = [
 ),
     path("products/search/", ProductSearchListView.as_view(), name="product-search"),
 
+    # test form swapnil mail
+
     path('addresses/', UserAddressListView.as_view(), name='address-list'),
     path("user/addresses/", UserAddressAPIView.as_view()),
     path("user/addresses/<int:pk>/", UserAddressDetailAPIView.as_view()),
