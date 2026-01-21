@@ -16,6 +16,8 @@ from ecommerce.models import (
     UserAddress,
     Coupon,
     CouponUsage,
+    Offer,
+    OfferProduct,
 )
 
 from cms.models import slider
@@ -200,6 +202,8 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class SliderSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
+    video = serializers.SerializerMethodField()
+    media_type = serializers.SerializerMethodField()
     deal_label = serializers.SerializerMethodField()
     cta_text = serializers.SerializerMethodField()
     redirect = serializers.SerializerMethodField()
@@ -211,6 +215,9 @@ class SliderSerializer(serializers.ModelSerializer):
             "ad_title",
             "ad_description",
             "image",
+            "video",
+            "video_url",
+            "media_type",
             "deal_type",
             "deal_label",
             "cta_text",
@@ -222,6 +229,15 @@ class SliderSerializer(serializers.ModelSerializer):
         if obj.sliderimage and request:
             return request.build_absolute_uri(obj.sliderimage.url)
         return None
+
+    def get_video(self, obj):
+        request = self.context.get("request")
+        if obj.slidervideo and request:
+            return request.build_absolute_uri(obj.slidervideo.url)
+        return None
+
+    def get_media_type(self, obj):
+        return obj.get_media_type()
 
     def get_deal_label(self, obj):
         mapping = {
@@ -571,5 +587,40 @@ class PaymentSuccessSerializer(serializers.Serializer):
             raise serializers.ValidationError("Invalid order ID")
 
         return value
+
+
+class OfferSerializer(serializers.ModelSerializer):
+    products = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField() # Custom image field for absolute URL
+
+    class Meta:
+        model = Offer
+        fields = [
+            'id',
+            'offer_name',
+            'page_position',
+            'offer_title',
+            'offer_slug',
+            'offer_description',
+            'image', # Return 'image' instead of 'offer_image' for consistency
+            'meta_title',
+            'meta_description',
+            'start_date',
+            'end_date',
+            'products',
+        ]
+
+    def get_image(self, obj):
+        request = self.context.get("request")
+        if obj.offer_image and request:
+            return request.build_absolute_uri(obj.offer_image.url)
+        return None
+
+    def get_products(self, obj):
+        # maximize performance by selecting related fields if needed
+        offer_products = obj.offer_products.select_related('product').all()
+        products = [op.product for op in offer_products]
+        # Rewrite context to ensure absolute URLs in nested serializers work
+        return ProductSearchListSerializer(products, many=True, context=self.context).data
 
 

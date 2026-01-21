@@ -13,7 +13,7 @@ from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.generics import ListAPIView
-from ecommerce.models import Category, Order, Product, UserAddress, Coupon, CouponUsage
+from ecommerce.models import Category, Order, Product, UserAddress, Coupon, CouponUsage, Offer
 from cms.models import slider
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
@@ -29,7 +29,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
 
-from .serializers import PaymentSuccessSerializer, RegisterSerializer, CustomTokenObtainPairSerializer,UpdateProfileSerializer,RequestOTPSerializer, VerifyOTPChangePasswordSerializer,CategorySerializer,SliderSerializer,ProductSerializer,ProductSearchListSerializer,UserAddressSerializer,OrderSerializer,OrderCreateSerializer,UserAddressSerializer
+from .serializers import PaymentSuccessSerializer, RegisterSerializer, CustomTokenObtainPairSerializer,UpdateProfileSerializer,RequestOTPSerializer, VerifyOTPChangePasswordSerializer,CategorySerializer,SliderSerializer,ProductSerializer,ProductSearchListSerializer,UserAddressSerializer,OrderSerializer,OrderCreateSerializer,UserAddressSerializer,OfferSerializer
 import random
 from django.core.mail import send_mail
 from rest_framework import status
@@ -798,7 +798,52 @@ class ApplyCouponAPI(APIView):
         # Check Min Purchase on ELIGIBLE Amount (or Total? user intent varies. usually eligible)
         # Assuming min_purchase applies to the items getting the discount
         if eligible_amount < coupon.min_purchase_amount:
-             return Response({"valid": False, "error": f"Minimum purchase of ₹{coupon.min_purchase_amount} required on applicable items"}, status=status.HTTP_200_OK)
+            return Response({"valid": False, "error": f"Minimum purchase of ₹{coupon.min_purchase_amount} required on applicable items"}, status=status.HTTP_200_OK)
+
+        # Calculate Discount
+        discount = coupon.calculate_discount(eligible_amount)
+
+        return Response({
+            "valid": True,
+            "code": coupon.code,
+            "discount_amount": discount,
+            "discount_type": coupon.discount_type, # 'percent' or 'flat'
+            "message": f"Coupon applied! You saved ₹{discount}"
+        }, status=status.HTTP_200_OK)
+
+
+class OfferListView(ListAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = OfferSerializer
+
+    def get_queryset(self):
+        queryset = Offer.objects.filter(is_active=True).order_by('order', '-created_at')
+        
+        # Filter by Page Position
+        page_position = self.request.query_params.get('page_position')
+        if page_position:
+            queryset = queryset.filter(page_position=page_position)
+
+        # Filter by Offer Name (Type)
+        offer_name = self.request.query_params.get('offer_name')
+        if offer_name:
+            queryset = queryset.filter(offer_name=offer_name)
+
+        # Filter by Date Validity
+        now = timezone.now()
+        queryset = queryset.filter(start_date__lte=now, end_date__gte=now)
+
+        return queryset
+
+
+class OfferDetailView(generics.RetrieveAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = OfferSerializer
+    lookup_field = 'id'
+
+    def get_queryset(self):
+        now = timezone.now()
+        return Offer.objects.filter(is_active=True, start_date__lte=now, end_date__gte=now)
 
 
 class RazorpayOrderCreateAPI(APIView):
@@ -920,35 +965,51 @@ class UserdelAPIView(APIView):
 
     def delete(self, request, cusuid_id):
         """
-        Deactivate a user by ID.
-        Users can only deactivate their own account, or admin can deactivate any user.
+        Deactivate and anonymize a user by ID (Google Play Compliant).
         """
         try:
             # Get the user to be deactivated
             user_to_deactivate = get_object_or_404(User, id=cusuid_id)
             
-            # Check if user is trying to deactivate their own account
-            # OR if user is admin/staff
+            # Check permissions
             if request.user.id != user_to_deactivate.id:
-                # Check if current user is admin/staff
                 if not (request.user.is_staff or request.user.is_superuser):
                     return Response(
                         {"error": "You don't have permission to deactivate this user"},
                         status=status.HTTP_403_FORBIDDEN
                     )
             
-            # Deactivate the user (set is_active = False)
+            # Anonymize User Data (GDPR/Google Play Compliant)
+            timestamp = int(timezone.now().timestamp())
+            
+            user_to_deactivate.first_name = "Deleted"
+            user_to_deactivate.last_name = "User"
+            user_to_deactivate.email = f"deleted_{user_to_deactivate.id}_{timestamp}@mriigg.deleted"
+            user_to_deactivate.username = f"deleted_{user_to_deactivate.id}_{timestamp}"
+            
+            if hasattr(user_to_deactivate, 'mobile'):
+                user_to_deactivate.mobile = f"0000000000" # Nullify mobile
+
+            # Clear address or other personal info if needed
+            user_to_deactivate.address_line1 = ""
+            user_to_deactivate.address_line2 = ""
+            user_to_deactivate.city = ""
+            user_to_deactivate.state = ""
+            
+            # Deactivate
             user_to_deactivate.is_active = False
             user_to_deactivate.save()
             
+            # Optionally: Delete social auth tokens or sessions here
+            
             return Response(
-                {"message": "Account deactivated successfully"},
+                {"message": "Account deleted and data anonymized successfully"},
                 status=status.HTTP_200_OK
             )
             
         except Exception as e:
             return Response(
-                {"error": f"Error deactivating user: {str(e)}"},
+                {"error": f"Error deleting user: {str(e)}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 

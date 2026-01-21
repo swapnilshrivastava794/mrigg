@@ -32,7 +32,9 @@ from .views import (
     GokwikPaymentCallbackView,
     ApplyCouponAPI,
     RazorpayOrderCreateAPI,
-    RazorpayPaymentVerifyAPI
+    RazorpayPaymentVerifyAPI,
+    OfferListView,
+    OfferDetailView
 )
 
 
@@ -56,6 +58,8 @@ urlpatterns = [
     # ================= PUBLIC DATA =================
     path("categories/", CategoryListView.as_view(), name="category_list"),
     path("banners/", BannerListView.as_view(), name="banner_list"),
+    path("offers/", OfferListView.as_view(), name="offer_list"),
+    path("offers/<int:id>/", OfferDetailView.as_view(), name="offer_detail"),
 
     # ================= PRODUCTS (ID BASED, NO LOGIN) =================
     # 👉 category_id param do → us category ke saare products milenge
