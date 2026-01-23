@@ -45,18 +45,27 @@ from .views import (
 
 urlpatterns = [
 
-    # ================= CUSTOM USER AUTH (App/Frontend) =================
-    path("auth/custom/signup/", CustomUserSignupView.as_view(), name="custom_user_signup"),
-    path("auth/custom/login/", CustomUserLoginView.as_view(), name="custom_user_login"),
-    path("auth/custom/refresh/", CustomUserRefreshTokenView.as_view(), name="custom_user_refresh"),
-    path("auth/custom/me/", CustomUserProfileView.as_view(), name="custom_user_profile"),
+    # ================= CUSTOM USER AUTH (Replacing Old Endpoints) =================
+    # Ye wahi URLs hain jo App me use ho rahe hain, lekin ab ye Naye Logic par point kar rahe hain.
+    
+    path("auth/register/", CustomUserSignupView.as_view(), name="api_register"),
+    path("auth/login/", CustomUserLoginView.as_view(), name="api_login"),
+    path("auth/refresh/", CustomUserRefreshTokenView.as_view(), name="api_refresh"),
+    
+    # Profile (GET)
+    path("auth/me/", CustomUserProfileView.as_view(), name="api_me"),
+    
+    # Update Profile (PUT) - Same view, different method allowed
+    path("auth/update-profile/", CustomUserProfileView.as_view(), name="api_update_profile"),
 
-    # ================= OLD AUTH (Django Admin / Legacy) =================
-    path("auth/register/", RegisterView.as_view(), name="api_register"),
-    path("auth/login/", CustomTokenObtainPairView.as_view(), name="api_login"),
-    path("auth/refresh/", TokenRefreshView.as_view(), name="api_refresh"),
-    path("auth/me/", ProfileView.as_view(), name="api_me"),
-    path("auth/update-profile/", UpdateProfileView.as_view(), name="api_update_profile"),
+    # ================= (OLD AUTH COMMENTED OUT) =================
+    # path("auth/register/", RegisterView.as_view(), name="api_register_old"),
+    # path("auth/login/", CustomTokenObtainPairView.as_view(), name="api_login_old"),
+    # path("auth/refresh/", TokenRefreshView.as_view(), name="api_refresh_old"),
+    # path("auth/me/", ProfileView.as_view(), name="api_me_old"),
+    # path("auth/update-profile/", UpdateProfileView.as_view(), name="api_update_profile_old"),
+    # =============================================================
+
     path("auth/request-otp/", RequestOTPView.as_view(), name="api_request_otp"),
     path(
         "auth/verify-otp-change-password/",

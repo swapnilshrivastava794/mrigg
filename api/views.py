@@ -49,6 +49,7 @@ class CustomUserSignupView(APIView):
     This is SEPARATE from Django Admin auth.
     """
     permission_classes = [AllowAny]
+    authentication_classes = []  # 👈 Added to fix 403 Forbidden
     
     def post(self, request):
         email = request.data.get('email', '').strip().lower()
@@ -115,6 +116,7 @@ class CustomUserLoginView(APIView):
     This is SEPARATE from Django Admin auth.
     """
     permission_classes = [AllowAny]
+    authentication_classes = []  # 👈 Added to fix 403 Forbidden
     
     def post(self, request):
         email = request.data.get('email', '').strip().lower()
@@ -169,6 +171,7 @@ class CustomUserRefreshTokenView(APIView):
     Refresh access token using refresh token.
     """
     permission_classes = [AllowAny]
+    authentication_classes = []  # 👈 Added to fix 403 Forbidden
     
     def post(self, request):
         refresh_token = request.data.get('refresh', '')
