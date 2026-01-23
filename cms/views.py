@@ -16,6 +16,14 @@ def cms_page(request, slug):
     try:
         cms_page = CMS.objects.get(slug=slug, status='active')
         
+        # Check if pageimage exists and file is accessible
+        if cms_page.pageimage:
+            import os
+            if not os.path.exists(cms_page.pageimage.path):
+                # File doesn't exist, set to None to avoid errors
+                cms_page.pageimage = None
+                cms_page.save(update_fields=['pageimage'])
+        
         # Increment view counter
         cms_page.viewcounter += 1
         cms_page.save(update_fields=['viewcounter'])

@@ -1,5 +1,6 @@
 from django.db.models import Prefetch
-from ecommerce.models import CustomUser, Category, SubCategory, Brand, Product
+from django.utils import timezone
+from ecommerce.models import CustomUser, Category, SubCategory, Brand, Product, Offer
 from cms.models import profile_setting, CMS
 
 
@@ -132,4 +133,24 @@ def profile_setting_context(request):
     return {
         'profile_setting': profile,
         'cms_links': cms_links,
+    }
+
+
+def offers_context(request):
+    """
+    Context processor to provide active offers to all templates.
+    Returns all active offers that are currently valid (within date range).
+    """
+    try:
+        now = timezone.now()
+        offers = Offer.objects.filter(
+            is_active=True,
+            start_date__lte=now,
+            end_date__gte=now
+        ).order_by('order', '-created_at')
+    except Exception:
+        offers = []
+    
+    return {
+        'all_offers': offers,
     }

@@ -10,8 +10,8 @@
                 <div class="cursor"></div>
                 <div class="product-thumb-filter-group" style="position: absolute; left: 0; top: 0; display: flex; flex-direction: column; gap: 10px; z-index: 10; margin-left: 0 !important;">
                     {% if product_images %}
-                        {% for image in product_images|slice:":3" %}
-                            <div class="thumb-filter filter-btn {% if forloop.first %}active{% endif %}" data-show="{% if forloop.first %}.one{% elif forloop.counter == 2 %}.two{% else %}.three{% endif %}">
+                        {% for image in product_images|slice:":4" %}
+                            <div class="thumb-filter filter-btn {% if forloop.first %}active{% endif %}" data-show="{% if forloop.first %}.one{% elif forloop.counter == 2 %}.two{% elif forloop.counter == 3 %}.three{% else %}.four{% endif %}">
                                 <img src="{{ image.image.url }}" alt="{{ image.alt_text|default:product.name }}" style="width: 80px; height: 80px; object-fit: cover;">
                             </div>
                         {% endfor %}
@@ -30,11 +30,13 @@
                                 src="/static/images/products/product-filt2.jpg" alt="product-thumb-filter" style="width: 80px; height: 80px; object-fit: cover;"></div>
                         <div class="thumb-filter filter-btn" data-show=".three"><img
                                 src="/static/images/products/product-filt3.jpg" alt="product-thumb-filter" style="width: 80px; height: 80px; object-fit: cover;"></div>
+                        <div class="thumb-filter filter-btn" data-show=".four"><img
+                                src="/static/images/products/product-filt4.jpg" alt="product-thumb-filter" style="width: 80px; height: 80px; object-fit: cover;"></div>
                     {% endif %}
                 </div>
                 {% if product_images %}
-                    {% for img in product_images|slice:":3" %}
-                        <div class="thumb-wrapper {% if forloop.first %}one filterd-items figure{% elif forloop.counter == 2 %}two filterd-items hide{% else %}three filterd-items hide{% endif %}" style="margin-left: 100px;">
+                    {% for img in product_images|slice:":4" %}
+                        <div class="thumb-wrapper {% if forloop.first %}one filterd-items figure{% elif forloop.counter == 2 %}two filterd-items hide{% elif forloop.counter == 3 %}three filterd-items hide{% else %}four filterd-items hide{% endif %}" style="margin-left: 100px;">
                             <div class="product-thumb zoom" onmousemove="zoom(event)"
                                 style="background-image: url('{{ img.image.url }}')"><img
                                     src="{{ img.image.url }}" alt="{{ img.alt_text|default:product.name }}">
@@ -51,10 +53,10 @@
                             </div>
                         </div>
                     {% endif %}
-                    {% if product_images|length < 3 and not product_video %}
-                        {% for i in "x"|ljust:"3" %}
+                    {% if product_images|length < 4 and not product_video %}
+                        {% for i in "x"|ljust:"4" %}
                             {% if forloop.counter > product_images|length %}
-                                <div class="thumb-wrapper {% if forloop.counter == 2 %}two filterd-items hide{% elif forloop.counter == 3 %}three filterd-items hide{% endif %}" style="margin-left: 100px;">
+                                <div class="thumb-wrapper {% if forloop.counter == 2 %}two filterd-items hide{% elif forloop.counter == 3 %}three filterd-items hide{% elif forloop.counter == 4 %}four filterd-items hide{% endif %}" style="margin-left: 100px;">
                                     <div class="product-thumb zoom" onmousemove="zoom(event)"
                                         style="background-image: url('/static/images/products/product-details.jpg')"><img
                                             src="/static/images/products/product-details.jpg" alt="{{ product.name }}">
@@ -80,6 +82,12 @@
                         <div class="product-thumb zoom" onmousemove="zoom(event)"
                             style="background-image: url('/static/images/products/product-filt3.jpg')"><img
                                 src="/static/images/products/product-filt3.jpg" alt="{{ product.name }}">
+                        </div>
+                    </div>
+                    <div class="thumb-wrapper four filterd-items hide" style="margin-left: 100px;">
+                        <div class="product-thumb zoom" onmousemove="zoom(event)"
+                            style="background-image: url('/static/images/products/product-filt4.jpg')"><img
+                                src="/static/images/products/product-filt4.jpg" alt="{{ product.name }}">
                         </div>
                     </div>
                 {% endif %}

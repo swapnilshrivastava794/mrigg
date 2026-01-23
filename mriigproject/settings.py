@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 
 load_dotenv()  # Load environment variables from .env file
 
-AUTH_USER_MODEL = 'ecommerce.CustomUser'
+#AUTH_USER_MODEL = 'ecommerce.CustomUser'
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -83,6 +83,7 @@ TEMPLATES = [
                 'ecommerce.context_processors.custom_user_context',  # ✅ add this line
                 'ecommerce.context_processors.categories_context',  # ✅ add categories context
                 'ecommerce.context_processors.profile_setting_context',  # ✅ add profile_setting context
+                'ecommerce.context_processors.offers_context',  # ✅ add offers context
 
             ],
         },
@@ -362,17 +363,10 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-# ================= GOKWIK CONFIGURATION =================
-GOKWIK_MERCHANT_ID = os.getenv("GOKWIK_MERCHANT_ID", "198lw61hdxya")
-GOKWIK_APP_ID = os.getenv("GOKWIK_APP_ID", "6f6766360451ee688bc53b11176a3b85")
-GOKWIK_SECRET_KEY = os.getenv("GOKWIK_SECRET_KEY", "1d40c5818a0a07eb7bd1e52c91ba7def")
-GOKWIK_ENV = os.getenv("GOKWIK_ENV", "sandbox")
-# Base URL logic based on ENV
-if GOKWIK_ENV == "sandbox":
-    GOKWIK_BASE_URL = "https://sandbox.gokwik.co" 
-else:
-    GOKWIK_BASE_URL = "https://api.gokwik.co"
-# ========================================================
+
+# ================= RAZORPAY CONFIGURATION =================
+RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID", "rzp_live_S6CFwxNscpTr8p")
+RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET","GE7CZ2pH3alP7KdBjmCXFj6w")
 
 
 # Create logs directory if it doesn't exist

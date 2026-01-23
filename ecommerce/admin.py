@@ -567,12 +567,12 @@ class ProductVariationAdmin(admin.ModelAdmin):
 
 # ==================== Product Image Admin (Separate with Bulk Upload) ====================
 class BulkProductImageForm(forms.ModelForm):
-    """Form for bulk upload - 3 mandatory images, 1 optional image, 1 optional video"""
+    """Form for bulk upload - 4 optional images, 1 optional video"""
     
-    # Multiple image fields (first 3 are mandatory, 4th is optional)
+    # Multiple image fields (Image 1 is required, others are optional)
     image_1 = forms.ImageField(required=True, label='Image 1 *', help_text='Required')
-    image_2 = forms.ImageField(required=True, label='Image 2 *', help_text='Required')
-    image_3 = forms.ImageField(required=True, label='Image 3 *', help_text='Required')
+    image_2 = forms.ImageField(required=False, label='Image 2 (Optional)', help_text='Optional')
+    image_3 = forms.ImageField(required=False, label='Image 3 (Optional)', help_text='Optional')
     image_4 = forms.ImageField(required=False, label='Image 4 (Optional)', help_text='Optional')
     
     # Video field (1 video - optional)
@@ -603,11 +603,11 @@ class BulkProductImageForm(forms.ModelForm):
     
     def clean(self):
         cleaned_data = super().clean()
-        # First 3 images are mandatory (already validated by required=True)
-        # 4th image and video are optional
-        video = cleaned_data.get('video')
+        # Image 1 is required (already validated by required=True)
+        # Other images and video are optional
         
         # Validate video size if provided
+        video = cleaned_data.get('video')
         if video:
             if video.size > 2 * 1024 * 1024:  # 2MB
                 raise forms.ValidationError({'video': 'Video file size must be less than 2MB.'})
@@ -618,9 +618,45 @@ class BulkProductImageForm(forms.ModelForm):
         # This form doesn't save directly, it's handled in add_view
         return None
 
+class ProductImageEditForm(forms.ModelForm):
+    """Form for editing existing ProductImage with proper file handling"""
+    
+    class Meta:
+        model = ProductImage
+        fields = ['product', 'media_type', 'image', 'alt_text']
+        widgets = {
+            'product': admin.widgets.AutocompleteSelect(
+                ProductImage._meta.get_field('product'),
+                admin.site
+            ),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Ensure image field is always present and visible
+        if 'image' not in self.fields:
+            # If image field is missing, add it explicitly
+            from django.forms import ImageField
+            self.fields['image'] = ImageField(required=False)
+        
+        # Make image field optional for updates (can keep existing or upload new)
+        if self.instance and self.instance.pk:
+            self.fields['image'].required = False
+            # Ensure AdminFileWidget is used - it automatically shows clear checkbox for existing files
+            from django.contrib.admin.widgets import AdminFileWidget
+            # Create widget instance - AdminFileWidget automatically handles clear checkbox
+            self.fields['image'].widget = AdminFileWidget()
+            if self.instance.image:
+                if self.instance.media_type == 'video':
+                    self.fields['image'].help_text = f'Current video: {self.instance.image.name}. Upload a new video to replace it, or check "Clear" to remove it.'
+                else:
+                    self.fields['image'].help_text = f'Current image: {self.instance.image.name}. Upload a new image to replace it, or check "Clear" to remove it.'
+            else:
+                self.fields['image'].help_text = 'Upload a new image/video file.'
+
 @admin.register(ProductImage)
 class ProductImageAdmin(admin.ModelAdmin):
-    list_display = ('get_product_name', 'media_type', 'alt_text', 'get_preview')
+    list_display = ('get_preview', 'get_product_name', 'media_type', 'alt_text')
     list_filter = ('media_type', 'product', 'product__subcategory', 'product__brand')
     search_fields = ('product__name', 'alt_text')
     list_editable = ('media_type',)
@@ -628,7 +664,7 @@ class ProductImageAdmin(admin.ModelAdmin):
     autocomplete_fields = ('product',)  # Use autocomplete for better UX
     
     def get_form(self, request, obj=None, **kwargs):
-        """Use bulk form for add, regular form for change"""
+        """Use bulk form for add, custom form for change to ensure image field shows"""
         if obj is None:  # Adding new
             # Get the form class
             form_class = BulkProductImageForm
@@ -640,7 +676,15 @@ class ProductImageAdmin(admin.ModelAdmin):
                 formfield = self.formfield_for_foreignkey(product_field, request)
                 form_class.base_fields['product'] = formfield
             return form_class
-        return super().get_form(request, obj, **kwargs)
+        else:  # Editing existing - use custom form to ensure image field is visible
+            # Use ProductImageEditForm to ensure image field is properly displayed
+            form_class = ProductImageEditForm
+            # Apply formfield_for_foreignkey to set autocomplete widget for edit form too
+            product_field = ProductImage._meta.get_field('product')
+            if 'product' in form_class.base_fields:
+                formfield = self.formfield_for_foreignkey(product_field, request)
+                form_class.base_fields['product'] = formfield
+            return form_class
     
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         """Set autocomplete widget for product field with search"""
@@ -653,6 +697,17 @@ class ProductImageAdmin(admin.ModelAdmin):
             )
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
     
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        """Override to ensure ImageField uses AdminFileWidget with clear checkbox"""
+        if db_field.name == 'image':
+            # Use AdminFileWidget which automatically shows clear checkbox for existing files
+            from django.contrib.admin.widgets import AdminFileWidget
+            kwargs['widget'] = AdminFileWidget()
+            # Make field optional for updates
+            if hasattr(request, 'resolver_match') and 'object_id' in request.resolver_match.kwargs:
+                kwargs['required'] = False
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
+    
     def get_fieldsets(self, request, obj=None):
         """Different fieldsets for add vs change"""
         if obj is None:  # Adding new - use bulk form fieldsets
@@ -661,29 +716,35 @@ class ProductImageAdmin(admin.ModelAdmin):
                     'fields': ('product',),
                     'description': 'Select the product for these media files.'
                 }),
-                ('Images (First 3 are mandatory, 4th is optional)', {
+                ('Images (Image 1 is required, others are optional)', {
                     'fields': (
                         ('image_1', 'alt_text_1'),
                         ('image_2', 'alt_text_2'),
                         ('image_3', 'alt_text_3'),
                         ('image_4', 'alt_text_4'),
                     ),
-                    'description': 'Upload 3 mandatory images (Image 1, 2, 3) and 1 optional image (Image 4).'
+                    'description': 'Upload Image 1 (required) and up to 3 additional optional images (Image 2, 3, 4).'
                 }),
                 ('Video (Optional - max 2MB)', {
                     'fields': ('video', 'video_alt_text'),
                     'description': 'Upload one video file (max 2MB) for this product. Video is optional.'
                 }),
             )
-        else:  # Editing existing - use regular fieldsets
+        else:  # Editing existing - use regular fieldsets with preview
+            # Build fields list - ensure image field is included
+            media_fields = ['media_type', 'image', 'alt_text']
+            # Add current media preview as readonly if image exists
+            if obj and obj.image:
+                media_fields.insert(0, 'current_media_preview')
+            
             return (
                 ('Product Information', {
                     'fields': ('product',),
                     'description': 'Select the product this media belongs to. Use autocomplete to search by product name.'
                 }),
                 ('Media Content', {
-                    'fields': ('media_type', 'image', 'alt_text'),
-                    'description': 'Select media type (Image/Video) and upload file. For video, max 2MB. Both use the same field.'
+                    'fields': tuple(media_fields),
+                    'description': 'Select media type (Image/Video) and upload file. For video, max 5MB. Upload a new file to replace the current one, or use "Clear" checkbox to remove existing file.'
                 }),
             )
     
@@ -775,6 +836,38 @@ class ProductImageAdmin(admin.ModelAdmin):
                 return format_html('<img src="{}" style="max-width: 100px; max-height: 100px;" />', obj.image.url)
         return '-'
     get_preview.short_description = 'Preview'
+    
+    def current_media_preview(self, obj):
+        """Display current media preview in change form"""
+        from django.utils.html import format_html
+        if obj and obj.image:
+            if obj.media_type == 'video':
+                return format_html(
+                    '<div style="margin: 10px 0;">'
+                    '<strong>Current Video:</strong><br>'
+                    '<video src="{}" style="max-width: 300px; max-height: 300px; margin-top: 10px;" controls></video><br>'
+                    '<small>File: {}</small>'
+                    '</div>',
+                    obj.image.url, obj.image.name
+                )
+            else:
+                return format_html(
+                    '<div style="margin: 10px 0;">'
+                    '<strong>Current Image:</strong><br>'
+                    '<img src="{}" style="max-width: 300px; max-height: 300px; margin-top: 10px; border: 1px solid #ddd; padding: 5px;" /><br>'
+                    '<small>File: {}</small>'
+                    '</div>',
+                    obj.image.url, obj.image.name
+                )
+        return format_html('<p style="color: #999;">No media file currently uploaded.</p>')
+    current_media_preview.short_description = 'Current Media Preview'
+    current_media_preview.allow_tags = True
+    
+    def get_readonly_fields(self, request, obj=None):
+        """Make preview readonly"""
+        if obj:
+            return ['current_media_preview']
+        return []
 
 
 # ==================== Product Detail Section Admin (Separate) ====================

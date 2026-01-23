@@ -4,9 +4,9 @@
        <div class="swiper rts-topSlide1">
            <div class="swiper-wrapper">
                {% for slider_item in sliders %}
-                   {% if slider_item.is_video or slider_item.is_image %}
                    <div class="swiper-slide">
-                       {% if slider_item.is_video %}
+                       {# Check for video first (video_url, then slidervideo) #}
+                       {% if slider_item.video_url or slider_item.slidervideo %}
                            {# Video Slider #}
                            <div class="video-container">
                                {% if slider_item.video_url and slider_item.is_youtube_or_vimeo %}
@@ -32,9 +32,13 @@
                                    </video>
                                {% endif %}
                            </div>
-                       {% elif slider_item.is_image %}
+                       {# Check for image #}
+                       {% elif slider_item.sliderimage %}
                            {# Image Slider #}
                            <div class="slide-bg" style="background-image: url('{{ slider_item.sliderimage.url }}');"></div>
+                       {# Fallback if no media (shouldn't happen but just in case) #}
+                       {% else %}
+                           <div class="slide-bg" style="background-image: url('/static/images/banner/weiboo-home-banner-1.jpg');"></div>
                        {% endif %}
                        
                        {# Content Overlay #}
@@ -91,7 +95,6 @@
                            </div>
                        </div>
                    </div>
-                   {% endif %}
                {% empty %}
                    {# Fallback: Show default slider if no sliders in database #}
                    <div class="swiper-slide" style="background-image: url('/static/images/banner/weiboo-home-banner-1.jpg');">
