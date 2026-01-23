@@ -1187,7 +1187,7 @@ class UserdelAPIView(APIView):
         """
         try:
             # Get the user to be deactivated
-            user_to_deactivate = get_object_or_404(User, id=cusuid_id)
+            user_to_deactivate = get_object_or_404(CustomUser, id=cusuid_id)
             
             # Check permissions
             if request.user.id != user_to_deactivate.id:
