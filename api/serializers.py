@@ -18,6 +18,7 @@ from ecommerce.models import (
     CouponUsage,
     Offer,
     OfferProduct,
+    Brand,
 )
 
 from cms.models import slider
@@ -332,10 +333,26 @@ class ProductDetailSectionSerializer(serializers.ModelSerializer):
 
 
 
+
+class BrandSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Brand
+        fields = ["id", "name", "slug", "image", "remark"]
+
+    def get_image(self, obj):
+        request = self.context.get("request")
+        if obj.image:
+            return request.build_absolute_uri(obj.image.url)
+        return None
+
+
 class ProductSerializer(serializers.ModelSerializer):
     images = ProductImageSerializer(many=True, read_only=True)
     variations = ProductVariationSerializer(many=True, read_only=True)
     sections = ProductDetailSectionSerializer(many=True, read_only=True)
+    brand = BrandSerializer(read_only=True)
 
     final_price = serializers.SerializerMethodField()
 
@@ -361,6 +378,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "images",
             "variations",
             "sections",
+            "brand",
         ]
 
     def get_final_price(self, obj):
@@ -373,6 +391,7 @@ class ProductSearchListSerializer(serializers.ModelSerializer):
     final_price = serializers.SerializerMethodField()
     has_variants = serializers.SerializerMethodField()
     subcategory = SubCategorySerializer(read_only=True)
+    brand = BrandSerializer(read_only=True)
 
     class Meta:
         model = Product
@@ -385,7 +404,9 @@ class ProductSearchListSerializer(serializers.ModelSerializer):
             "offerprice",
             "final_price",
             "has_variants",
+            "has_variants",
             "subcategory",
+            "brand",
         ]
 
     def get_image(self, obj):

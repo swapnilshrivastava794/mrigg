@@ -34,7 +34,7 @@ SECRET_KEY = 'django-insecure-=z9lp(k@r2!-j)=0oa9t(v$ycks3i&((l$aa*2j=omw))#ksuj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'mriigg.com', 'www.mriigg.com']
+ALLOWED_HOSTS = ['*']
 #ALLOWED_HOSTS = ['mriigg.com', 'www.mriigg.com']
 
 # Application definition
@@ -208,7 +208,7 @@ else:
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.mysql',
-                'NAME': os.getenv('DB_NAME', 'mriig'),
+                'NAME': os.getenv('DB_NAME', 'mrigg_live'),
                 'USER': os.getenv('DB_USER', 'root'),
                 'PASSWORD': os.getenv('DB_PASSWORD', ''),
                 'HOST': os.getenv('DB_HOST', '127.0.0.1'),
