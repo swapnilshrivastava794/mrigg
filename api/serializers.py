@@ -19,6 +19,7 @@ from ecommerce.models import (
     Offer,
     OfferProduct,
     Brand,
+    CustomUser
 )
 
 from cms.models import slider
@@ -30,15 +31,13 @@ class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=6)
 
     class Meta:
-        model = User
+        model = CustomUser  # 🔥 Fix: Use CustomUser explicitly
         fields = [
             'id',
             'email',
             'username',
             'password',
             'mobile',
-
-            # extra fields from your CustomUser
             'first_name',
             'last_name',
             'role',
@@ -53,12 +52,13 @@ class RegisterSerializer(serializers.ModelSerializer):
             'profile_image',
         ]
         extra_kwargs = {
-            'role': {'read_only': True},  # default = customer
+            'role': {'read_only': True},
         }
 
     def create(self, validated_data):
         password = validated_data.pop('password')
-        user = User(**validated_data)
+        # Use CustomUser to create user
+        user = CustomUser(**validated_data) 
         user.set_password(password)
         user.save()
         return user
@@ -69,34 +69,35 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        token['email'] = user.email
-        token['role'] = user.role
-        token['mobile'] = user.mobile
+        # Safe access for fields that might not exist on default User (admin)
+        token['email'] = getattr(user, 'email', '')
+        token['role'] = getattr(user, 'role', 'admin') # Default to admin if not found
+        token['mobile'] = getattr(user, 'mobile', '')
         return token
 
     def validate(self, attrs):
         data = super().validate(attrs)
-
         user = self.user
 
-        # Add full user data in response
+        # Add full user data in response (Safe Access)
         data['user'] = {
             "id": user.id,
-            "email": user.email,
+            "email": getattr(user, 'email', ''),
             "username": user.username,
-            "mobile": user.mobile,
-            "role": user.role,
+            "mobile": getattr(user, 'mobile', ''),
+            "role": getattr(user, 'role', 'admin'),
             "first_name": user.first_name,
             "last_name": user.last_name,
-            "date_of_birth": user.date_of_birth,
-            "gender": user.gender,
-            "address_line1": user.address_line1,
-            "address_line2": user.address_line2,
-            "city": user.city,
-            "state": user.state,
-            "zip_code": user.zip_code,
-            "country": user.country,
-            "profile_image": self.context['request'].build_absolute_uri(user.profile_image.url) if user.profile_image else None,
+            # For optional profile fields, we need to be careful as default User doesn't have them
+            "date_of_birth": getattr(user, 'date_of_birth', None),
+            "gender": getattr(user, 'gender', None),
+            "address_line1": getattr(user, 'address_line1', None),
+            "address_line2": getattr(user, 'address_line2', None),
+            "city": getattr(user, 'city', None),
+            "state": getattr(user, 'state', None),
+            "zip_code": getattr(user, 'zip_code', None),
+            "country": getattr(user, 'country', None),
+            "profile_image": self.context['request'].build_absolute_uri(user.profile_image.url) if getattr(user, 'profile_image', None) else None,
         }
 
         return data

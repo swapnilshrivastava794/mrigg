@@ -34,13 +34,24 @@ from .views import (
     RazorpayOrderCreateAPI,
     RazorpayPaymentVerifyAPI,
     OfferListView,
-    OfferDetailView
+    OfferDetailView,
+    # Custom Auth Views
+    CustomUserSignupView,
+    CustomUserLoginView,
+    CustomUserRefreshTokenView,
+    CustomUserProfileView
 )
 
 
 urlpatterns = [
 
-    # ================= AUTH =================
+    # ================= CUSTOM USER AUTH (App/Frontend) =================
+    path("auth/custom/signup/", CustomUserSignupView.as_view(), name="custom_user_signup"),
+    path("auth/custom/login/", CustomUserLoginView.as_view(), name="custom_user_login"),
+    path("auth/custom/refresh/", CustomUserRefreshTokenView.as_view(), name="custom_user_refresh"),
+    path("auth/custom/me/", CustomUserProfileView.as_view(), name="custom_user_profile"),
+
+    # ================= OLD AUTH (Django Admin / Legacy) =================
     path("auth/register/", RegisterView.as_view(), name="api_register"),
     path("auth/login/", CustomTokenObtainPairView.as_view(), name="api_login"),
     path("auth/refresh/", TokenRefreshView.as_view(), name="api_refresh"),

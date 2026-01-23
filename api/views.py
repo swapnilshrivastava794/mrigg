@@ -13,7 +13,8 @@ from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.generics import ListAPIView
-from ecommerce.models import Category, Order, Product, UserAddress, Coupon, CouponUsage, Offer
+from ecommerce.models import Category, Order, Product, UserAddress, Coupon, CouponUsage, Offer, CustomUser
+from .authentication import CustomUserJWTAuthentication, generate_tokens_for_user, refresh_access_token
 from cms.models import slider
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
@@ -39,6 +40,220 @@ from .models import EmailOTP
 
 User = get_user_model()
 
+
+# ==================== CUSTOM USER AUTH (Separate from Django Admin) ====================
+
+class CustomUserSignupView(APIView):
+    """
+    Signup API for CustomUser model.
+    This is SEPARATE from Django Admin auth.
+    """
+    permission_classes = [AllowAny]
+    
+    def post(self, request):
+        email = request.data.get('email', '').strip().lower()
+        password = request.data.get('password', '')
+        mobile = request.data.get('mobile', '').strip()
+        username = request.data.get('username', '').strip()
+        first_name = request.data.get('first_name', '').strip()
+        last_name = request.data.get('last_name', '').strip()
+        
+        # Validation
+        if not email:
+            return Response({'error': 'Email is required'}, status=status.HTTP_400_BAD_REQUEST)
+        if not password or len(password) < 6:
+            return Response({'error': 'Password must be at least 6 characters'}, status=status.HTTP_400_BAD_REQUEST)
+        if not mobile:
+            return Response({'error': 'Mobile is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Check if email already exists
+        if CustomUser.objects.filter(email=email).exists():
+            return Response({'error': 'Email already registered'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Check if mobile already exists
+        if CustomUser.objects.filter(mobile=mobile).exists():
+            return Response({'error': 'Mobile number already registered'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Check username if provided
+        if username and CustomUser.objects.filter(username=username).exists():
+            return Response({'error': 'Username already taken'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Create user
+        user = CustomUser(
+            email=email,
+            mobile=mobile,
+            username=username or email.split('@')[0],  # Default username from email
+            first_name=first_name,
+            last_name=last_name,
+            role='customer',
+        )
+        user.set_password(password)
+        user.save()
+        
+        # Generate JWT tokens
+        tokens = generate_tokens_for_user(user)
+        
+        return Response({
+            'message': 'User registered successfully',
+            'user': {
+                'id': user.id,
+                'email': user.email,
+                'username': user.username,
+                'mobile': user.mobile,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'role': user.role,
+            },
+            'access': tokens['access'],
+            'refresh': tokens['refresh'],
+        }, status=status.HTTP_201_CREATED)
+
+
+class CustomUserLoginView(APIView):
+    """
+    Login API for CustomUser model.
+    This is SEPARATE from Django Admin auth.
+    """
+    permission_classes = [AllowAny]
+    
+    def post(self, request):
+        email = request.data.get('email', '').strip().lower()
+        password = request.data.get('password', '')
+        
+        if not email or not password:
+            return Response({'error': 'Email and password are required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            user = CustomUser.objects.get(email=email)
+        except CustomUser.DoesNotExist:
+            return Response({'error': 'Invalid email or password'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        # Check password
+        if not user.check_password(password):
+            return Response({'error': 'Invalid email or password'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        # Check if user is active
+        if not user.is_active:
+            return Response({'error': 'Account is deactivated'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        # Generate JWT tokens
+        tokens = generate_tokens_for_user(user)
+        
+        return Response({
+            'message': 'Login successful',
+            'user': {
+                'id': user.id,
+                'email': user.email,
+                'username': user.username,
+                'mobile': user.mobile,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'role': user.role,
+                'date_of_birth': user.date_of_birth,
+                'gender': user.gender,
+                'address_line1': user.address_line1,
+                'address_line2': user.address_line2,
+                'city': user.city,
+                'state': user.state,
+                'zip_code': user.zip_code,
+                'country': user.country,
+                'profile_image': request.build_absolute_uri(user.profile_image.url) if user.profile_image else None,
+            },
+            'access': tokens['access'],
+            'refresh': tokens['refresh'],
+        }, status=status.HTTP_200_OK)
+
+
+class CustomUserRefreshTokenView(APIView):
+    """
+    Refresh access token using refresh token.
+    """
+    permission_classes = [AllowAny]
+    
+    def post(self, request):
+        refresh_token = request.data.get('refresh', '')
+        
+        if not refresh_token:
+            return Response({'error': 'Refresh token is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            new_tokens = refresh_access_token(refresh_token)
+            return Response(new_tokens, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class CustomUserProfileView(APIView):
+    """
+    Get/Update profile for CustomUser.
+    """
+    authentication_classes = [CustomUserJWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        user = request.user
+        return Response({
+            'id': user.id,
+            'email': user.email,
+            'username': user.username,
+            'mobile': user.mobile,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'role': user.role,
+            'date_of_birth': user.date_of_birth,
+            'gender': user.gender,
+            'address_line1': user.address_line1,
+            'address_line2': user.address_line2,
+            'city': user.city,
+            'state': user.state,
+            'zip_code': user.zip_code,
+            'country': user.country,
+            'profile_image': request.build_absolute_uri(user.profile_image.url) if user.profile_image else None,
+        })
+    
+    def put(self, request):
+        user = request.user
+        
+        # Update allowed fields
+        allowed_fields = [
+            'first_name', 'last_name', 'mobile', 'date_of_birth', 'gender',
+            'address_line1', 'address_line2', 'city', 'state', 'zip_code', 'country'
+        ]
+        
+        for field in allowed_fields:
+            if field in request.data:
+                setattr(user, field, request.data[field])
+        
+        # Handle profile image upload
+        if 'profile_image' in request.FILES:
+            user.profile_image = request.FILES['profile_image']
+        
+        user.save()
+        
+        return Response({
+            'message': 'Profile updated successfully',
+            'user': {
+                'id': user.id,
+                'email': user.email,
+                'username': user.username,
+                'mobile': user.mobile,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'role': user.role,
+                'date_of_birth': user.date_of_birth,
+                'gender': user.gender,
+                'address_line1': user.address_line1,
+                'address_line2': user.address_line2,
+                'city': user.city,
+                'state': user.state,
+                'zip_code': user.zip_code,
+                'country': user.country,
+                'profile_image': request.build_absolute_uri(user.profile_image.url) if user.profile_image else None,
+            }
+        })
+
+
+# ==================== OLD AUTH VIEWS (Django Default User) ====================
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()

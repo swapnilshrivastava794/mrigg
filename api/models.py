@@ -1,12 +1,10 @@
 from django.db import models
-
-from django.contrib.auth import get_user_model
 import random
 
-User = get_user_model()
 
 def generate_otp():
     return str(random.randint(100000, 999999))
+
 
 class EmailOTP(models.Model):
     id = models.BigAutoField(primary_key=True)
