@@ -1,5 +1,7 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
+from django.views.decorators.csrf import csrf_exempt
+
 
 from .views import (
     CancelOrderAPIView,
@@ -50,7 +52,7 @@ urlpatterns = [
     
     path("auth/register/", CustomUserSignupView.as_view(), name="api_register"),
     path("auth/login/", CustomUserLoginView.as_view(), name="api_login"),
-    path("auth/refresh/", CustomUserRefreshTokenView.as_view(), name="api_refresh"),
+    path("auth/refresh/", csrf_exempt(CustomUserRefreshTokenView.as_view()), name="api_refresh"),
     
     # Profile (GET)
     path("auth/me/", CustomUserProfileView.as_view(), name="api_me"),

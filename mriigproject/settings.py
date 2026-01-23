@@ -37,6 +37,9 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 #ALLOWED_HOSTS = ['mriigg.com', 'www.mriigg.com']
 
+# CORS Configuration
+CORS_ALLOW_ALL_ORIGINS = True  # 👈 Allow all origins for dev
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -52,13 +55,14 @@ INSTALLED_APPS = [
     'ecommerce.apps.EcommerceConfig',
     'cms',
     'api',
-    
+    'corsheaders',  # 👈 Added CORS headers
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # 👈 Added CORS Middleware (Must be before CommonMiddleware)
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -346,7 +350,7 @@ else:
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'api.authentication.CustomUserJWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',

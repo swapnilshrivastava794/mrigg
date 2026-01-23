@@ -628,7 +628,7 @@ class UserAddressListView(APIView):
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 class UserAddressAPIView(APIView):
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CustomUserJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     # 📌 GET → List addresses
@@ -652,7 +652,7 @@ class UserAddressAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class UserAddressDetailAPIView(APIView):
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CustomUserJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get_object(self, user, pk):
@@ -682,7 +682,7 @@ class UserAddressDetailAPIView(APIView):
 
     
 class CheckoutView(APIView):
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CustomUserJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -728,7 +728,7 @@ class CheckoutView(APIView):
 
 
 class MyOrdersView(APIView):
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CustomUserJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -757,7 +757,7 @@ class MyOrdersView(APIView):
 
 
 class OrderDetailView(APIView):
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CustomUserJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request, order_id):
@@ -772,7 +772,7 @@ class OrderDetailView(APIView):
 
 
 class CancelOrderAPIView(APIView):
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CustomUserJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request, order_id):
@@ -803,7 +803,7 @@ class CancelOrderAPIView(APIView):
     
 
 class PaymentSuccessAPIView(APIView):
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CustomUserJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -833,7 +833,7 @@ class PaymentSuccessAPIView(APIView):
 from ecommerce.models import Order, Payment # Ensure Payment is imported
 
 class GokwikPaymentInitiateView(APIView):
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CustomUserJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request):

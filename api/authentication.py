@@ -56,68 +56,45 @@ class CustomUserJWTAuthentication(authentication.BaseAuthentication):
         return 'Bearer'
 
 
+from rest_framework_simplejwt.tokens import RefreshToken, UntypedToken
+from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
+
+# ... (CustomUserJWTAuthentication remains mostly same but we can rely on verifying signature using simplejwt if needed, 
+#      but for now let's stick to fixing GENERATION first as requested. 
+#      Actually, we should update decoding too if the key/algo changes, but simplejwt uses settings.SECRET_KEY too.)
+
 def generate_tokens_for_user(user):
     """
-    Generate JWT access and refresh tokens for CustomUser.
+    Generate JWT access and refresh tokens for CustomUser using simplejwt.
+    This ensures all standard claims (jti, exp, iat) are present.
     """
-    # Access Token (6 hours)
-    access_payload = {
-        'user_id': user.id,
-        'email': user.email,
-        'role': user.role,
-        'token_type': 'access',
-        'exp': datetime.utcnow() + timedelta(hours=6),
-        'iat': datetime.utcnow(),
-    }
-    access_token = jwt.encode(access_payload, settings.SECRET_KEY, algorithm='HS256')
+    refresh = RefreshToken.for_user(user)
     
-    # Refresh Token (7 days)
-    refresh_payload = {
-        'user_id': user.id,
-        'token_type': 'refresh',
-        'exp': datetime.utcnow() + timedelta(days=7),
-        'iat': datetime.utcnow(),
-    }
-    refresh_token = jwt.encode(refresh_payload, settings.SECRET_KEY, algorithm='HS256')
+    # Add custom claims
+    refresh['email'] = user.email
+    refresh['role'] = getattr(user, 'role', 'customer')
+    
+    # Access token is automatically created from refresh token with same claims
     
     return {
-        'access': access_token,
-        'refresh': refresh_token,
+        'access': str(refresh.access_token),
+        'refresh': str(refresh),
     }
 
 
-def refresh_access_token(refresh_token):
+def refresh_access_token(refresh_token_str):
     """
-    Generate new access token using refresh token.
+    Generate new access token using refresh token via simplejwt.
     """
     try:
-        payload = jwt.decode(
-            refresh_token,
-            settings.SECRET_KEY,
-            algorithms=['HS256']
-        )
+        # Verify and create RefreshToken object
+        refresh = RefreshToken(refresh_token_str)
         
-        if payload.get('token_type') != 'refresh':
-            raise exceptions.AuthenticationFailed('Invalid token type')
+        # simplejwt handles expiration and validity check internally
         
-        user = CustomUser.objects.get(id=payload['user_id'], is_active=True)
+        new_access_token = refresh.access_token
         
-        # Generate new access token
-        access_payload = {
-            'user_id': user.id,
-            'email': user.email,
-            'role': user.role,
-            'token_type': 'access',
-            'exp': datetime.utcnow() + timedelta(hours=6),
-            'iat': datetime.utcnow(),
-        }
-        new_access_token = jwt.encode(access_payload, settings.SECRET_KEY, algorithm='HS256')
+        return {'access': str(new_access_token)}
         
-        return {'access': new_access_token}
-        
-    except jwt.ExpiredSignatureError:
-        raise exceptions.AuthenticationFailed('Refresh token has expired')
-    except jwt.InvalidTokenError:
-        raise exceptions.AuthenticationFailed('Invalid refresh token')
-    except CustomUser.DoesNotExist:
-        raise exceptions.AuthenticationFailed('User not found')
+    except TokenError as e:
+        raise exceptions.AuthenticationFailed(f'Invalid or expired refresh token: {e}')
